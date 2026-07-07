@@ -424,6 +424,30 @@
       outline-offset: 4px;
     }
 
+    .click-cue {
+      position: relative;
+    }
+
+    .click-cue:before {
+      content: "☝";
+      position: absolute;
+      right: -12px;
+      top: -18px;
+      z-index: 4;
+      width: 20px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: #ff2b18;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 2px 7px rgba(0,0,0,.22);
+      font-size: 13px;
+      line-height: 1;
+      pointer-events: none;
+    }
+
     .danger-link.feature-entry {
       display: inline-block;
       padding: 1px 4px;
@@ -870,8 +894,8 @@
           <section class="toolbar">
             <div class="actions">
               <button class="btn" id="batchPassBtn">批量通过</button>
-              <button class="btn orange feature-entry" id="batchRejectBtn">批量拒绝</button>
-              <button class="btn ghost feature-entry" id="reasonManageBtn">拒绝原因维护</button>
+              <button class="btn orange feature-entry click-cue" id="batchRejectBtn">批量拒绝</button>
+              <button class="btn ghost feature-entry click-cue" id="reasonManageBtn">拒绝原因维护</button>
             </div>
             <div class="summary">申请通过：1.00　取消申请：0.00　申请人数：3　申请记录数：5</div>
             <div class="actions">
@@ -951,7 +975,7 @@
 
           <label class="required">拒绝原因:</label>
           <div>
-            <div class="combo feature-entry" id="rejectReasonCombo">
+            <div class="combo feature-entry click-cue" id="rejectReasonCombo">
               <input class="input combo-search" id="rejectReasonKeyword" type="text" placeholder="输入关键词查询并选择拒绝原因" autocomplete="off">
               <div class="combo-menu" id="rejectReasonMenu"></div>
             </div>
@@ -1229,7 +1253,7 @@
             <td><span class="tag ${statusClass}">${item.status}</span></td>
             <td title="${reason ? reason.content : ""}"><span class="reason-box">${reason ? reason.content : "-"}</span></td>
             <td>${item.date}</td>
-            <td>${canAudit ? `<span class="link" data-pass="${item.id}">通过</span>　<span class="danger-link feature-entry" data-reject="${item.id}">拒绝</span>` : `<span class="link">详情</span>`}</td>
+            <td>${canAudit ? `<span class="link" data-pass="${item.id}">通过</span>　<span class="danger-link feature-entry click-cue" data-reject="${item.id}">拒绝</span>` : `<span class="link">详情</span>`}</td>
           </tr>
         `;
       }).join("");
