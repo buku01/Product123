@@ -1,0 +1,963 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>功能权限节点优化原型</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --blue: #18b7ed;
+      --blue-dark: #0b9bd3;
+      --line: #dcdfe6;
+      --soft-line: #edf0f3;
+      --text: #303740;
+      --muted: #7b8794;
+      --panel: #fff;
+      --bg: #f3f5f7;
+      --green: #28b76b;
+      --orange: #f5a623;
+      --red: #f05b57;
+    }
+    html, body {
+      margin: 0;
+      min-width: 1280px;
+      height: 100%;
+      overflow: hidden;
+      color: var(--text);
+      background: var(--bg);
+      font: 12px/1.45 Arial, "Microsoft YaHei", "PingFang SC", sans-serif;
+      letter-spacing: 0;
+    }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .app {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 230px 1fr;
+      grid-template-rows: 56px 42px 1fr;
+    }
+    .topbar {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      padding: 0 22px;
+      color: #fff;
+      background: linear-gradient(90deg, #15bdf1, #2f9ff6);
+      border-top: 4px solid #1f1f1f;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 20px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .brand small { opacity: .75; }
+    .quick { display: flex; align-items: center; gap: 8px; }
+    .quick span {
+      width: 34px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 700;
+    }
+    .quick .home { background: #ff8a00; }
+    .quick .grid { background: #5eb95e; }
+    .quick .edit { background: #8a63c9; }
+    .quick .zero { color: #e64a73; background: #fff; }
+    .switch {
+      width: 64px;
+      height: 25px;
+      border-radius: 15px;
+      background: #65c95e;
+      position: relative;
+    }
+    .switch::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 19px;
+      height: 19px;
+      border-radius: 50%;
+      background: #39bdf4;
+    }
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .sidebar {
+      grid-row: 2 / -1;
+      overflow: hidden;
+      background: #f8f8f8;
+      border-right: 1px solid #d1d5da;
+    }
+    .nav-item, .sub-item {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 15px;
+      color: #535b64;
+      border-bottom: 1px solid #e2e5e8;
+      background: #fbfbfb;
+      font-weight: 700;
+    }
+    .nav-item .ico {
+      width: 18px;
+      text-align: center;
+      color: #59636d;
+    }
+    .nav-item .arrow { margin-left: auto; color: #89919a; }
+    .nav-item.active {
+      color: #119ad4;
+      background: #fff;
+    }
+    .sub-item {
+      height: 36px;
+      padding-left: 34px;
+      background: #fff;
+      font-weight: 700;
+    }
+    .sub-item::before {
+      content: "";
+      width: 0;
+      height: 0;
+      border-left: 5px solid #777;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+    }
+    .tabs {
+      grid-column: 2;
+      display: flex;
+      align-items: stretch;
+      background: #f6f8fa;
+      border-bottom: 1px solid var(--line);
+    }
+    .tab {
+      min-width: 118px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #168ec2;
+      border-right: 1px solid var(--line);
+      background: #eef3f5;
+      font-weight: 700;
+    }
+    .tab.active { background: #fff; }
+    .tab .x { margin-left: 10px; color: #aeb5bd; }
+    .refresh {
+      margin-left: auto;
+      width: 54px;
+      display: grid;
+      place-items: center;
+      color: #00bfa5;
+      font-size: 25px;
+      font-weight: 700;
+    }
+    .main {
+      grid-column: 2;
+      overflow: auto;
+      padding: 18px;
+      background: #fff;
+    }
+    .permission-shell {
+      min-height: calc(100vh - 120px);
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    .page-title {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcfd;
+    }
+    .page-title strong { font-size: 15px; }
+    .summary {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .pill {
+      padding: 4px 9px;
+      border-radius: 2px;
+      color: #2587b8;
+      background: #e9f6fc;
+      border: 1px solid #cce9f6;
+    }
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+    .search-box {
+      position: relative;
+    }
+    .search-box input {
+      width: 100%;
+      height: 38px;
+      padding: 0 74px 0 34px;
+      border: 1px solid #cfd6dd;
+      border-radius: 3px;
+      outline: none;
+      color: var(--text);
+    }
+    .search-box input:focus {
+      border-color: #42afe3;
+      box-shadow: 0 0 0 2px rgba(66,175,227,.12);
+    }
+    .search-box::before {
+      content: "⌕";
+      position: absolute;
+      left: 12px;
+      top: 8px;
+      color: #8a96a3;
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .search-count {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      color: #8a96a3;
+      font-weight: 700;
+    }
+    .toolbar select {
+      height: 38px;
+      padding: 0 9px;
+      border: 1px solid #cfd6dd;
+      border-radius: 3px;
+      color: #48525c;
+      background: #fff;
+    }
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .btn {
+      height: 34px;
+      padding: 0 12px;
+      border: 1px solid #cfd6dd;
+      border-radius: 3px;
+      color: #43515d;
+      background: #fff;
+      font-weight: 700;
+    }
+    .btn.primary {
+      color: #fff;
+      border-color: var(--blue-dark);
+      background: var(--blue-dark);
+    }
+    .body-grid {
+      display: grid;
+      grid-template-columns: 250px 1fr 330px;
+      min-height: calc(100vh - 246px);
+    }
+    .search-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      min-height: calc(100vh - 246px);
+    }
+    .side-panel {
+      border-right: 1px solid var(--line);
+      background: #fbfcfd;
+    }
+    .panel-head {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      color: #4b5660;
+      font-weight: 700;
+      border-bottom: 1px solid var(--line);
+    }
+    .module-list {
+      padding: 10px;
+      display: grid;
+      gap: 6px;
+    }
+    .module-btn {
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      color: #4d5964;
+      background: transparent;
+      text-align: left;
+      font-weight: 700;
+    }
+    .module-btn:hover, .module-btn.active {
+      color: #0a8ec4;
+      border-color: #cbeaf7;
+      background: #eef9fd;
+    }
+    .module-btn .num {
+      color: #8b96a1;
+      font-weight: 700;
+    }
+    .tree-panel {
+      overflow: hidden;
+      background: #fff;
+    }
+    .tree-head {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .tree-head strong { color: #3e4a54; }
+    .tree-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .text-btn {
+      border: 0;
+      background: transparent;
+      color: #1497d1;
+      font-weight: 700;
+    }
+    .tree-list {
+      height: calc(100vh - 350px);
+      overflow: auto;
+      padding: 10px 14px 28px;
+    }
+    .node {
+      position: relative;
+      margin: 3px 0;
+      color: #404a53;
+    }
+    .node-row {
+      min-height: 28px;
+      display: grid;
+      grid-template-columns: 24px 20px 1fr auto;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 8px;
+      border-radius: 3px;
+      border: 1px solid transparent;
+    }
+    .node-row:hover {
+      border-color: #d8edf8;
+      background: #f5fbfe;
+    }
+    .node-row.matched {
+      border-color: #f6d471;
+      background: #fff9df;
+    }
+    .node-row.selected {
+      border-color: #88d2f2;
+      background: #eaf8fe;
+    }
+    .caret {
+      width: 20px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      color: #87919b;
+      border: 0;
+      background: transparent;
+      transition: transform .12s ease;
+    }
+    .node.collapsed > .node-row .caret { transform: rotate(-90deg); }
+    .node.leaf > .node-row .caret { visibility: hidden; }
+    .check {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      accent-color: #159dd5;
+    }
+    .node-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    mark {
+      padding: 0 1px;
+      color: inherit;
+      background: #ffe36b;
+    }
+    .tag {
+      padding: 2px 5px;
+      border: 1px solid #d6eaf5;
+      border-radius: 2px;
+      color: #168ec2;
+      background: #f2fbff;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .node-count {
+      color: #909aa4;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .children {
+      margin-left: 24px;
+      padding-left: 10px;
+      border-left: 1px solid #d8dde3;
+    }
+    .node.collapsed > .children { display: none; }
+    .path {
+      margin-top: 3px;
+      color: #8a96a3;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .empty {
+      padding: 24px 12px;
+      color: #8d98a3;
+      text-align: center;
+      font-weight: 700;
+    }
+    .card-section {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .section-title {
+      margin-bottom: 9px;
+      color: #4b5660;
+      font-weight: 700;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .chip {
+      padding: 5px 8px;
+      border: 1px solid #d9e5ec;
+      border-radius: 3px;
+      color: #52606c;
+      background: #fff;
+      font-weight: 700;
+    }
+    .chip.hot { color: #b66d00; background: #fff8e7; border-color: #f2d99c; }
+    .selected-box {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .stat {
+      min-height: 56px;
+      padding: 8px;
+      border: 1px solid #dce7ed;
+      background: #fff;
+      text-align: center;
+      font-weight: 700;
+    }
+    .stat b {
+      display: block;
+      color: #158fc4;
+      font-size: 20px;
+      line-height: 24px;
+    }
+    .detail-name {
+      color: #25313b;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .detail-path {
+      margin-top: 8px;
+      color: #73808c;
+      line-height: 20px;
+      font-weight: 700;
+    }
+    .detail-actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+    }
+    .requirement-note {
+      padding: 14px;
+      border-left: 1px solid var(--line);
+      background: #fff8d9;
+      color: #4f5963;
+      font-weight: 700;
+      box-shadow: inset 4px 0 0 #f2b705;
+    }
+    .requirement-note > strong {
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+      margin: -2px -2px 12px;
+      padding: 0 10px;
+      color: #5b3d00;
+      background: #ffe070;
+      border: 1px solid #f0c23f;
+      border-radius: 3px;
+      font-size: 14px;
+    }
+    .requirement-section + .requirement-section {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #f0e3ab;
+    }
+    .requirement-section-title {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      margin-bottom: 6px;
+      padding: 0 8px;
+      color: #805600;
+      background: #fff1a8;
+      border: 1px solid #efd15a;
+      border-radius: 2px;
+      font-weight: 700;
+    }
+    .requirement-note p {
+      margin: 0;
+      line-height: 20px;
+    }
+    .requirement-note ol {
+      margin: 0;
+      padding-left: 18px;
+      line-height: 20px;
+    }
+    .save-bar {
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 0 16px;
+      border-top: 1px solid var(--line);
+      background: #f8fafb;
+    }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      z-index: 20;
+      transform: translateX(-50%) translateY(20px);
+      padding: 10px 16px;
+      color: #fff;
+      background: rgba(30, 38, 46, .92);
+      border-radius: 3px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+      font-weight: 700;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    @media (max-width: 1500px) {
+      html, body { min-width: 1280px; }
+      .app { grid-template-columns: 190px 1fr; }
+      .toolbar { grid-template-columns: 1fr; }
+      .body-grid { grid-template-columns: 220px 1fr 290px; }
+      .search-layout { grid-template-columns: 1fr 300px; }
+      .brand { font-size: 16px; }
+      .status { gap: 8px; }
+      .tree-list { height: calc(100vh - 350px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span>群版本平台管理系统 <small>v0.22</small></span>
+        <div class="quick">
+          <span class="home">⌂</span>
+          <span class="grid">▦</span>
+          <span class="edit">◆</span>
+          <span class="zero">0</span>
+          <span class="switch"></span>
+        </div>
+      </div>
+      <div class="status">
+        <span>提现维护：0</span>
+        <span>优惠大厅待审核预警(0)</span>
+        <span>异常用户列表：0</span>
+        <span>挂起计时 30:00</span>
+        <span>您好，bulu ▾</span>
+      </div>
+    </header>
+
+    <aside class="sidebar">
+      <div class="nav-item"><span class="ico">▣</span><span>账务中心</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">♜</span><span>活动管理new</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">▰</span><span>邀请好友</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">▱</span><span>合营代理管理</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">◈</span><span>活动管理</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">▰</span><span>电销管理</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">◉</span><span>APP管理</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">□</span><span>站内消息</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">▣</span><span>代理中心</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">⚙</span><span>系统管理</span><span class="arrow">›</span></div>
+      <div class="nav-item active"><span class="ico">◇</span><span>管理员管理</span><span class="arrow">›</span></div>
+      <div class="sub-item">角色管理</div>
+      <div class="sub-item">管理员</div>
+      <div class="nav-item"><span class="ico">▦</span><span>内容管理</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">♣</span><span>会员管理</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">¥</span><span>刷水查询</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">▰</span><span>统计报表</span><span class="arrow">›</span></div>
+    </aside>
+
+    <nav class="tabs">
+      <div class="tab">首页</div>
+      <div class="tab">通用设置 <span class="x">×</span></div>
+      <div class="tab active">角色管理 <span class="x">×</span></div>
+      <div class="refresh">↻</div>
+    </nav>
+
+    <main class="main">
+      <section class="permission-shell">
+        <div class="page-title">
+          <strong>权限设置</strong>
+          <div class="summary">
+            <span>当前匹配 <b id="matchCount">全部</b></span>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-box">
+            <input id="searchInput" type="search" placeholder="搜索功能点 / 菜单 / 操作，例如：删除、提现、推送、返水">
+            <span class="search-count" id="searchCount">全部</span>
+          </div>
+        </div>
+
+        <div class="search-layout">
+          <section class="tree-panel">
+            <div class="tree-head">
+              <strong id="treeTitle">全部权限节点</strong>
+            </div>
+            <div class="tree-list" id="treeList"></div>
+          </section>
+          <aside class="requirement-note">
+            <strong>需求说明</strong>
+            <div class="requirement-section">
+              <div class="requirement-section-title">菜单路径</div>
+              <p>管理员管理 - 角色管理 - 权限设置</p>
+            </div>
+            <div class="requirement-section">
+              <div class="requirement-section-title">场景</div>
+              <p>当前功能权限节点数量较多，管理员在配置角色权限时，查找某个特定功能点成本较高，需要通过关键词快速定位目标权限节点。</p>
+            </div>
+            <div class="requirement-section">
+              <div class="requirement-section-title">功能说明</div>
+              <ol>
+                <li>权限节点增加关键词搜索，支持按功能点或菜单名称快速查找。</li>
+                <li>搜索时只匹配节点自身名称，不因父级菜单命中而展示无关子节点。</li>
+                <li>搜索后仍可直接勾选或取消勾选。</li>
+              </ol>
+            </div>
+          </aside>
+        </div>
+        <div class="save-bar">
+          <button class="btn" type="button">取消</button>
+          <button class="btn primary" id="saveBtn" type="button">保存权限</button>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast">保存成功</div>
+
+  <script>
+    const permissions = [
+      {
+        id: "content",
+        name: "内容管理",
+        children: [
+          { id: "content-message", name: "所有留言", children: [
+            { id: "content-message-delete", name: "删除网站留言", hot: true },
+            { id: "content-message-reply", name: "回复网站留言" }
+          ] },
+          { id: "content-comment", name: "评论管理", children: [
+            { id: "content-comment-audit", name: "评论审核" },
+            { id: "content-comment-delete", name: "删除评论" }
+          ] },
+          { id: "content-article", name: "文章管理", children: [
+            { id: "content-article-add", name: "新增文章" },
+            { id: "content-article-edit", name: "编辑文章" },
+            { id: "content-article-delete", name: "删除文章" }
+          ] },
+          { id: "content-page", name: "页面管理", children: [
+            { id: "content-page-banner", name: "配置页面广告" },
+            { id: "content-page-sort", name: "页面排序" }
+          ] },
+          { id: "content-auto-reply", name: "关键词自动回复配置", hot: true, children: [
+            { id: "content-auto-reply-add", name: "新增关键词回复" },
+            { id: "content-auto-reply-delete", name: "删除关键词回复" }
+          ] }
+        ]
+      },
+      {
+        id: "member",
+        name: "会员管理",
+        children: [
+          { id: "member-list", name: "会员列表", hot: true, children: [
+            { id: "member-list-edit", name: "编辑会员资料" },
+            { id: "member-list-freeze", name: "冻结会员" },
+            { id: "member-list-export", name: "导出会员Excel" }
+          ] },
+          { id: "member-withdraw", name: "提现账号管理", hot: true, children: [
+            { id: "member-withdraw-edit", name: "编辑提现账户" },
+            { id: "member-withdraw-delete", name: "删除提现账户" },
+            { id: "member-withdraw-audit", name: "提现账号审核" }
+          ] },
+          { id: "member-device", name: "设备与Token", children: [
+            { id: "member-device-clear-token", name: "清除token" },
+            { id: "member-device-clear-phone", name: "清除绑定手机" }
+          ] }
+        ]
+      },
+      {
+        id: "message",
+        name: "站内消息",
+        children: [
+          { id: "message-list", name: "消息列表", children: [
+            { id: "message-list-delete", name: "删除消息" },
+            { id: "message-list-export", name: "导出消息" }
+          ] },
+          { id: "message-push", name: "推送管理", hot: true, children: [
+            { id: "message-push-add", name: "添加推送" },
+            { id: "message-push-edit", name: "编辑推送" },
+            { id: "message-push-delete", name: "删除推送" },
+            { id: "message-push-provider", name: "配置推送服务商" }
+          ] },
+          { id: "message-template", name: "系统消息模板", children: [
+            { id: "message-template-edit", name: "编辑模板" },
+            { id: "message-template-test", name: "发送测试消息" }
+          ] }
+        ]
+      },
+      {
+        id: "rebate",
+        name: "返水中心",
+        children: [
+          { id: "rebate-blacklist", name: "返水黑名单", hot: true, children: [
+            { id: "rebate-blacklist-add", name: "添加返水黑名单" },
+            { id: "rebate-blacklist-delete", name: "删除返水黑名单" }
+          ] },
+          { id: "rebate-temp", name: "临时返水黑名单", children: [
+            { id: "rebate-temp-add", name: "添加临时返水黑名单" },
+            { id: "rebate-temp-clear", name: "清空临时返水黑名单" }
+          ] },
+          { id: "rebate-report", name: "返水报表", children: [
+            { id: "rebate-report-query", name: "查询返水报表" },
+            { id: "rebate-report-export", name: "导出返水报表" }
+          ] }
+        ]
+      },
+      {
+        id: "finance",
+        name: "账务中心",
+        children: [
+          { id: "finance-recharge", name: "充值管理", children: [
+            { id: "finance-recharge-audit", name: "审核充值订单" },
+            { id: "finance-recharge-export", name: "导出充值订单" }
+          ] },
+          { id: "finance-withdraw", name: "提现管理", hot: true, children: [
+            { id: "finance-withdraw-audit", name: "审核提现订单" },
+            { id: "finance-withdraw-lock", name: "锁定提现订单" },
+            { id: "finance-withdraw-export", name: "导出提现订单" }
+          ] },
+          { id: "finance-fund", name: "资金调整", children: [
+            { id: "finance-fund-add", name: "人工加款" },
+            { id: "finance-fund-sub", name: "人工扣款" }
+          ] }
+        ]
+      },
+      {
+        id: "system",
+        name: "系统管理",
+        children: [
+          { id: "system-role", name: "角色管理", hot: true, children: [
+            { id: "system-role-add", name: "新增角色" },
+            { id: "system-role-permission", name: "配置角色权限" },
+            { id: "system-role-delete", name: "删除角色" }
+          ] },
+          { id: "system-admin", name: "管理员", children: [
+            { id: "system-admin-add", name: "新增管理员" },
+            { id: "system-admin-reset-password", name: "重置管理员密码" }
+          ] },
+          { id: "system-log", name: "操作日志", children: [
+            { id: "system-log-query", name: "查询操作日志" },
+            { id: "system-log-export", name: "导出操作日志" }
+          ] }
+        ]
+      }
+    ];
+
+    const state = {
+      query: "",
+      selectedId: null,
+      collapsed: new Set(["content", "rebate"]),
+      matchedIds: new Set(),
+      checked: new Set(["content-message-delete", "member-withdraw-edit", "message-push-add", "finance-withdraw-audit", "system-role-permission"])
+    };
+
+    const byId = new Map();
+    const parentById = new Map();
+
+    function walk(nodes, fn, parent = null) {
+      nodes.forEach(node => {
+        fn(node, parent);
+        if (node.children) walk(node.children, fn, node);
+      });
+    }
+
+    walk(permissions, (node, parent) => {
+      byId.set(node.id, node);
+      if (parent) parentById.set(node.id, parent.id);
+    });
+
+    const els = {
+      treeList: document.getElementById("treeList"),
+      searchInput: document.getElementById("searchInput"),
+      searchCount: document.getElementById("searchCount"),
+      matchCount: document.getElementById("matchCount"),
+      toast: document.getElementById("toast")
+    };
+
+    function normalize(text) {
+      return text.toLowerCase().trim();
+    }
+
+    function getPath(id) {
+      const path = [];
+      let current = id;
+      while (current) {
+        const node = byId.get(current);
+        if (node) path.unshift(node.name);
+        current = parentById.get(current);
+      }
+      return path;
+    }
+
+    function nodeMatches(node) {
+      if (!state.query) return true;
+      return normalize(node.name).includes(normalize(state.query));
+    }
+
+    function descendantsMatch(node) {
+      if (!state.query) return true;
+      if (state.query && nodeMatches(node)) return true;
+      return node.children ? node.children.some(descendantsMatch) : false;
+    }
+
+    function highlight(text) {
+      if (!state.query) return text;
+      const idx = normalize(text).indexOf(normalize(state.query));
+      if (idx < 0) return text;
+      return `${text.slice(0, idx)}<mark>${text.slice(idx, idx + state.query.length)}</mark>${text.slice(idx + state.query.length)}`;
+    }
+
+    function renderTreeNode(node) {
+      if (!descendantsMatch(node)) return "";
+      const isLeaf = !node.children || node.children.length === 0;
+      const isCollapsed = state.collapsed.has(node.id) && !state.query;
+      const isMatched = state.query && nodeMatches(node);
+      if (isMatched) state.matchedIds.add(node.id);
+      const childHtml = node.children && (!state.query || !isMatched)
+        ? `<div class="children">${node.children.map(renderTreeNode).join("")}</div>`
+        : "";
+
+      return `
+        <div class="node ${isLeaf ? "leaf" : ""} ${isCollapsed ? "collapsed" : ""}" data-id="${node.id}">
+          <div class="node-row ${isMatched ? "matched" : ""} ${state.selectedId === node.id ? "selected" : ""}" data-id="${node.id}">
+            <button class="caret" data-action="toggle" data-id="${node.id}">▾</button>
+            <input class="check" type="checkbox" data-action="check" data-id="${node.id}" ${state.checked.has(node.id) ? "checked" : ""}>
+            <div class="node-name" data-action="select" data-id="${node.id}">${highlight(node.name)}</div>
+            <div class="path">${isLeaf ? getPath(node.id).slice(0, -1).join(" / ") : ""}</div>
+          </div>
+          ${childHtml}
+        </div>`;
+    }
+
+    function renderTree() {
+      state.matchedIds.clear();
+      els.treeList.innerHTML = permissions.map(renderTreeNode).join("") || '<div class="empty">没有匹配的权限节点</div>';
+      els.matchCount.textContent = state.query ? state.matchedIds.size : "全部";
+      els.searchCount.textContent = state.query ? `${state.matchedIds.size}项` : "全部";
+      bindTreeEvents();
+    }
+
+    function revealAncestors(id) {
+      let parent = parentById.get(id);
+      while (parent) {
+        state.collapsed.delete(parent);
+        parent = parentById.get(parent);
+      }
+    }
+
+    function selectNode(id) {
+      state.selectedId = id;
+      revealAncestors(id);
+      render();
+      const row = document.querySelector(`.node-row[data-id="${id}"]`);
+      if (row) row.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
+
+    function bindTreeEvents() {
+      els.treeList.querySelectorAll("[data-action='toggle']").forEach(btn => {
+        btn.addEventListener("click", event => {
+          event.stopPropagation();
+          const id = btn.dataset.id;
+          if (state.collapsed.has(id)) state.collapsed.delete(id);
+          else state.collapsed.add(id);
+          render();
+        });
+      });
+      els.treeList.querySelectorAll("[data-action='check']").forEach(input => {
+        input.addEventListener("click", event => event.stopPropagation());
+        input.addEventListener("change", () => {
+          if (input.checked) state.checked.add(input.dataset.id);
+          else state.checked.delete(input.dataset.id);
+        });
+      });
+      els.treeList.querySelectorAll("[data-action='select'], .node-row").forEach(row => {
+        row.addEventListener("click", event => {
+          const id = event.currentTarget.dataset.id;
+          if (id) selectNode(id);
+        });
+      });
+    }
+
+    function render() {
+      renderTree();
+    }
+
+    els.searchInput.addEventListener("input", event => {
+      state.query = event.target.value;
+      render();
+    });
+    document.getElementById("saveBtn").addEventListener("click", () => {
+      els.toast.textContent = `保存成功，已勾选 ${state.checked.size} 个权限节点`;
+      els.toast.classList.add("show");
+      window.setTimeout(() => els.toast.classList.remove("show"), 1600);
+    });
+    render();
+  </script>
+</body>
+</html>
