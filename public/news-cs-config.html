@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>代理等级管理 - CG包网后台</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --primary: #165dff;
+      --primary-2: #0f5bff;
+      --text: #303133;
+      --muted: #606266;
+      --weak: #909399;
+      --line: #e5e7ef;
+      --panel: #fff;
+      --page: #f2f3f8;
+      --thead: #f1f1f4;
+      --active: #e8f0ff;
+    }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: Inter, "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+      color: var(--text);
+      background: var(--page);
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+    body { overflow: hidden; }
+    .app {
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      grid-template-rows: 58px 1fr;
+      background: var(--page);
+    }
+    .topbar {
+      grid-column: 1 / -1;
+      height: 58px;
+      background: var(--primary-2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      color: #fff;
+      box-shadow: 0 1px 4px rgba(12, 46, 112, .14);
+      z-index: 5;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 20px; }
+    .logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      background: linear-gradient(145deg, #78adff, #2b75f6);
+      border: 1px solid rgba(255,255,255,.25);
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.12);
+    }
+    .top-actions { display: flex; align-items: center; gap: 20px; height: 100%; }
+    .global-search {
+      width: 205px;
+      height: 36px;
+      border-radius: 6px;
+      background: rgba(255,255,255,.12);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px 0 13px;
+      color: #fff;
+      font-weight: 600;
+    }
+    .kbd {
+      margin-left: auto;
+      height: 20px;
+      min-width: 28px;
+      padding: 0 8px;
+      border-radius: 5px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.2);
+      color: rgba(255,255,255,.86);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .top-icons { display: flex; align-items: center; gap: 22px; color: #fff; }
+    .icon { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.9; fill: none; stroke-linecap: round; stroke-linejoin: round; display: block; }
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(#d9ebff 0 52%, #fff 53%);
+      border: 2px solid rgba(255,255,255,.25);
+      position: relative;
+      box-shadow: 0 0 0 1px rgba(0,0,0,.05);
+    }
+    .avatar:before {
+      content: "";
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #fff;
+      position: absolute;
+      left: 10px;
+      top: 7px;
+      box-shadow: 0 15px 0 6px #fff;
+    }
+    .sidebar {
+      grid-row: 2;
+      background: #fff;
+      padding: 18px 8px 22px;
+      overflow: hidden;
+      color: #303133;
+    }
+    .menu-item {
+      height: 44px;
+      border-radius: 6px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #303133;
+      margin-bottom: 2px;
+      white-space: nowrap;
+    }
+    .menu-item .label { flex: 1; }
+    .menu-item .chev { color: #94a3b8; font-size: 14px; }
+    .menu-item svg { width: 18px; height: 18px; color: #606266; }
+    .menu-item.active {
+      background: var(--active);
+      color: var(--primary);
+    }
+    .menu-item.active svg { color: var(--primary); }
+    .main-wrap {
+      grid-column: 2;
+      grid-row: 2;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+      background: var(--page);
+    }
+    .tabsbar {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px 0 20px;
+      color: #667085;
+    }
+    .tab-left { display: flex; align-items: center; gap: 22px; }
+    .tab {
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 14px;
+      border-radius: 7px;
+      color: #5d6985;
+    }
+    .tab.active {
+      color: var(--primary);
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(31, 41, 55, .04);
+    }
+    .drop {
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 6px;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      color: #61708b;
+      box-shadow: 0 2px 8px rgba(33, 46, 84, .08);
+    }
+    .content {
+      flex: 1;
+      overflow: auto;
+      padding: 0 28px 28px 20px;
+    }
+    .card {
+      width: 100%;
+      background: var(--panel);
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+    .filter-card { padding: 12px 20px 12px; }
+    .filter-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 47px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #ebeef5;
+    }
+    .select, .input, .date-range {
+      height: 34px;
+      border: 1px solid #dcdfe6;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      background: #fff;
+      color: #606266;
+    }
+    .select { width: 120px; padding: 0 12px; justify-content: space-between; }
+    .input { width: 220px; padding: 0 12px; color: #a8abb2; }
+    .date-range { width: 380px; padding: 0 13px; gap: 14px; color: #a8abb2; }
+    .date-range .tilde { color: #303133; margin: 0 26px; }
+    .actions { display: flex; align-items: center; gap: 12px; padding-top: 12px; }
+    button {
+      height: 34px;
+      border-radius: 6px;
+      border: 1px solid var(--primary);
+      padding: 0 16px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--primary);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+    button.ghost { color: var(--primary); background: #fff; }
+    button:hover { filter: brightness(.98); }
+    button:active { transform: translateY(1px); }
+    .input[contenteditable="true"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(22, 93, 255, .08);
+      color: #303133;
+    }
+    .data-card { padding: 20px; overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    .agent-table { min-width: 1630px; }
+    th {
+      height: 63px;
+      text-align: left;
+      background: var(--thead);
+      color: #1d2129;
+      font-weight: 700;
+      padding: 0 14px;
+      line-height: 22px;
+    }
+    td {
+      height: 54px;
+      padding: 0 14px;
+      border-bottom: 1px solid #ebeef5;
+      color: #4e5661;
+      vertical-align: middle;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+    .link { color: #005dff; font-weight: 600; }
+    .sub { color: #7a8493; font-size: 12px; }
+    .orange { color: #f59a23; }
+    .pagination {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 18px;
+      color: #303133;
+    }
+    .page-select, .page-input {
+      height: 32px;
+      border: 1px solid #dcdfe6;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #606266;
+      background: #fff;
+    }
+    .page-select { width: 128px; gap: 24px; }
+    .page-input { width: 56px; }
+    .req-card {
+      border-radius: 0;
+      padding: 18px 20px 40px;
+      min-height: 900px;
+    }
+    .req-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .path-tag {
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 8px;
+      border: 1px solid #e0e3ea;
+      background: #f6f7f9;
+      border-radius: 4px;
+      color: #7a8493;
+      font-weight: 500;
+      font-size: 12px;
+    }
+    .section-title {
+      margin: 16px 0 10px;
+      padding-left: 10px;
+      border-left: 3px solid var(--primary);
+      font-weight: 700;
+      color: #2f343d;
+      line-height: 16px;
+    }
+    .summary {
+      background: #f8fbff;
+      border-radius: 4px;
+      padding: 14px;
+      color: #4e5661;
+      line-height: 24px;
+      margin-bottom: 18px;
+    }
+    .flow {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-bottom: 18px;
+    }
+    .pill {
+      height: 29px;
+      padding: 0 12px;
+      border: 1px solid #bccdff;
+      border-radius: 15px;
+      display: inline-flex;
+      align-items: center;
+      background: #f4f8ff;
+      color: #27364f;
+      white-space: nowrap;
+    }
+    .pill.gray { border-color: #cbd2dc; background: #f8fafc; }
+    .pill.green { border-color: #93e2d5; background: #eefdfa; }
+    .arrow { color: #8792a3; }
+    .desc-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      border: 1px solid var(--line);
+    }
+    .desc-table td {
+      height: 40px;
+      border-bottom: 1px solid var(--line);
+      color: #303133;
+      padding: 9px 12px;
+      line-height: 22px;
+    }
+    .desc-table td:first-child {
+      width: 200px;
+      background: #f3f6fa;
+      color: #4b5563;
+      font-weight: 600;
+    }
+    .float-pin {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #7db7ff;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 4px 14px rgba(22, 93, 255, .25);
+      color: #fff;
+    }
+    .scrollbar {
+      position: fixed;
+      top: 58px;
+      right: 0;
+      width: 8px;
+      height: 208px;
+      background: #c8c8c8;
+      border-radius: 8px;
+      opacity: .8;
+    }
+    .modal-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(15, 23, 42, .34);
+    }
+    .modal-mask.show { display: flex; }
+    .modal {
+      width: 760px;
+      max-width: calc(100vw - 48px);
+      max-height: calc(100vh - 60px);
+      overflow: hidden;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 18px 48px rgba(31, 41, 55, .22);
+      display: flex;
+      flex-direction: column;
+    }
+    .modal.wide { width: 860px; }
+    .modal-head {
+      height: 56px;
+      padding: 0 20px;
+      border-bottom: 1px solid #ebeef5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 16px;
+      color: #1f2937;
+    }
+    .modal-close {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      background: transparent;
+      color: #909399;
+      font-size: 22px;
+      padding: 0;
+    }
+    .modal-body {
+      padding: 20px;
+      overflow: auto;
+      color: #303133;
+    }
+    .modal-foot {
+      height: 64px;
+      border-top: 1px solid #ebeef5;
+      padding: 0 20px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+      background: #fff;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 120px 1fr 120px 1fr;
+      gap: 16px 14px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .form-label {
+      color: #606266;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .field {
+      min-height: 34px;
+      border: 1px solid #dcdfe6;
+      border-radius: 6px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      color: #303133;
+      background: #fff;
+    }
+    .field.full { grid-column: span 3; }
+    .switch {
+      width: 44px;
+      height: 22px;
+      border-radius: 12px;
+      background: var(--primary);
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.04);
+      cursor: pointer;
+    }
+    .switch:after {
+      content: "";
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      position: absolute;
+      right: 2px;
+      top: 2px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.18);
+    }
+    .switch.off { background: #c0c4cc; }
+    .switch.off:after { left: 2px; right: auto; }
+    .modal-toolbar {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 2px 0 10px;
+    }
+    .hint { color: #909399; font-size: 13px; }
+    .mini-table input {
+      width: 100%;
+      height: 30px;
+      border: 1px solid #dcdfe6;
+      border-radius: 5px;
+      padding: 0 9px;
+      color: #303133;
+      font: inherit;
+      background: #fff;
+    }
+    .mini-table input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(22, 93, 255, .08);
+    }
+    .text-btn {
+      height: auto;
+      border: 0;
+      background: transparent;
+      padding: 2px 4px;
+      color: var(--primary);
+      font-weight: 500;
+    }
+    .text-btn.danger { color: #f56c6c; }
+    .text-btn:active { transform: none; }
+    .mini-table {
+      width: 100%;
+      border: 1px solid #ebeef5;
+      margin-top: 8px;
+    }
+    .mini-table th {
+      height: 42px;
+      padding: 0 12px;
+      background: #f5f7fa;
+      font-size: 14px;
+    }
+    .mini-table td {
+      height: 42px;
+      padding: 0 12px;
+      white-space: nowrap;
+    }
+    .toast {
+      position: fixed;
+      left: 50%;
+      top: 78px;
+      z-index: 30;
+      transform: translateX(-50%) translateY(-12px);
+      min-width: 220px;
+      height: 40px;
+      border-radius: 6px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #f0f9eb;
+      border: 1px solid #e1f3d8;
+      color: #529b2e;
+      box-shadow: 0 8px 24px rgba(31, 41, 55, .12);
+      transition: .2s ease;
+    }
+    .toast.show {
+      display: flex;
+      transform: translateX(-50%) translateY(0);
+    }
+    @media (max-width: 1200px) {
+      .app { grid-template-columns: 200px 1000px; width: 1200px; }
+      body { overflow: auto; }
+      .content { overflow: visible; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><div class="logo">CG</div><span>CG包网后台</span></div>
+      <div class="top-actions">
+        <div class="global-search">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <span>搜索</span><span class="kbd">⌘</span><span class="kbd">k</span>
+        </div>
+        <div class="top-icons">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+          <svg class="icon" viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg class="icon" viewBox="0 0 24 24"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+          <div class="avatar"></div>
+        </div>
+      </div>
+    </header>
+
+    <aside class="sidebar">
+      <div class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span class="label">系统首页</span></div>
+      <div class="menu-item"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span class="label">会员管理</span><span class="chev">⌄</span></div>
+      <div class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M4.6 5.6l2.1 2.1M17.3 16.3l2.1 2.1M3 12h3M18 12h3M4.6 18.4l2.1-2.1M17.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="4"/></svg><span class="label">系统管理</span><span class="chev">⌄</span></div>
+      <div class="menu-item"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 10h3M7 14h5"/></svg><span class="label">财务中心</span><span class="chev">⌄</span></div>
+      <div class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg><span class="label">合营代理中心</span><span class="chev">⌃</span></div>
+      <div class="menu-item active"><svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M5 6h14M5 18h14"/></svg><span class="label">代理等级管理</span></div>
+      <div class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9v9Z"/><path d="M12 3v9h9"/></svg><span class="label">报表系统</span><span class="chev">⌄</span></div>
+      <div class="menu-item"><svg class="icon" viewBox="0 0 24 24"><circle cx="8" cy="8" r="4"/><circle cx="17" cy="9" r="3"/><path d="M2 21a7 7 0 0 1 12 0M13 21a6 6 0 0 1 9 0"/></svg><span class="label">返点管理</span><span class="chev">⌄</span></div>
+      <div class="menu-item"><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg><span class="label">活动管理</span><span class="chev">⌄</span></div>
+      <div class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="m5 11 3 9h8l3-9-5 3-2-8-2 8-5-3Z"/><path d="M7 20h10"/></svg><span class="label">邀请好友</span><span class="chev">⌄</span></div>
+      <div class="menu-item"><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 5v4M16 5v4M4 10h16"/></svg><span class="label">游戏管理</span><span class="chev">⌄</span></div>
+      <div class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9M17 17H7V7"/></svg><span class="label">三方游戏</span><span class="chev">⌄</span></div>
+      <div class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M6 18h12M8 18 6 8h12l-2 10M9 8V5h6v3"/></svg><span class="label">风控管理</span><span class="chev">⌄</span></div>
+      <div class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg><span class="label">消息系统</span><span class="chev">⌄</span></div>
+      <div class="menu-item"><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 10h3M8 14h2M15 9l1 2 2 .3-1.5 1.4.4 2-1.9-1-1.9 1 .4-2L12 11.3l2-.3 1-2Z"/></svg><span class="label">优惠管理</span><span class="chev">⌄</span></div>
+      <div class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 1 1 16 0v2"/><rect x="3" y="14" width="5" height="7" rx="2"/><rect x="16" y="14" width="5" height="7" rx="2"/></svg><span class="label">客服管理</span><span class="chev">⌄</span></div>
+    </aside>
+
+    <main class="main-wrap">
+      <div class="tabsbar">
+        <div class="tab-left">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M4 6h16M4 12h13M4 18h10"/></svg>
+          <svg class="icon" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-15.3-6.4"/><path d="M3 12a9 9 0 0 0 15.3 6.4"/><path d="M3 5v5h5M21 19v-5h-5"/></svg>
+          <span>代理等级管理</span>
+          <span class="tab active">代理等级管理</span>
+        </div>
+        <div class="drop">⌄</div>
+      </div>
+
+      <section class="content">
+        <div class="card filter-card">
+          <div class="filter-line">
+            <div class="select"><span>用户名</span><span>⌄</span></div>
+            <div class="input" id="keywordInput" contenteditable="true">输入条件</div>
+            <div class="select" style="width:140px;"><span>统计日期</span><span>⌄</span></div>
+            <div class="date-range">
+              <svg class="icon" style="width:14px;height:14px;color:#a8abb2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              <span>开始时间</span><span class="tilde">~</span><span>结束时间</span>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="ghost" id="resetBtn" type="button">重置</button>
+            <button id="searchBtn" type="button"><svg class="icon" style="width:15px;height:15px" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>查询</button>
+            <button id="levelConfigBtn" type="button">代理等级配置</button>
+            <button id="newsConfigBtn" type="button">快讯客服配置</button>
+            <button id="exportBtn" type="button">导出EXCEL</button>
+          </div>
+        </div>
+
+        <div class="card data-card">
+          <table class="agent-table">
+            <colgroup>
+              <col style="width: 24%">
+              <col style="width: 10%">
+              <col style="width: 7%">
+              <col style="width: 10%">
+              <col style="width: 11%">
+              <col style="width: 8%">
+              <col style="width: 8%">
+              <col style="width: 9%">
+              <col style="width: 9%">
+              <col style="width: 7%">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>代理用户名/代理UID/标识会员/自身代理标识/上级代理<br>标识/分层</th>
+                <th>快讯账号/邀请码</th>
+                <th>真实姓名</th>
+                <th>成为代理时间</th>
+                <th>最后登录时间/IP</th>
+                <th>代理等级</th>
+                <th>近3期有效人数</th>
+                <th>近3期下级充总值</th>
+                <th>近3期下级总投注</th>
+                <th>统计日期</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="link">pdd555</span> <span class="sub">/10001/未/无/无/</span><span class="orange">未分层</span></td>
+                <td>@pdd_kx_001</td>
+                <td>张三</td>
+                <td>2025-04-04 20:40:34</td>
+                <td>2025-12-29 21:31:15<br><span class="sub">217.165.115.27</span></td>
+                <td><span class="link">4(铂金代理)</span></td>
+                <td><span class="link">12</span></td>
+                <td>356,800.50</td>
+                <td>892,450.00</td>
+                <td>2026-10-01</td>
+              </tr>
+              <tr>
+                <td><span class="link">agent001</span> <span class="sub">/10002/无/A1/C3/</span><span class="orange">二级</span></td>
+                <td><span class="link">KX10002</span></td>
+                <td>李四</td>
+                <td>2025-05-12 09:18:22</td>
+                <td>2025-12-28 14:05:40<br><span class="sub">192.168.1.105</span></td>
+                <td><span class="link">3(黄金代理)</span></td>
+                <td><span class="link">8</span></td>
+                <td>198,600.00</td>
+                <td>456,320.80</td>
+                <td>2026-10-01</td>
+              </tr>
+              <tr>
+                <td><span class="link">testuser88</span> <span class="sub">/10003/VIP/B2/A1/</span><span class="orange">一级</span></td>
+                <td>@testuser88_kx</td>
+                <td>王五</td>
+                <td>2025-06-20 16:22:10</td>
+                <td>2025-12-27 08:56:03<br><span class="sub">103.45.67.89</span></td>
+                <td><span class="link">2(白银代理)</span></td>
+                <td><span class="link">5</span></td>
+                <td>98,500.00</td>
+                <td>210,680.50</td>
+                <td>2026-10-01</td>
+              </tr>
+              <tr>
+                <td><span class="link">test52</span> <span class="sub">/10004/无/C3/无/</span><span class="orange">未分层</span></td>
+                <td><span class="link">KX10004</span></td>
+                <td>赵六</td>
+                <td>2025-07-08 11:30:00</td>
+                <td>2025-12-26 19:12:48<br><span class="sub">58.220.15.66</span></td>
+                <td><span class="link">1(青铜代理)</span></td>
+                <td><span class="link">3</span></td>
+                <td>428,900.00</td>
+                <td>1,025,600.00</td>
+                <td>2026-10-01</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="pagination">
+            <span>共 4 条</span>
+            <span class="page-select">10条/页 <span>⌄</span></span>
+            <span style="color:#c5cad4;">‹</span>
+            <span class="link">1</span>
+            <span style="color:#c5cad4;">›</span>
+            <span>前往</span>
+            <span class="page-input">1</span>
+            <span>页</span>
+          </div>
+        </div>
+
+        <div class="card req-card">
+          <div class="req-head">需求说明 <span class="path-tag">/joint-agent/news-cs-config（代理等级管理）</span></div>
+          <div class="section-title">需求时间</div>
+          <p style="margin:0 0 22px;color:#4e5661;">2026-06-29</p>
+          <div class="section-title">需求概述</div>
+          <div class="summary">在「合营代理中心」新增「代理等级管理」页面，用于维护代理等级相关指标、快讯账号绑定状态，以及为在线咨询客户端配置快讯专属客服与通用参数。后台支持代理列表筛选与查看，提供代理等级配置、快讯客服配置两类全局配置弹窗；支持从列表点击打开代理等级详情（含等级调整、锁定与快讯账号绑定）、近3期有效人数详情两类明细弹窗。</div>
+
+          <div class="section-title">需求流程图</div>
+          <div class="flow">
+            <span class="pill">后台配置：代理等级/快讯客服</span><span class="arrow">→</span>
+            <span class="pill">维护代理快讯账号绑定</span><span class="arrow">→</span>
+            <span class="pill gray">保存生效（Mock/接口）</span><span class="arrow">→</span>
+            <span class="pill gray">客户端 consult 拉取配置</span><span class="arrow">→</span>
+            <span class="pill green">按等级展示客服标识/下载/宣传图</span>
+          </div>
+
+          <div class="section-title">业务术语说明</div>
+          <table class="desc-table">
+            <tr><td>近3期说明</td><td>近3期统计周期为最近3期人头费，第一期开始时间至第三期结束时间。</td></tr>
+            <tr><td>统计日期说明</td><td>由于人头费需要人工发放，每期人头费截止时间后5天，每天更新统计数据。</td></tr>
+            <tr><td>快讯邀请码</td><td>代理未绑定快讯账号时，系统为其生成的唯一邀请码，用于引导完成快讯账号绑定。</td></tr>
+            <tr><td>快讯客服等级标识</td><td>后台为各代理等级配置的客服分组标识，客户端根据用户代理等级匹配对应标识并展示专属客服入口。</td></tr>
+          </table>
+
+          <div class="section-title">客户端界面说明</div>
+          <table class="desc-table">
+            <tr><td>页面入口</td><td>在线咨询客户端界面：`https://cg-client-prototype.pages.dev/agent/consult#`</td></tr>
+            <tr><td>专属客服展示</td><td>当「快讯客服开关」开启时，客户端根据用户/代理等级匹配配置列表中的快讯客服等级标识，并在界面中展示对应专属客服入口。</td></tr>
+            <tr><td>下载地址</td><td>客户端展示或跳转快讯 APP 下载地址，来源于后台「快讯客服配置-快讯APP下载地址」。</td></tr>
+            <tr><td>宣传图展示</td><td>客户端展示快讯宣传图，来源于后台「快讯客服配置-快讯宣传图」上传的图片资源。</td></tr>
+            <tr><td>教程图展示</td><td>客户端展示快讯教程图，来源于后台「快讯客服配置-快讯教程图」上传的图片资源。</td></tr>
+          </table>
+
+          <div class="section-title">后台页面操作说明</div>
+          <table class="desc-table">
+            <tr><td>查询 / 重置</td><td>按筛选条件查询代理列表；重置清空筛选条件</td></tr>
+            <tr><td>代理等级配置</td><td>打开全局代理等级参数配置弹窗</td></tr>
+            <tr><td>快讯客服配置</td><td>打开快讯客服通用参数与各等级客服标识配置弹窗</td></tr>
+            <tr><td>代理等级</td><td>点击列表中的代理等级打开代理等级详情弹窗</td></tr>
+            <tr><td>近3期有效人数</td><td>点击蓝色人数打开有效人数详情弹窗</td></tr>
+          </table>
+
+          <div class="section-title">后台筛选条件说明</div>
+          <table class="desc-table">
+            <tr><td>用户名 / UID</td><td>下拉选择查询字段（用户名或 UID）+ 输入框填写关键字</td></tr>
+            <tr><td>统计日期 / 升级代理时间 /<br>最后登录时间</td><td>下拉选择时间字段 + 时间范围筛选（精确到秒）；默认不限制时间范围</td></tr>
+          </table>
+
+          <div class="section-title">后台配置弹窗说明</div>
+          <table class="desc-table">
+            <tr><td>代理等级配置弹窗</td><td>维护各等级的递增配置参数（等级为递增序列，首行为最低等级）。保存后作为等级名称与阈值来源。</td></tr>
+            <tr><td>快讯客服配置弹窗</td><td>维护通用开关、快讯APP下载地址、快讯宣传图、快讯教程图，以及各代理等级对应的快讯客服等级标识。代理等级与代理名称合并为多选，多个等级可共用同一套客服参数，同一等级不可重复配置。</td></tr>
+            <tr><td>代理等级详情弹窗</td><td>从列表「代理等级」点击进入。顶部展示代理当前等级，支持手动调整代理等级、锁定开关，以及编辑代理快讯账号绑定；未绑定时展示快讯邀请码。保存后同步更新列表「快讯账号/邀请码」列；下方列表展示最近30条等级变更记录。</td></tr>
+            <tr><td>近3期有效人数详情弹窗</td><td>从列表「近3期有效人数」点击进入。标题含账号与统计日期；支持筛选下级明细，列表上方红字汇总近3期推广人数、充值总额、投注总额。</td></tr>
+          </table>
+
+          <div class="section-title">后台列表字段说明</div>
+          <table class="desc-table">
+            <tr><td>代理用户名/代理UID/标识会员/自身代理标识/上级代理标识/分层</td><td>单行展示代理身份信息（用户名为蓝色 link 样式）</td></tr>
+            <tr><td>快讯账号/邀请码</td><td>已绑定快讯账号时展示账号（如 @pdd_kx_001）；未绑定时展示邀请码（如 KX10002），可在代理等级详情弹窗中编辑绑定</td></tr>
+            <tr><td>真实姓名</td><td>代理真实姓名</td></tr>
+            <tr><td>成为代理时间</td><td>成为代理的时间</td></tr>
+            <tr><td>最后登录时间/IP</td><td>最后登录时间与 IP（上下两行展示）</td></tr>
+            <tr><td>代理等级</td><td>展示代理等级名称，蓝色 link 样式，点击进入详情弹窗</td></tr>
+            <tr><td>近3期有效人数</td><td>展示近3期有效人数，蓝色 link 样式，点击进入明细弹窗</td></tr>
+            <tr><td>近3期下级充总值</td><td>展示最近3期下级累计充值总额</td></tr>
+            <tr><td>近3期下级总投注</td><td>展示最近3期下级累计投注总额</td></tr>
+            <tr><td>统计日期</td><td>展示当前统计数据对应日期</td></tr>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="scrollbar"></div>
+  <div class="float-pin">
+    <svg class="icon" viewBox="0 0 24 24" style="width:18px;height:18px;stroke-width:2.4"><path d="M12 17v4M8 4h8l-1 8 3 3H6l3-3-1-8Z"/></svg>
+  </div>
+  <div class="toast" id="toast">
+    <svg class="icon" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>
+    <span id="toastText">操作成功</span>
+  </div>
+
+  <div class="modal-mask" id="levelModal" aria-hidden="true">
+    <div class="modal">
+      <div class="modal-head">
+        <span>代理等级配置</span>
+        <button class="modal-close" type="button" data-close>&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-label">生效状态</div>
+          <div class="field"><span class="switch" data-toggle="level-enabled"></span></div>
+          <div class="form-label">统计周期</div>
+          <div class="field">近3期</div>
+        </div>
+        <div class="modal-toolbar">
+          <span class="hint">可编辑等级名称、有效人数、充值和投注阈值；等级按从低到高递增。</span>
+          <button type="button" id="addLevelBtn">新增等级</button>
+        </div>
+        <table class="mini-table" id="levelConfigTable">
+          <thead>
+            <tr>
+              <th>等级</th>
+              <th>代理名称</th>
+              <th>近3期有效人数</th>
+              <th>近3期下级充总值</th>
+              <th>近3期下级总投注</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="level-no">1</td><td><input value="青铜代理"></td><td><input value="3"></td><td><input value="50,000.00"></td><td><input value="100,000.00"></td><td><button class="text-btn danger" type="button" data-delete-level>删除</button></td></tr>
+            <tr><td class="level-no">2</td><td><input value="白银代理"></td><td><input value="5"></td><td><input value="90,000.00"></td><td><input value="200,000.00"></td><td><button class="text-btn danger" type="button" data-delete-level>删除</button></td></tr>
+            <tr><td class="level-no">3</td><td><input value="黄金代理"></td><td><input value="8"></td><td><input value="180,000.00"></td><td><input value="450,000.00"></td><td><button class="text-btn danger" type="button" data-delete-level>删除</button></td></tr>
+            <tr><td class="level-no">4</td><td><input value="铂金代理"></td><td><input value="12"></td><td><input value="350,000.00"></td><td><input value="850,000.00"></td><td><button class="text-btn danger" type="button" data-delete-level>删除</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-foot">
+        <button class="ghost" type="button" data-close>取消</button>
+        <button type="button" data-save>保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-mask" id="newsModal" aria-hidden="true">
+    <div class="modal wide">
+      <div class="modal-head">
+        <span>快讯客服配置</span>
+        <button class="modal-close" type="button" data-close>&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-label">快讯客服开关</div>
+          <div class="field"><span class="switch"></span></div>
+          <div class="form-label">APP下载地址</div>
+          <div class="field">https://download.example.com/kx</div>
+          <div class="form-label">快讯宣传图</div>
+          <div class="field">已上传 banner-agent-kx.png</div>
+          <div class="form-label">快讯教程图</div>
+          <div class="field">已上传 tutorial-agent-kx.png</div>
+        </div>
+        <table class="mini-table">
+          <thead>
+            <tr>
+              <th>适用代理等级</th>
+              <th>客服等级标识</th>
+              <th>展示入口</th>
+              <th>备注</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1 青铜代理</td><td>kx_cs_bronze</td><td>专属客服</td><td>基础代理咨询入口</td></tr>
+            <tr><td>2 白银代理</td><td>kx_cs_silver</td><td>专属客服</td><td>优先客服分组</td></tr>
+            <tr><td>3 黄金代理</td><td>kx_cs_gold</td><td>专属客服</td><td>高价值代理分组</td></tr>
+            <tr><td>4 铂金代理</td><td>kx_cs_platinum</td><td>专属客服</td><td>VIP 代理服务入口</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-foot">
+        <button class="ghost" type="button" data-close>取消</button>
+        <button type="button" data-save>保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const keywordInput = document.getElementById('keywordInput');
+    const toast = document.getElementById('toast');
+    const toastText = document.getElementById('toastText');
+    let toastTimer;
+
+    function showToast(message) {
+      toastText.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+    }
+
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeModal(modal) {
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    keywordInput.addEventListener('focus', () => {
+      if (keywordInput.textContent.trim() === '输入条件') keywordInput.textContent = '';
+    });
+    keywordInput.addEventListener('blur', () => {
+      if (!keywordInput.textContent.trim()) keywordInput.textContent = '输入条件';
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      keywordInput.textContent = '输入条件';
+      showToast('筛选条件已重置');
+    });
+
+    document.getElementById('searchBtn').addEventListener('click', () => {
+      const keyword = keywordInput.textContent.trim();
+      showToast(keyword && keyword !== '输入条件' ? `已按“${keyword}”查询` : '查询完成，共 4 条');
+    });
+
+    document.getElementById('levelConfigBtn').addEventListener('click', () => openModal('levelModal'));
+    document.getElementById('newsConfigBtn').addEventListener('click', () => openModal('newsModal'));
+    document.getElementById('exportBtn').addEventListener('click', () => showToast('EXCEL 导出任务已创建'));
+
+    function renumberLevels() {
+      document.querySelectorAll('#levelConfigTable tbody tr').forEach((row, index) => {
+        row.querySelector('.level-no').textContent = index + 1;
+      });
+    }
+
+    function createLevelRow(level) {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td class="level-no">${level}</td>
+        <td><input value="新代理等级"></td>
+        <td><input value="0"></td>
+        <td><input value="0.00"></td>
+        <td><input value="0.00"></td>
+        <td><button class="text-btn danger" type="button" data-delete-level>删除</button></td>
+      `;
+      return row;
+    }
+
+    document.getElementById('addLevelBtn').addEventListener('click', () => {
+      const tbody = document.querySelector('#levelConfigTable tbody');
+      tbody.appendChild(createLevelRow(tbody.children.length + 1));
+      showToast('已新增等级配置');
+    });
+
+    document.getElementById('levelConfigTable').addEventListener('click', (event) => {
+      const deleteButton = event.target.closest('[data-delete-level]');
+      if (!deleteButton) return;
+      const tbody = document.querySelector('#levelConfigTable tbody');
+      if (tbody.children.length <= 1) {
+        showToast('至少保留 1 个代理等级');
+        return;
+      }
+      deleteButton.closest('tr').remove();
+      renumberLevels();
+      showToast('已删除等级配置');
+    });
+
+    document.querySelectorAll('.switch').forEach((item) => {
+      item.addEventListener('click', () => {
+        item.classList.toggle('off');
+        showToast(item.classList.contains('off') ? '开关已关闭' : '开关已开启');
+      });
+    });
+
+    document.querySelectorAll('.modal-mask').forEach((mask) => {
+      mask.addEventListener('click', (event) => {
+        if (event.target === mask) closeModal(mask);
+      });
+      mask.querySelectorAll('[data-close]').forEach((button) => {
+        button.addEventListener('click', () => closeModal(mask));
+      });
+      mask.querySelectorAll('[data-save]').forEach((button) => {
+        button.addEventListener('click', () => {
+          if (mask.id === 'levelModal') {
+            const levelCount = document.querySelectorAll('#levelConfigTable tbody tr').length;
+            toastText.textContent = `已保存 ${levelCount} 个代理等级`;
+          }
+          closeModal(mask);
+          if (mask.id === 'levelModal') {
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+          } else {
+            showToast('配置保存成功');
+          }
+        });
+      });
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        document.querySelectorAll('.modal-mask.show').forEach(closeModal);
+      }
+    });
+  </script>
+</body>
+</html>

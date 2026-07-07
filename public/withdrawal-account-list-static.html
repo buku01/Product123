@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>提现账号列表 - 静态HTML</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-width: 1280px;
+      height: 100%;
+      overflow: hidden;
+      color: #555;
+      background: #d9d9d9;
+      font: 12px/1.45 Arial, "Microsoft YaHei", "PingFang SC", sans-serif;
+      letter-spacing: 0;
+    }
+    button, input, select { font: inherit; }
+    .app {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      grid-template-rows: 58px 42px 1fr;
+      background: #f4f4f4;
+    }
+    .topbar {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 58px;
+      padding: 0 24px;
+      color: #fff;
+      background: linear-gradient(#19bff3, #13b5eb);
+      border-top: 5px solid #222;
+      box-shadow: inset 0 -1px rgba(255,255,255,.18);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 22px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .brand small { font-size: 18px; font-weight: 700; opacity: .75; }
+    .quick {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .quick-btn {
+      width: 39px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      color: #fff;
+      font-weight: 700;
+      cursor: default;
+    }
+    .quick-btn.orange { background: #ff8a00; }
+    .quick-btn.green { background: #5eb95e; }
+    .quick-btn.purple { background: #8f63c7; }
+    .quick-btn.badge {
+      color: #e9487a;
+      background: #fff;
+      border-radius: 2px;
+    }
+    .toggle {
+      width: 76px;
+      height: 28px;
+      margin-left: 14px;
+      border-radius: 18px;
+      background: #66c65f;
+      position: relative;
+    }
+    .toggle::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #49bef6;
+    }
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .tabs {
+      grid-column: 2;
+      display: flex;
+      align-items: stretch;
+      background: #f7f7f7;
+      border-bottom: 1px solid #ddd;
+    }
+    .tab {
+      min-width: 138px;
+      padding: 0 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1c9bd0;
+      font-size: 16px;
+      font-weight: 700;
+      border-right: 1px solid #d6d6d6;
+      background: #eef2f3;
+    }
+    .tab.active { background: #fff; }
+    .tab .x {
+      margin-left: 12px;
+      color: #bdbdbd;
+      font-size: 14px;
+    }
+    .refresh {
+      margin-left: auto;
+      width: 54px;
+      display: grid;
+      place-items: center;
+      color: #00c7a5;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .sidebar {
+      grid-row: 2 / -1;
+      background: #f9f9f9;
+      border-right: 1px solid #d6d6d6;
+      overflow: hidden;
+    }
+    .nav-item {
+      height: 54px;
+      display: flex;
+      align-items: center;
+      padding: 0 19px;
+      gap: 14px;
+      color: #555;
+      font-size: 15px;
+      font-weight: 700;
+      border-bottom: 1px solid #dfdfdf;
+      background: #fbfbfb;
+    }
+    .nav-item .ico {
+      width: 22px;
+      color: #555;
+      text-align: center;
+      font-size: 18px;
+    }
+    .nav-item .arrow {
+      margin-left: auto;
+      color: #999;
+      font-size: 22px;
+    }
+    .nav-item.active {
+      color: #17a8e3;
+      background: #fff;
+    }
+    .sub-item {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      padding-left: 36px;
+      gap: 8px;
+      border-bottom: 1px solid #e7e7e7;
+      color: #555;
+      font-size: 15px;
+      font-weight: 700;
+      background: #fff;
+    }
+    .sub-item::before {
+      content: "";
+      border-left: 5px solid #777;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+    }
+    .main {
+      grid-column: 2;
+      overflow: hidden;
+      background: #f1f1f1;
+      position: relative;
+    }
+    .content {
+      padding: 28px 28px 80px;
+      color: #9aa8b0;
+    }
+    .link-tabs {
+      min-height: 74px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 22px 35px;
+      padding: 0 8px;
+      color: #79c6eb;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .filter {
+      min-height: 137px;
+      padding: 30px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      background: rgba(255,255,255,.55);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 15px;
+      align-content: flex-start;
+      align-items: center;
+    }
+    .filter label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #999;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .filter input, .filter select {
+      height: 39px;
+      min-width: 150px;
+      padding: 0 12px;
+      color: #999;
+      border: 1px solid #d1d1d1;
+      border-radius: 3px;
+      background: #fff;
+    }
+    .filter .wide { min-width: 260px; }
+    .filter .btn {
+      height: 38px;
+      padding: 0 18px;
+      color: #fff;
+      border: 0;
+      border-radius: 2px;
+      background: #4aa3c7;
+      font-weight: 700;
+    }
+    .lower {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: 1fr 600px;
+      gap: 28px;
+    }
+    .member-card, .manage-card {
+      min-height: 255px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      background: rgba(255,255,255,.55);
+    }
+    .member-head, .manage-head {
+      height: 78px;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      color: #6f7b82;
+      font-size: 15px;
+      font-weight: 700;
+      border-bottom: 1px solid #ddd;
+    }
+    .member-body {
+      padding: 18px 20px;
+      text-align: center;
+      color: #9aa8b0;
+      line-height: 21px;
+    }
+    .member-body .name { color: #18aee7; font-weight: 700; }
+    .member-body .red { color: #f15c69; font-weight: 700; }
+    .manage-body {
+      padding: 18px;
+      text-align: center;
+      color: #65c1e9;
+      line-height: 28px;
+      font-weight: 700;
+    }
+    .mask {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      background: rgba(0,0,0,.14);
+    }
+    .dialog {
+      position: absolute;
+      z-index: 10;
+      left: 50%;
+      top: 135px;
+      width: min(1460px, calc(100vw - 140px));
+      min-height: 520px;
+      transform: translateX(-50%);
+      background: #fff;
+      border: 1px solid #969696;
+      border-radius: 2px;
+      box-shadow: 0 13px 27px rgba(0,0,0,.46);
+    }
+    .dialog-head {
+      height: 47px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      color: #4e5b62;
+      font-size: 15px;
+      font-weight: 700;
+      background: #f8f8f8;
+      border-bottom: 1px solid #bfbfbf;
+    }
+    .dialog-close {
+      width: 20px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      color: #66727a;
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .dialog-body { padding: 30px 40px 60px; }
+    .dialog-tabs {
+      height: 46px;
+      border-bottom: 1px solid #dcdcdc;
+      margin-bottom: 22px;
+    }
+    .dialog-tab {
+      width: 144px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #555;
+      background: #fff;
+      border: 1px solid #dcdcdc;
+      border-bottom-color: #fff;
+      font-size: 15px;
+    }
+    .table-wrap {
+      width: 100%;
+      max-width: 100%;
+      overflow: visible;
+      overflow-y: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      color: #666;
+      font-weight: 700;
+      background: #fff;
+    }
+    th, td {
+      height: 43px;
+      padding: 6px 8px;
+      text-align: center;
+      border: 1px solid #d5d5d5;
+      word-break: break-all;
+      vertical-align: middle;
+    }
+    th {
+      height: 45px;
+      color: #555;
+      font-size: 14px;
+      background: #fff;
+    }
+    .id-col { width: 70px; }
+    .name-col { width: 95px; }
+    .account-col { width: 220px; }
+    .type-col { width: 105px; }
+    .bank-col { width: 88px; }
+    .branch-col { width: 88px; }
+    .time-col { width: 140px; }
+    .person-col { width: 105px; }
+    .change-col { width: 150px; }
+    .action-col { width: 82px; }
+    .ops {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: #18aee7;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .ops a {
+      color: #18aee7;
+      text-decoration: none;
+    }
+    .deleted {
+      color: #f24a4a;
+      font-weight: 700;
+    }
+    .requirement-box {
+      margin-top: 24px;
+      padding: 16px 18px;
+      border: 1px solid #d8d8d8;
+      background: #fbfbfb;
+      color: #555;
+    }
+    .requirement-title {
+      margin-bottom: 10px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .requirement-list {
+      margin: 0;
+      padding-left: 18px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+    @media (max-width: 1500px) {
+      html, body { min-width: 1280px; }
+      .app { grid-template-columns: 0 1fr; }
+      .sidebar { display: none; }
+      .tabs { grid-column: 1 / -1; }
+      .main { grid-column: 1 / -1; }
+      .brand { display: none; }
+      .topbar { height: 40px; padding: 0 22px; }
+      .app { grid-template-rows: 40px 42px 1fr; }
+      .dialog {
+        top: 110px;
+        width: calc(100vw - 140px);
+        min-height: 455px;
+      }
+      .dialog-body { padding: 28px 24px 55px; }
+      .dialog-head { height: 34px; }
+      .dialog-tabs { margin-bottom: 16px; }
+      th, td {
+        height: 28px;
+        padding: 4px 5px;
+        font-size: 9px;
+      }
+      th { height: 31px; font-size: 11px; }
+      .id-col { width: 38px; }
+      .name-col { width: 55px; }
+      .account-col { width: 120px; }
+      .type-col { width: 64px; }
+      .bank-col { width: 52px; }
+      .branch-col { width: 52px; }
+      .time-col { width: 86px; }
+      .person-col { width: 62px; }
+      .change-col { width: 82px; }
+      .action-col { width: 50px; }
+      .ops { gap: 2px; }
+      .requirement-box {
+        margin-top: 18px;
+        padding: 12px 14px;
+      }
+      .requirement-title { font-size: 12px; }
+      .requirement-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4px 18px;
+        line-height: 18px;
+        font-size: 10px;
+      }
+      .dialog-tab {
+        width: 96px;
+        height: 35px;
+        font-size: 12px;
+      }
+      .dialog-tabs { height: 35px; }
+      .tabs { height: 42px; }
+      .tab {
+        min-width: 84px;
+        padding: 0 12px;
+        font-size: 13px;
+      }
+      .content { padding: 22px 10px; }
+      .link-tabs { font-size: 12px; gap: 14px 22px; min-height: 64px; }
+      .filter { min-height: 92px; padding: 18px; gap: 8px; }
+      .filter input, .filter select { height: 28px; min-width: 88px; }
+      .filter .wide { min-width: 135px; }
+      .filter .btn { height: 28px; padding: 0 12px; }
+      .lower { grid-template-columns: 1fr 360px; gap: 16px; margin-top: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span>群版本平台管理系统 <small>v0.22</small></span>
+        <div class="quick">
+          <span class="quick-btn orange">⌂</span>
+          <span class="quick-btn green">▦</span>
+          <span class="quick-btn purple">◆</span>
+          <span class="quick-btn badge">0</span>
+          <span class="toggle"></span>
+        </div>
+      </div>
+      <div class="status">
+        <span>提现维护：0</span>
+        <span>优惠大厅待审核预警(0)</span>
+        <span>异常用户列表：0</span>
+        <span>挂起计时 30:00</span>
+        <span>您好，bulu ▾</span>
+      </div>
+    </header>
+
+    <aside class="sidebar">
+      <div class="nav-item"><span class="ico">▰</span><span>代理公告</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">✿</span><span>彩票管理</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">◀</span><span>返水中心</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">⌘</span><span>游戏管理</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">●</span><span>APP管理</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">□</span><span>站内消息</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">▣</span><span>代理中心</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">⚙</span><span>系统管理</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">◇</span><span>管理员管理</span><span class="arrow">›</span></div>
+      <div class="nav-item active"><span class="ico">▦</span><span>内容管理</span><span class="arrow">›</span></div>
+      <div class="sub-item">常见问题</div>
+      <div class="sub-item">帮助与反馈</div>
+      <div class="sub-item">大家豪朋友圈</div>
+      <div class="sub-item">教程管理</div>
+      <div class="sub-item">客服内容管理</div>
+      <div class="sub-item">创意素材库管理</div>
+      <div class="sub-item">关键词自动回复配置</div>
+      <div class="sub-item">文章管理</div>
+      <div class="sub-item">幻灯片</div>
+      <div class="sub-item">分类管理</div>
+      <div class="sub-item">网站广告</div>
+      <div class="sub-item">朋友圈管理</div>
+      <div class="nav-item"><span class="ico">♣</span><span>会员管理</span><span class="arrow">›</span></div>
+      <div class="nav-item"><span class="ico">¥</span><span>刷水查询</span><span class="arrow">›</span></div>
+    </aside>
+
+    <nav class="tabs">
+      <div class="tab">首页</div>
+      <div class="tab active">会员列表 <span class="x">×</span></div>
+      <div class="refresh">↻</div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+        <div class="link-tabs">
+          <span>会员列表</span><span>添加推广员</span><span>会员冻结解冻日志</span><span>用户信息审核</span><span>(新)升级日志</span><span>排行榜</span>
+          <span>代理查询配置</span><span>设置代理下级标识</span><span>重绑提现账号</span><span>清除绑定手机</span><span>非正常用户</span><span>返水黑名单</span>
+          <span>临时返水黑名单</span><span>返水黑名单(new)</span><span>用户标识颜色配置</span><span>用户标识日志</span><span>提现账号审核</span><span>平台层级管理</span>
+          <span>动态审核</span><span>清理支付宝账号</span><span>CGpay提现账号列表</span><span>EGpay提现账号列表</span>
+        </div>
+
+        <section class="filter">
+          <label>排序：<select><option>在线状态</option></select></label>
+          <label>搜索类型：<select><option>uid</option></select></label>
+          <label>用户：<input class="wide" value="883535"></label>
+          <label>昵称：<input value="会员昵称"></label>
+          <label>手机号码：<input value="请输入手机号码"></label>
+          <label>提现姓名：<input value="提现姓名"></label>
+          <label>提现账号：<input value="提现账号"></label>
+          <label>账号类型：<select><option>全部</option></select></label>
+          <label>在线状态：<select><option>全部</option></select></label>
+          <label>角色类型：<select><option>玩家</option></select></label>
+          <label>代理UID：<input value="代理UID"></label>
+          <button class="btn">搜索</button>
+          <button class="btn">一键导出excel</button>
+          <button class="btn">批量冻结</button>
+        </section>
+
+        <div class="lower">
+          <section class="member-card">
+            <div class="member-head">UID / 用户名 / 昵称 / 等级 / 层级 / 直营代理标识/合营代理标识/上级代理标识</div>
+            <div class="member-body">
+              <div>883535</div>
+              <div class="name">yes8006</div>
+              <div>坚果品质</div>
+              <div>LV.0/层</div>
+              <br>
+              <div><span class="red">直营代理</span>(直营)/无合营代理标识/无上级代理标识</div>
+              <div>理财师</div>
+            </div>
+          </section>
+          <section class="manage-card">
+            <div class="manage-head">管理</div>
+            <div class="manage-body">
+              编辑 | 资金 | 修改银行账号 | 查看登录IP | 账号行为日志 | 用户统计 | 绑定手机号 | 编辑 | 编辑提现账户 | 重置登录密码<br>
+              重置交易密码 | 清token | 清设备码 | 冻结<br>
+              退出彩票组 | 复制退出所有彩票组 | 清除提现限制 | 开通【直营代理】转账权限 | 开通【邀请好友】转账权限 | 恢复机器人透支 | 清除打款限制 | 清除同IP验证token | 清除虚拟币提现限制 | 资金冻结
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="mask"></div>
+      <section class="dialog" aria-label="提现账号列表弹窗">
+        <div class="dialog-head">
+          <span>yes8006 的提现账号列表</span>
+          <span class="dialog-close">×</span>
+        </div>
+        <div class="dialog-body">
+          <div class="dialog-tabs">
+            <div class="dialog-tab">添加提现账户</div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <colgroup>
+                <col class="id-col">
+                <col class="name-col">
+                <col class="account-col">
+                <col class="type-col">
+                <col class="bank-col">
+                <col class="branch-col">
+                <col class="time-col">
+                <col class="person-col">
+                <col class="time-col">
+                <col class="person-col">
+                <col class="change-col">
+                <col class="action-col">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>账户姓名</th>
+                  <th>账户号码</th>
+                  <th>账户类型</th>
+                  <th>银行名称</th>
+                  <th>开户行</th>
+                  <th>添加时间</th>
+                  <th>添加人</th>
+                  <th>修改时间</th>
+                  <th>修改人</th>
+                  <th>修改前 --> 修改后</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>25883</td>
+                  <td>回本</td>
+                  <td>12345678765434</td>
+                  <td>虚拟币 (erc20)</td>
+                  <td>一一</td>
+                  <td>一一</td>
+                  <td>2026-06-25 20:56:46</td>
+                  <td>kuka00800</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td><span class="ops"><a>编辑</a><span>|</span><a>删除</a></span></td>
+                </tr>
+                <tr>
+                  <td>25885</td>
+                  <td>回本</td>
+                  <td>1234567654323</td>
+                  <td>支付宝</td>
+                  <td>一一</td>
+                  <td>一一</td>
+                  <td>2026-06-25 20:57:34</td>
+                  <td>kuka00800</td>
+                  <td>2026-06-26 09:18:08</td>
+                  <td>kuka00800</td>
+                  <td></td>
+                  <td><span class="deleted">已删除</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <section class="requirement-box">
+            <div class="requirement-title">需求说明</div>
+            <ol class="requirement-list">
+              <li>提现账号删除后，列表仍保留该账号记录，方便后台追溯。</li>
+              <li>删除后的记录需要显示删除时间，放在「修改时间」列。</li>
+              <li>删除后的记录需要显示删除人，放在「修改人」列。</li>
+              <li>删除后的记录操作列显示红色「已删除」，不再显示「编辑｜删除」。</li>
+              <li>未删除记录保持原逻辑，操作列继续显示「编辑｜删除」。</li>
+              <li>表格必须完整显示在弹窗内部，不出现底部横向滑动条。</li>
+            </ol>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

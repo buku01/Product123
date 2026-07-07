@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>查单卡片点击统计</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --top: #43bff2;
+      --blue: #169bd5;
+      --side: #f7f8fa;
+      --line: #d8dce3;
+      --text: #333;
+      --muted: #666;
+    }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      min-width: 1280px;
+      overflow: hidden;
+      color: var(--text);
+      font: 12px/1.45 Arial, "Microsoft YaHei", "PingFang SC", sans-serif;
+      letter-spacing: 0;
+      background: #000;
+    }
+    button, input { font: inherit; }
+    .app {
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 178px 1fr;
+      grid-template-rows: 40px 40px 1fr;
+    }
+    .topbar {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 40px;
+      padding: 0 12px;
+      color: #fff;
+      background: linear-gradient(90deg, #35b7ed, #75cdf4);
+      box-shadow: 0 1px 2px rgba(0,0,0,.18);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .quick {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .quick button {
+      width: 28px;
+      height: 23px;
+      border: 0;
+      border-radius: 2px;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .home { background: #f07300; }
+    .grid { background: #55b845; }
+    .edit { background: #9361d0; }
+    .zero {
+      width: 30px;
+      height: 23px;
+      display: grid;
+      place-items: center;
+      color: #ff5b82;
+      background: #fff;
+      border-radius: 2px;
+      font-weight: 700;
+    }
+    .switch {
+      width: 48px;
+      height: 23px;
+      border-radius: 99px;
+      background: #22c76d;
+      position: relative;
+    }
+    .switch:after {
+      content: "";
+      width: 19px;
+      height: 19px;
+      border-radius: 50%;
+      background: #4bb7ff;
+      position: absolute;
+      right: 2px;
+      top: 2px;
+    }
+    .top-info {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .tabs {
+      grid-column: 2;
+      grid-row: 2;
+      height: 40px;
+      display: flex;
+      align-items: stretch;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+    .tab {
+      min-width: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2f84bd;
+      border-right: 1px solid var(--line);
+      font-weight: 700;
+    }
+    .tab.active {
+      min-width: 175px;
+      justify-content: flex-start;
+      padding-left: 14px;
+      color: #111;
+      font-weight: 400;
+      background: #fff;
+    }
+    .refresh {
+      margin-left: auto;
+      width: 42px;
+      display: grid;
+      place-items: center;
+      color: #0dc7ad;
+      font-size: 22px;
+      border-left: 1px solid var(--line);
+    }
+    .sidebar {
+      grid-row: 2 / -1;
+      background: var(--side);
+      border-right: 1px solid var(--line);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .menu-head {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 12px;
+      color: #555;
+      background: #f2f4f7;
+      border-bottom: 1px solid #e2e5ea;
+      font-weight: 700;
+    }
+    .menu-head.active {
+      color: #168bd0;
+      background: #edf8ff;
+    }
+    .menu-head .arrow,
+    .menu-item .arrow {
+      margin-left: auto;
+      color: #9aa3ad;
+      font-size: 18px;
+      font-weight: 400;
+    }
+    .menu-item {
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 8px 0 22px;
+      color: #555;
+      background: #fff;
+      border-bottom: 1px solid #eceff3;
+    }
+    .menu-item.active {
+      color: #111;
+      font-weight: 700;
+      background: #fff;
+    }
+    .menu-item.wrap {
+      min-height: 43px;
+      line-height: 1.25;
+      align-items: center;
+    }
+    .main {
+      grid-column: 2;
+      grid-row: 3;
+      overflow: auto;
+      background: #000;
+      padding: 0;
+    }
+    .filter {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 14px;
+      color: #9b9b9b;
+      background: #000;
+    }
+    .filter label {
+      margin-right: 4px;
+      color: #777;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .date-input {
+      width: 140px;
+      height: 30px;
+      border: 1px solid #aeb4bd;
+      background: #fff;
+      color: #222;
+      padding: 0 8px;
+      outline: none;
+    }
+    .btn {
+      width: 150px;
+      height: 36px;
+      border: 0;
+      border-radius: 4px;
+      color: #fff;
+      background: var(--blue);
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn:hover { background: #118cc2; }
+    .table-wrap {
+      width: calc(100% - 36px);
+      margin: 0 14px;
+      background: #fff;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      background: #fff;
+      border: 1px solid #8d8d8d;
+    }
+    th, td {
+      height: 42px;
+      padding: 0 10px;
+      border: 1px solid #8d8d8d;
+      text-align: center;
+      color: #333;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 13px;
+    }
+    th {
+      height: 44px;
+      background: #fff;
+      font-weight: 700;
+    }
+    td { font-weight: 700; }
+    .time-col { width: 270px; }
+    .count-col { width: 210px; }
+    .people-col { width: 250px; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span>群版本平台管理系统 v0.22</span>
+        <div class="quick">
+          <button class="home">⌂</button>
+          <button class="grid">▦</button>
+          <button class="edit">✎</button>
+          <span class="zero">0</span>
+          <span class="switch"></span>
+        </div>
+      </div>
+      <div class="top-info">
+        <span>提现编辑：0</span>
+        <span>优惠大厅待审核预警(0)</span>
+        <span>异常用户列表：0</span>
+        <span>挂机计时 30:00</span>
+        <span>您好，bulu ▾</span>
+      </div>
+    </header>
+
+    <aside class="sidebar">
+      <div class="menu-head">▣ 内容管理 <span class="arrow">›</span></div>
+      <div class="menu-head">♣ 会员管理 <span class="arrow">›</span></div>
+      <div class="menu-head">￥ 刷水查询 <span class="arrow">›</span></div>
+      <div class="menu-head">♟ 活动中心 <span class="arrow">›</span></div>
+      <div class="menu-head active">▰ 统计报表 <span class="arrow">›</span></div>
+      <div class="menu-item active">› 查单卡片统计</div>
+      <div class="menu-item">› 充值大用户分析</div>
+      <div class="menu-item wrap">› 充值订单确认到账统计</div>
+      <div class="menu-item wrap">› 支付通道日成功率统计</div>
+      <div class="menu-item wrap">› 首存首次娱乐游戏类型统计</div>
+      <div class="menu-item wrap">› 首存常驻娱乐游戏类型统计</div>
+      <div class="menu-item">› 提鱼补款表</div>
+      <div class="menu-item">› 提鱼补款通道</div>
+      <div class="menu-item wrap">› 打赏收入活动统计</div>
+      <div class="menu-item">› 备用通道日志</div>
+      <div class="menu-item">› 游戏场馆统计</div>
+      <div class="menu-item">› 银行卡绑定统计</div>
+      <div class="menu-item">› 支付通道上分统计</div>
+      <div class="menu-item wrap">› 首存首次娱乐游戏类型统计</div>
+      <div class="menu-item">› 商户订单统计</div>
+      <div class="menu-item">› 渠道分布统计</div>
+      <div class="menu-item">› 注册且登录统计</div>
+      <div class="menu-item">› 月度代理统计报表</div>
+    </aside>
+
+    <nav class="tabs">
+      <div class="tab">首页</div>
+      <div class="tab">发现活动管理</div>
+      <div class="tab">活动记录 ×</div>
+      <div class="tab active">查单卡片点击统计</div>
+      <div class="refresh">↻</div>
+    </nav>
+
+    <main class="main">
+      <section class="filter">
+        <label>统计时间</label>
+        <input id="startTime" class="date-input" type="text" value="" aria-label="统计开始时间" />
+        <input id="endTime" class="date-input" type="text" value="" aria-label="统计结束时间" />
+        <button id="searchBtn" class="btn">查询</button>
+        <button id="exportBtn" class="btn">导出Excel</button>
+      </section>
+
+      <section class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="time-col">统计时间</th>
+              <th class="count-col">点击充值查单卡片次数</th>
+              <th class="people-col">点击充值查单卡片人数(去重)</th>
+              <th class="count-col">点击提现查单卡片次数</th>
+              <th class="people-col">点击提现查单卡片人数(去重)</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr>
+              <td>2026-12-12 12:00:00 ~ 2026-12-12 13:00:00</td>
+              <td>326</td>
+              <td>118</td>
+              <td>204</td>
+              <td>76</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const rows = [
+      {
+        time: "2026-12-12 12:00:00 ~ 2026-12-12 13:00:00",
+        rechargeClicks: 326,
+        rechargePeople: 118,
+        withdrawClicks: 204,
+        withdrawPeople: 76
+      },
+      {
+        time: "2026-12-12 13:00:00 ~ 2026-12-12 14:00:00",
+        rechargeClicks: 418,
+        rechargePeople: 149,
+        withdrawClicks: 236,
+        withdrawPeople: 91
+      },
+      {
+        time: "2026-12-12 14:00:00 ~ 2026-12-12 15:00:00",
+        rechargeClicks: 392,
+        rechargePeople: 137,
+        withdrawClicks: 251,
+        withdrawPeople: 88
+      }
+    ];
+
+    const tableBody = document.getElementById("tableBody");
+    const startTime = document.getElementById("startTime");
+    const endTime = document.getElementById("endTime");
+
+    function render(data) {
+      tableBody.innerHTML = data.map(row => `
+        <tr>
+          <td>${row.time}</td>
+          <td>${row.rechargeClicks}</td>
+          <td>${row.rechargePeople}</td>
+          <td>${row.withdrawClicks}</td>
+          <td>${row.withdrawPeople}</td>
+        </tr>
+      `).join("");
+    }
+
+    document.getElementById("searchBtn").addEventListener("click", () => {
+      if (!startTime.value && !endTime.value) {
+        render(rows.slice(0, 1));
+        return;
+      }
+      render(rows);
+    });
+
+    document.getElementById("exportBtn").addEventListener("click", () => {
+      alert("原型：导出查单卡片点击统计 Excel");
+    });
+  </script>
+</body>
+</html>
