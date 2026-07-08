@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>下注明细记录 - 移动端高保真原型</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --blue: #168dff;
+      --blue-soft: #eaf5ff;
+      --line: #e8edf6;
+      --text: #15233d;
+      --muted: #68799a;
+      --weak: #8c9bbb;
+      --page: #eef3f9;
+      --panel: #ffffff;
+      --green: #18c75a;
+      --red: #ff0f52;
+      --lavender: #f4f6ff;
+    }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      color: var(--text);
+      background: #dce8f3;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      letter-spacing: 0;
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 34px 24px;
+    }
+    .canvas {
+      width: min(100%, 440px);
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      justify-content: center;
+      align-items: start;
+    }
+    .phone-wrap {
+      width: 100%;
+      display: grid;
+      gap: 12px;
+      justify-items: center;
+    }
+    .caption {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #47607f;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .hint {
+      color: #7d8fad;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .device {
+      width: 411px;
+      height: 868px;
+      padding: 16px 14px 18px;
+      border-radius: 47px;
+      background: linear-gradient(90deg, #060708, #2a2d31 8%, #0b0c0e 18%, #202327 82%, #050607);
+      box-shadow:
+        inset 0 0 0 2px #3c4044,
+        inset 0 0 0 5px #121416,
+        0 24px 46px rgba(31, 50, 75, .28);
+      position: relative;
+    }
+    .device::before {
+      content: "";
+      width: 128px;
+      height: 30px;
+      border-radius: 0 0 18px 18px;
+      background: #020304;
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+    }
+    .device::after {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 65% 35%, #2e72a6 0 16%, #101f2e 42%, #040506 72%);
+      position: absolute;
+      top: 24px;
+      left: calc(50% + 46px);
+      z-index: 21;
+    }
+    .speaker {
+      width: 42px;
+      height: 4px;
+      border-radius: 999px;
+      background: #15191d;
+      box-shadow: inset 0 1px 1px rgba(255,255,255,.08);
+      position: absolute;
+      top: 27px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 21;
+    }
+    .side-button {
+      position: absolute;
+      width: 4px;
+      border-radius: 4px;
+      background: linear-gradient(#33383d, #0c0e10);
+      box-shadow: inset 1px 0 rgba(255,255,255,.15);
+    }
+    .side-button.left.top {
+      height: 34px;
+      left: -3px;
+      top: 122px;
+    }
+    .side-button.left.middle {
+      height: 62px;
+      left: -3px;
+      top: 178px;
+    }
+    .side-button.left.bottom {
+      height: 62px;
+      left: -3px;
+      top: 252px;
+    }
+    .side-button.right {
+      height: 86px;
+      right: -3px;
+      top: 194px;
+    }
+    .phone {
+      width: 375px;
+      height: 812px;
+      overflow: hidden;
+      background: var(--page);
+      border: 1px solid #1a1d21;
+      border-radius: 34px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.15);
+      position: relative;
+    }
+    .phone.scrolled .content {
+      padding-top: 0;
+    }
+    .status-bar {
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 9px 0 8px;
+      color: #111827;
+      background: #fff;
+      font-size: 12px;
+      line-height: 1;
+    }
+    .signal {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      min-width: 92px;
+    }
+    .dots {
+      display: inline-flex;
+      gap: 2px;
+    }
+    .dots i {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #111827;
+      display: block;
+    }
+    .wifi {
+      width: 12px;
+      height: 9px;
+      border: 2px solid #111827;
+      border-left-color: transparent;
+      border-right-color: transparent;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      transform: translateY(3px);
+    }
+    .battery {
+      width: 26px;
+      height: 10px;
+      border: 1px solid #222;
+      border-radius: 1px;
+      position: relative;
+    }
+    .battery::before {
+      content: "";
+      position: absolute;
+      top: 1px;
+      left: 1px;
+      width: 21px;
+      height: 6px;
+      background: #222;
+    }
+    .battery::after {
+      content: "";
+      position: absolute;
+      right: -3px;
+      top: 3px;
+      width: 2px;
+      height: 4px;
+      background: #222;
+    }
+    .nav {
+      height: 56px;
+      display: grid;
+      grid-template-columns: 46px 1fr 1fr 46px;
+      align-items: center;
+      background: #fff;
+      border-bottom: 1px solid #edf1f7;
+      position: relative;
+      z-index: 10;
+    }
+    .back {
+      width: 46px;
+      height: 56px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      color: #111827;
+      padding: 0;
+    }
+    .back::before {
+      content: "";
+      width: 12px;
+      height: 12px;
+      border-left: 3px solid currentColor;
+      border-bottom: 3px solid currentColor;
+      transform: rotate(45deg);
+      margin-left: 7px;
+    }
+    .tab {
+      height: 56px;
+      display: grid;
+      place-items: center;
+      color: #253147;
+      font-size: 16px;
+      position: relative;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+    .tab.active {
+      color: var(--blue);
+      font-weight: 500;
+    }
+    .tab.active::after {
+      content: "";
+      position: absolute;
+      left: 28px;
+      right: 28px;
+      bottom: 0;
+      height: 4px;
+      border-radius: 4px 4px 0 0;
+      background: var(--blue);
+    }
+    .scroll {
+      height: calc(100% - 80px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .scroll::-webkit-scrollbar { display: none; }
+    .content {
+      min-height: 1040px;
+      background: var(--page);
+    }
+    .page {
+      display: block;
+    }
+    .page.hidden {
+      display: none;
+    }
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      padding: 10px 22px 0;
+      background: #fff;
+    }
+    .quick-grid.second {
+      grid-template-columns: 82px 82px;
+      padding-top: 8px;
+      padding-bottom: 12px;
+    }
+    .chip {
+      height: 37px;
+      border: 1px solid #dde5f0;
+      border-radius: 5px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      color: #2c3446;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .chip.primary {
+      color: #fff;
+      border-color: var(--blue);
+      background: var(--blue);
+      box-shadow: 0 4px 12px rgba(22, 141, 255, .22);
+    }
+    .venue-page {
+      min-height: 760px;
+      background: var(--page);
+    }
+    .venue-page .filter-row {
+      border-top: 0;
+    }
+    .venue-list {
+      background: #fff;
+      border-top: 8px solid #f0f4f9;
+    }
+    .venue-row {
+      min-height: 64px;
+      display: grid;
+      grid-template-columns: 76px repeat(4, 1fr);
+      align-items: center;
+      border-bottom: 1px solid #edf1f7;
+      background: #fff;
+    }
+    .venue-name {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1d2a42;
+      font-size: 13px;
+      border-right: 1px solid #dfe7f2;
+      white-space: nowrap;
+    }
+    .venue-cell {
+      min-width: 0;
+      height: 40px;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      gap: 5px;
+      border-right: 1px solid #edf1f7;
+    }
+    .venue-cell:last-child {
+      border-right: 0;
+    }
+    .venue-label {
+      color: #1f2c42;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .venue-value {
+      color: var(--red);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .notice {
+      padding: 0 22px 12px;
+      background: #fff;
+      color: #6f7fa5;
+      font-size: 12px;
+    }
+    .filter-row {
+      min-height: 54px;
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      align-items: center;
+      gap: 1px;
+      padding: 0 14px 0 22px;
+      background: #fff;
+      border-top: 8px solid #f5f8fc;
+      color: #1f2e48;
+      font-size: 14px;
+    }
+    .date-fields {
+      display: grid;
+      grid-template-columns: 1fr 22px 1fr;
+      align-items: center;
+      gap: 4px;
+    }
+    .date-field {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      border: 1px solid #dce5f1;
+      border-radius: 5px;
+      background: #fbfcff;
+      color: #2f3b52;
+      font-size: 14px;
+    }
+    .date-field::after,
+    .game-value::after {
+      content: "";
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 7px solid #1ea4ff;
+      margin-left: 8px;
+    }
+    .range-sep {
+      text-align: center;
+      color: #202a3d;
+    }
+    .game-row {
+      border-top-width: 8px;
+      grid-template-columns: 76px 1fr 18px;
+    }
+    .game-value {
+      min-width: 0;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      color: #304060;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 13px;
+    }
+    .chevron {
+      width: 9px;
+      height: 9px;
+      border-right: 2px solid #b7c1d3;
+      border-top: 2px solid #b7c1d3;
+      transform: rotate(45deg);
+      justify-self: end;
+    }
+    .summary {
+      height: 66px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: center;
+      background: #fff;
+      border-bottom: 1px solid #edf1f7;
+      position: sticky;
+      top: 0;
+      z-index: 8;
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+    }
+    .scrolled .summary {
+      box-shadow: 0 6px 15px rgba(53, 74, 105, .08);
+    }
+    .summary-item {
+      min-width: 0;
+      height: 38px;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      border-right: 1px solid #e7edf6;
+      gap: 5px;
+    }
+    .summary-item:last-child { border-right: 0; }
+    .summary-label {
+      color: #1f2c42;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .summary-value {
+      color: var(--red);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .date-section {
+      height: 54px;
+      padding: 8px 22px 7px;
+      background: #f3f5ff;
+      color: #6e7fa8;
+      font-size: 11px;
+      line-height: 1.45;
+      border-bottom: 1px solid #edf1f7;
+    }
+    .date-title {
+      color: #1e2c47;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.05;
+    }
+    .record {
+      min-height: 118px;
+      padding: 0 22px;
+      background: #fff;
+      border-bottom: 8px solid #f3f6fa;
+    }
+    .record-head {
+      height: 42px;
+      display: grid;
+      grid-template-columns: 1fr 60px;
+      align-items: end;
+      padding-bottom: 10px;
+      color: #0b1324;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .record-name {
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      position: relative;
+      padding-left: 10px;
+    }
+    .record-name::before {
+      content: "";
+      width: 3px;
+      height: 14px;
+      border-radius: 3px;
+      background: #55aaff;
+      position: absolute;
+      left: 0;
+      top: 2px;
+    }
+    .green {
+      justify-self: end;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .ticket {
+      height: 31px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 0 10px 0 14px;
+      border-radius: 4px;
+      background: var(--lavender);
+      color: #6b7fb0;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .order {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .record-foot {
+      height: 34px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      color: #6b7fb0;
+      font-size: 12px;
+    }
+    .win {
+      justify-self: end;
+      color: var(--red);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .mock-home {
+      height: 5px;
+      width: 135px;
+      border-radius: 999px;
+      background: rgba(16, 24, 40, .34);
+      position: absolute;
+      left: 50%;
+      bottom: 12px;
+      transform: translateX(-50%);
+      z-index: 15;
+    }
+    @media (max-width: 840px) {
+      body {
+        align-items: flex-start;
+        padding: 18px 10px;
+      }
+      .canvas {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+      .device {
+        width: 398px;
+        height: 842px;
+        transform: scale(.94);
+        transform-origin: top center;
+      }
+      .phone-wrap {
+        min-height: 824px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="canvas">
+    <section class="phone-wrap">
+      <div class="caption">
+        <span>查询页面</span>
+        <span class="hint">下滑时汇总数据吸顶</span>
+      </div>
+      <div class="device">
+        <span class="speaker"></span>
+        <span class="side-button left top"></span>
+        <span class="side-button left middle"></span>
+        <span class="side-button left bottom"></span>
+        <span class="side-button right"></span>
+      <div class="phone">
+        <div class="status-bar">
+          <div class="signal"><span class="dots"><i></i><i></i><i></i><i></i><i></i></span><span>WeChat</span><span class="wifi"></span></div>
+          <div>1:21 AM</div>
+          <div class="signal" style="justify-content:flex-end;"><span>100%</span><span class="battery"></span></div>
+        </div>
+        <header class="nav">
+          <button class="back" aria-label="返回"></button>
+          <div class="tab active" data-tab="detail">下注明细记录</div>
+          <div class="tab" data-tab="venue">场馆下注总计</div>
+          <div></div>
+        </header>
+        <div class="scroll">
+          <div class="content">
+            <section class="page detail-page" data-page="detail">
+            <div class="quick-grid">
+              <div class="chip">今日</div>
+              <div class="chip">昨日</div>
+              <div class="chip">近7日</div>
+              <div class="chip">近30日</div>
+            </div>
+            <div class="quick-grid second">
+              <div class="chip">最大查询</div>
+              <div class="chip primary">自定义</div>
+            </div>
+            <div class="notice">* 当前系统只支持查询近35日的数据记录</div>
+            <div class="filter-row">
+              <div>选择时间</div>
+              <div class="date-fields">
+                <div class="date-field">2026-07-06</div>
+                <div class="range-sep">至</div>
+                <div class="date-field">2026-07-07</div>
+              </div>
+            </div>
+            <div class="filter-row game-row">
+              <div>游戏查询</div>
+              <div class="game-value">28游戏--全部游戏--全部游戏</div>
+              <span class="chevron"></span>
+            </div>
+            <div class="summary">
+              <div class="summary-item"><span class="summary-label">投注总额</span><span class="summary-value">0.00</span></div>
+              <div class="summary-item"><span class="summary-label">有效总流水</span><span class="summary-value">0.00</span></div>
+              <div class="summary-item"><span class="summary-label">中奖金额</span><span class="summary-value">0.00</span></div>
+              <div class="summary-item"><span class="summary-label">盈利金额</span><span class="summary-value">0.00</span></div>
+            </div>
+            <div class="date-section">
+              <div class="date-title">07月06日</div>
+              笔数8期数5流水 12,250.00 输赢-100.00 有效流水 12,250.00
+            </div>
+            <article class="record">
+              <div class="record-head"><div class="record-name">秒秒28--2.8/6.0/6.0</div><div class="green">0.00</div></div>
+              <div class="ticket"><span>2026/07/06 15:23:46</span><span class="order">期号：1778632389823</span></div>
+              <div class="record-foot"><span>小: 1,750.00</span><span class="win">+1,750.00</span></div>
+            </article>
+            <article class="record">
+              <div class="record-head"><div class="record-name">秒秒28--2.8/6.0/6.0</div><div class="green">0.00</div></div>
+              <div class="ticket"><span>2026/07/06 15:23:46</span><span class="order">期号：1778632389823</span></div>
+              <div class="record-foot"><span>小: 1,750.00</span><span class="win">+1,750.00</span></div>
+            </article>
+            <article class="record">
+              <div class="record-head"><div class="record-name">秒秒28--2.8/6.0/6.0</div><div class="green">0.00</div></div>
+              <div class="ticket"><span>2026/07/06 15:23:46</span><span class="order">期号：1778632389823</span></div>
+              <div class="record-foot"><span>小: 1,750.00</span><span class="win">+1,750.00</span></div>
+            </article>
+            <article class="record">
+              <div class="record-head"><div class="record-name">秒秒28--2.8/6.0/6.0</div><div class="green">0.00</div></div>
+              <div class="ticket"><span>2026/07/06 15:23:46</span><span class="order">期号：1778632389823</span></div>
+              <div class="record-foot"><span>小: 1,750.00</span><span class="win">+1,750.00</span></div>
+            </article>
+            <article class="record">
+              <div class="record-head"><div class="record-name">秒秒28--2.8/6.0/6.0</div><div class="green">0.00</div></div>
+              <div class="ticket"><span>2026/07/06 15:23:45</span><span class="order">期号：1778632389823</span></div>
+              <div class="record-foot"><span>小: 1,750.00</span><span class="win">+1,750.00</span></div>
+            </article>
+            <article class="record">
+              <div class="record-head"><div class="record-name">秒秒28--2.8/6.0/6.0</div><div class="green">0.00</div></div>
+              <div class="ticket"><span>2026/07/06 15:23:44</span><span class="order">期号：1778632389823</span></div>
+              <div class="record-foot"><span>小: 1,750.00</span><span class="win">+1,750.00</span></div>
+            </article>
+            </section>
+
+            <section class="page venue-page hidden" data-page="venue">
+              <div class="quick-grid">
+                <div class="chip">今日</div>
+                <div class="chip">昨日</div>
+                <div class="chip">近7日</div>
+                <div class="chip">近30日</div>
+              </div>
+              <div class="quick-grid second">
+                <div class="chip">最大查询</div>
+                <div class="chip primary">自定义</div>
+              </div>
+              <div class="notice">* 当前系统只支持查询近35日的数据记录</div>
+              <div class="filter-row">
+                <div>选择时间</div>
+                <div class="date-fields">
+                  <div class="date-field">2026-07-06</div>
+                  <div class="range-sep">至</div>
+                  <div class="date-field">2026-07-07</div>
+                </div>
+              </div>
+              <div class="venue-list">
+                <div class="venue-row">
+                  <div class="venue-name">全部游戏</div>
+                  <div class="venue-cell"><span class="venue-label">投注总额</span><span class="venue-value">10.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">有效总流水</span><span class="venue-value">2.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">中奖金额</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">盈利金额</span><span class="venue-value">0.00</span></div>
+                </div>
+                <div class="venue-row">
+                  <div class="venue-name">28游戏</div>
+                  <div class="venue-cell"><span class="venue-label">投注总额</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">有效总流水</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">中奖金额</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">盈利金额</span><span class="venue-value">0.00</span></div>
+                </div>
+                <div class="venue-row">
+                  <div class="venue-name">彩票游戏</div>
+                  <div class="venue-cell"><span class="venue-label">投注总额</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">有效总流水</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">中奖金额</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">盈利金额</span><span class="venue-value">0.00</span></div>
+                </div>
+                <div class="venue-row">
+                  <div class="venue-name">红包游戏</div>
+                  <div class="venue-cell"><span class="venue-label">投注总额</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">有效总流水</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">中奖金额</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">盈利金额</span><span class="venue-value">0.00</span></div>
+                </div>
+                <div class="venue-row">
+                  <div class="venue-name">体育游戏</div>
+                  <div class="venue-cell"><span class="venue-label">投注总额</span><span class="venue-value">888.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">有效总流水</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">中奖金额</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">盈利金额</span><span class="venue-value">0.00</span></div>
+                </div>
+                <div class="venue-row">
+                  <div class="venue-name">电竞游戏</div>
+                  <div class="venue-cell"><span class="venue-label">投注总额</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">有效总流水</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">中奖金额</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">盈利金额</span><span class="venue-value">0.00</span></div>
+                </div>
+                <div class="venue-row">
+                  <div class="venue-name">电子游戏</div>
+                  <div class="venue-cell"><span class="venue-label">投注总额</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">有效总流水</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">中奖金额</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">盈利金额</span><span class="venue-value">0.00</span></div>
+                </div>
+                <div class="venue-row">
+                  <div class="venue-name">棋牌游戏</div>
+                  <div class="venue-cell"><span class="venue-label">投注总额</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">有效总流水</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">中奖金额</span><span class="venue-value">0.00</span></div>
+                  <div class="venue-cell"><span class="venue-label">盈利金额</span><span class="venue-value">0.00</span></div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+        <div class="mock-home"></div>
+      </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const scrollArea = document.querySelector(".scroll");
+    const phone = document.querySelector(".phone");
+    const tabs = document.querySelectorAll(".tab[data-tab]");
+    const pages = document.querySelectorAll(".page[data-page]");
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const target = tab.dataset.tab;
+        tabs.forEach((item) => item.classList.toggle("active", item === tab));
+        pages.forEach((page) => page.classList.toggle("hidden", page.dataset.page !== target));
+        scrollArea.scrollTop = 0;
+        phone.classList.remove("scrolled");
+      });
+    });
+
+    scrollArea.addEventListener("scroll", () => {
+      const isDetail = document.querySelector('[data-page="detail"]').classList.contains("hidden") === false;
+      phone.classList.toggle("scrolled", isDetail && scrollArea.scrollTop > 180);
+    });
+  </script>
+</body>
+</html>
