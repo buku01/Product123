@@ -1,0 +1,1659 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>风控审核取消原因原型</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --top-a: #35b7ed;
+      --top-b: #75cdf4;
+      --blue: #169bd5;
+      --blue-dark: #0f8fc8;
+      --orange: #f06a00;
+      --red: #f5222d;
+      --green: #19be6b;
+      --side: #f7f8fa;
+      --line: #d8dce3;
+      --soft-line: #eceff3;
+      --text: #333;
+      --muted: #6f7782;
+      --paper: #fff;
+      --bg: #fff;
+    }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      min-width: 1360px;
+      overflow: hidden;
+      color: var(--text);
+      background: #000;
+      font: 12px/1.45 Arial, "Microsoft YaHei", "PingFang SC", sans-serif;
+      letter-spacing: 0;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+      outline: none;
+    }
+
+    button { cursor: pointer; }
+
+    .app {
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 178px 1fr;
+      grid-template-rows: 40px 40px 1fr;
+      background: #fff;
+    }
+
+    .topbar {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 40px;
+      padding: 0 12px;
+      color: #fff;
+      background: linear-gradient(90deg, var(--top-a), var(--top-b));
+      box-shadow: 0 1px 2px rgba(0,0,0,.18);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .quick {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quick button {
+      width: 28px;
+      height: 23px;
+      border: 0;
+      border-radius: 2px;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .home { background: #f07300; }
+    .grid-btn { background: #55b845; }
+    .edit { background: #9361d0; }
+    .zero {
+      width: 30px;
+      height: 23px;
+      display: grid;
+      place-items: center;
+      color: #ff5b82;
+      background: #fff;
+      border-radius: 2px;
+      font-weight: 700;
+    }
+
+    .switch {
+      width: 48px;
+      height: 23px;
+      border-radius: 99px;
+      background: #22c76d;
+      position: relative;
+    }
+
+    .switch:after {
+      content: "";
+      width: 19px;
+      height: 19px;
+      border-radius: 50%;
+      background: #4bb7ff;
+      position: absolute;
+      right: 2px;
+      top: 2px;
+    }
+
+    .top-info {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .sidebar {
+      grid-row: 2 / -1;
+      background: var(--side);
+      border-right: 1px solid var(--line);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .menu-head {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 12px;
+      color: #555;
+      background: #f2f4f7;
+      border-bottom: 1px solid #e2e5ea;
+      font-weight: 700;
+    }
+
+    .menu-head.active {
+      color: #168bd0;
+      background: #edf8ff;
+    }
+
+    .arrow {
+      margin-left: auto;
+      color: #9aa3ad;
+      font-size: 18px;
+      font-weight: 400;
+    }
+
+    .menu-item {
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 8px 0 22px;
+      color: #555;
+      background: #fff;
+      border-bottom: 1px solid var(--soft-line);
+    }
+
+    .menu-item.active {
+      color: #168bd0;
+      font-weight: 700;
+      background: #fff;
+    }
+
+    .tabs {
+      grid-column: 2;
+      grid-row: 2;
+      height: 40px;
+      display: flex;
+      align-items: stretch;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .tab {
+      min-width: 118px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2f84bd;
+      border-right: 1px solid var(--line);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .tab.active {
+      min-width: 142px;
+      color: #111;
+      font-weight: 400;
+      background: #fff;
+    }
+
+    .refresh {
+      margin-left: auto;
+      width: 42px;
+      display: grid;
+      place-items: center;
+      color: #0dc7ad;
+      font-size: 22px;
+      border-left: 1px solid var(--line);
+    }
+
+    .main {
+      grid-column: 2;
+      grid-row: 3;
+      overflow: auto;
+      padding: 0 18px 24px;
+      background: var(--bg);
+    }
+
+    .activity-tabs {
+      height: 50px;
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      color: #018ee8;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+
+    .activity-tabs span.active {
+      color: #0b80cf;
+      font-weight: 700;
+    }
+
+    .activity-tabs .feature-entry {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 4px;
+    }
+
+    .filter {
+      min-height: 110px;
+      margin-top: 18px;
+      padding: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      color: #444;
+      background: #f5f5f5;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+    }
+
+    .filter label {
+      white-space: nowrap;
+    }
+
+    .input,
+    .select,
+    .textarea {
+      border: 1px solid #cfd4dc;
+      border-radius: 2px;
+      color: #333;
+      background: #fff;
+    }
+
+    .input,
+    .select {
+      height: 28px;
+      padding: 0 8px;
+    }
+
+    .textarea {
+      width: 100%;
+      min-height: 84px;
+      padding: 8px 10px;
+      resize: vertical;
+      line-height: 20px;
+    }
+
+    .input:focus,
+    .select:focus,
+    .textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 2px rgba(22,155,213,.12);
+    }
+
+    .uid { width: 104px; }
+    .date { width: 150px; }
+    .page-size { width: 60px; }
+    .status { width: 88px; }
+    .reason-filter { width: 190px; }
+
+    .checkbox {
+      width: 16px;
+      height: 16px;
+      vertical-align: middle;
+    }
+
+    .btn {
+      height: 30px;
+      padding: 0 12px;
+      border: 0;
+      border-radius: 3px;
+      color: #fff;
+      background: var(--blue);
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,.16);
+    }
+
+    .btn:hover { background: var(--blue-dark); }
+    .btn.orange { background: var(--orange); }
+    .btn.orange:hover { background: #d95f00; }
+    .btn.green { background: var(--green); }
+    .btn.ghost {
+      color: #444;
+      background: #fff;
+      border: 1px solid #cfd4dc;
+      box-shadow: none;
+    }
+
+    .toolbar {
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .summary {
+      color: red;
+      text-align: center;
+      flex: 1;
+    }
+
+    .content-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .workbench {
+      min-width: 0;
+    }
+
+    .requirement-panel {
+      margin-top: 58px;
+      min-height: 420px;
+      padding: 12px;
+      color: #344052;
+      background: #fff7d6;
+      border: 1px solid #f0c445;
+      border-radius: 2px;
+    }
+
+    .requirement-title {
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      min-width: 100%;
+      padding: 0 12px;
+      color: #3a2b00;
+      font-weight: 700;
+      background: #ffdf72;
+      border: 1px solid #e4ad20;
+      border-radius: 2px;
+    }
+
+    .requirement-section {
+      margin-top: 14px;
+    }
+
+    .requirement-label {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 10px;
+      color: #6b4a00;
+      font-weight: 700;
+      background: #fff2bc;
+      border: 1px solid #e7bb39;
+      border-radius: 2px;
+    }
+
+    .requirement-text {
+      margin: 8px 0 0;
+      color: #344052;
+      font-weight: 700;
+      line-height: 22px;
+    }
+
+    .requirement-divider {
+      height: 1px;
+      margin: 12px 2px;
+      background: #e9d89b;
+    }
+
+    .requirement-list {
+      margin: 0;
+      padding: 8px 0 0 18px;
+      color: #344052;
+      font-weight: 700;
+      line-height: 22px;
+    }
+
+    .requirement-list li {
+      margin-bottom: 7px;
+    }
+
+    .feature-entry {
+      outline: 3px dashed red;
+      outline-offset: 4px;
+    }
+
+    .click-cue {
+      position: relative;
+    }
+
+    .click-cue:before {
+      content: "☝";
+      position: absolute;
+      right: -12px;
+      top: -18px;
+      z-index: 4;
+      width: 20px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: #ff2b18;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 2px 7px rgba(0,0,0,.22);
+      font-size: 13px;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .danger-link.feature-entry {
+      display: inline-block;
+      padding: 1px 4px;
+    }
+
+    .table-wrap {
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      background: #fff;
+    }
+
+    th,
+    td {
+      height: 40px;
+      padding: 0 8px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    th {
+      height: 38px;
+      color: #444;
+      font-weight: 700;
+      background: #fff;
+    }
+
+    td.left { text-align: left; }
+    .w-check { width: 44px; }
+    .w-id { width: 66px; }
+    .w-user { width: 92px; }
+    .w-number { width: 96px; }
+    .w-name { width: 150px; }
+    .w-status { width: 92px; }
+    .w-reason { width: 170px; }
+    .w-time { width: 138px; }
+    .w-op { width: 128px; }
+
+    .link {
+      color: #168bd0;
+      cursor: pointer;
+    }
+
+    .danger-link {
+      color: #f04b23;
+      cursor: pointer;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 48px;
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 2px;
+      font-weight: 700;
+    }
+
+    .tag.pending {
+      color: #ad6800;
+      background: #fff7e6;
+      border: 1px solid #ffd591;
+    }
+
+    .tag.approved {
+      color: #237804;
+      background: #f6ffed;
+      border: 1px solid #b7eb8f;
+    }
+
+    .tag.rejected {
+      color: #cf1322;
+      background: #fff1f0;
+      border: 1px solid #ffa39e;
+    }
+
+    .reason-box {
+      display: inline-block;
+      max-width: 155px;
+      color: #555;
+      vertical-align: middle;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .modal-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,.35);
+    }
+
+    .modal-mask.show { display: flex; }
+
+    .modal {
+      width: 560px;
+      max-height: 86vh;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      border: 1px solid #b8b8b8;
+      box-shadow: 0 12px 36px rgba(0,0,0,.28);
+    }
+
+    .modal.large { width: 860px; }
+
+    .modal-head {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      color: #fff;
+      background: var(--blue);
+      font-weight: 700;
+    }
+
+    .modal-close {
+      width: 26px;
+      height: 26px;
+      border: 0;
+      color: #fff;
+      background: transparent;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .modal-body {
+      padding: 18px;
+      overflow: auto;
+    }
+
+    .modal-foot {
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 10px 18px;
+      background: #fafafa;
+      border-top: 1px solid var(--line);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 108px 1fr;
+      gap: 12px 10px;
+      align-items: start;
+    }
+
+    .form-grid label {
+      min-height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      color: #444;
+      white-space: nowrap;
+    }
+
+    .required:before {
+      content: "*";
+      margin-right: 4px;
+      color: var(--red);
+    }
+
+    .field-note {
+      margin-top: 5px;
+      color: #8c8c8c;
+    }
+
+    .error {
+      display: none;
+      margin-top: 6px;
+      color: var(--red);
+    }
+
+    .error.show { display: block; }
+
+    .selected-list {
+      min-height: 32px;
+      padding: 7px 9px;
+      color: #444;
+      background: #f7f8fa;
+      border: 1px solid #e0e4eb;
+      border-radius: 2px;
+      line-height: 20px;
+    }
+
+    .cancel-object-info {
+      display: grid;
+      gap: 8px;
+    }
+
+    .object-value {
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      padding: 6px 10px;
+      color: #ff3b00;
+      background: #eee;
+      border-radius: 3px;
+      line-height: 20px;
+    }
+
+    .combo {
+      position: relative;
+    }
+
+    .combo-search {
+      width: 100%;
+      margin-bottom: 0;
+      padding-right: 30px;
+    }
+
+    .combo:after {
+      content: "⌄";
+      position: absolute;
+      right: 10px;
+      top: 5px;
+      color: #8c8c8c;
+      pointer-events: none;
+    }
+
+    .combo-menu {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 31px;
+      z-index: 25;
+      display: none;
+      max-height: 190px;
+      overflow: auto;
+      background: #fff;
+      border: 1px solid #bfc6d1;
+      box-shadow: 0 6px 16px rgba(0,0,0,.12);
+    }
+
+    .combo.open .combo-menu { display: block; }
+
+    .combo-option {
+      min-height: 32px;
+      padding: 7px 10px;
+      color: #333;
+      cursor: pointer;
+      line-height: 18px;
+      border-bottom: 1px solid #eef1f5;
+    }
+
+    .combo-option:hover,
+    .combo-option.active {
+      color: #168bd0;
+      background: #edf8ff;
+    }
+
+    .combo-empty {
+      padding: 10px;
+      color: #8c8c8c;
+      text-align: center;
+    }
+
+    .manage-search {
+      display: grid;
+      grid-template-columns: 1fr 80px 80px;
+      gap: 10px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+
+    .manage-head {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 12px;
+    }
+
+    .reason-table th,
+    .reason-table td {
+      height: 38px;
+    }
+
+    .reason-table .reason-content {
+      text-align: left;
+    }
+
+    .reason-result-bar {
+      min-height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 10px;
+      color: #666;
+    }
+
+    .reason-result-bar b {
+      color: #168bd0;
+    }
+
+    .pager {
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 8px 0 0;
+      color: #555;
+    }
+
+    .pager .select {
+      width: 70px;
+    }
+
+    .pager button {
+      height: 26px;
+      min-width: 58px;
+      border: 1px solid #cfd4dc;
+      border-radius: 2px;
+      color: #444;
+      background: #fff;
+    }
+
+    .pager button:disabled {
+      color: #aaa;
+      background: #f5f5f5;
+      cursor: not-allowed;
+    }
+
+    .highlight {
+      color: #d4380d;
+      background: #fff1b8;
+    }
+
+    .small-input {
+      width: 100%;
+      height: 28px;
+      padding: 0 8px;
+      border: 1px solid #cfd4dc;
+      border-radius: 2px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      top: 70px;
+      z-index: 40;
+      display: none;
+      min-width: 220px;
+      padding: 9px 18px;
+      color: #fff;
+      text-align: center;
+      background: rgba(0,0,0,.72);
+      border-radius: 3px;
+      transform: translateX(-50%);
+    }
+
+    .toast.show { display: block; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span>群版本平台管理系统 v0.22</span>
+        <div class="quick">
+          <button class="home" title="首页">⌂</button>
+          <button class="grid-btn" title="菜单">▦</button>
+          <button class="edit" title="编辑">✎</button>
+          <span class="zero">0</span>
+          <span class="switch"></span>
+        </div>
+      </div>
+      <div class="top-info">
+        <span>提现编辑：0</span>
+        <span>优惠大厅待审核预警(3)</span>
+        <span>异常用户列表：0</span>
+        <span>挂机计时 30:00</span>
+        <span>您好，bulu ▾</span>
+      </div>
+    </header>
+
+    <aside class="sidebar">
+      <div class="menu-head">▣ 账务中心 <span class="arrow">›</span></div>
+      <div class="menu-item">› 综合支付</div>
+      <div class="menu-item">› 充值管理</div>
+      <div class="menu-head active">▣ 提现管理 <span class="arrow">›</span></div>
+      <div class="menu-item">› 提现记录</div>
+      <div class="menu-item">› 提现费率</div>
+      <div class="menu-item">› 提现记录查询统计</div>
+      <div class="menu-item">› 手动申请提现</div>
+      <div class="menu-item">› 提现查询</div>
+      <div class="menu-item">› 新提现记录</div>
+      <div class="menu-item active">› 风控审核</div>
+      <div class="menu-item">› 代付三方成功记录</div>
+      <div class="menu-item">› 提现催单管理</div>
+      <div class="menu-item">› 提现类型配置</div>
+      <div class="menu-head">▣ 匹配交易管理 <span class="arrow">›</span></div>
+      <div class="menu-head">▣ 三方平台管理 <span class="arrow">›</span></div>
+      <div class="menu-head">▣ 自助补单 <span class="arrow">›</span></div>
+      <div class="menu-head">♚ 活动管理 <span class="arrow">›</span></div>
+      <div class="menu-head">▣ 邀请好友 <span class="arrow">›</span></div>
+      <div class="menu-head">▣ 合营代理管理 <span class="arrow">›</span></div>
+      <div class="menu-head">♛ 活动管理 <span class="arrow">›</span></div>
+      <div class="menu-head">▣ 电销管理 <span class="arrow">›</span></div>
+      <div class="menu-head">▣ 代理公告 <span class="arrow">›</span></div>
+      <div class="menu-head">✪ 彩票管理 <span class="arrow">›</span></div>
+      <div class="menu-head">◀ 返水中心 <span class="arrow">›</span></div>
+      <div class="menu-head">♣ 游戏管理 <span class="arrow">›</span></div>
+      <div class="menu-head">● APP管理 <span class="arrow">›</span></div>
+      <div class="menu-head">▣ 站内消息 <span class="arrow">›</span></div>
+      <div class="menu-head">⚙ 系统管理 <span class="arrow">›</span></div>
+      <div class="menu-head">▦ 内容管理 <span class="arrow">›</span></div>
+      <div class="menu-head">♣ 会员管理 <span class="arrow">›</span></div>
+    </aside>
+
+    <nav class="tabs">
+      <div class="tab">首页</div>
+      <div class="tab">提现费率 ×</div>
+      <div class="tab active">风控审核 ×</div>
+      <div class="refresh">↻</div>
+    </nav>
+
+    <main class="main">
+      <section class="activity-tabs">
+        <span class="active feature-entry">风控审核</span>
+        <span class="feature-entry">风控复审</span>
+        <span>风控标签配置</span>
+        <span>风控标签统计</span>
+        <span>风险代理列表</span>
+        <span>风控订单分流设置</span>
+        <span>风控耗时统计</span>
+      </section>
+
+      <section class="filter">
+        <label>UID:</label>
+        <input class="input uid" type="text" placeholder="请输入UID">
+        <label>提现姓名:</label>
+        <input class="input uid" type="text" placeholder="提现姓名">
+        <label>提现账号:</label>
+        <input class="input date" type="text" placeholder="提现账号">
+        <label>订单号:</label>
+        <input class="input date" type="text" placeholder="请输入订单号">
+        <label>状态:</label>
+        <select class="select status" id="statusFilter">
+          <option>待审核</option>
+          <option>审核通过</option>
+          <option>复审</option>
+          <option>取消</option>
+          <option>全部</option>
+        </select>
+        <label>风控原因:</label>
+        <select class="select reason-filter">
+          <option>全部</option>
+          <option>同IP多账号</option>
+          <option>异常流水</option>
+          <option>黑名单命中</option>
+        </select>
+        <label>申请时间:</label>
+        <input class="input date" type="text" value="2026-07-09">
+        <span>-</span>
+        <input class="input date" type="text" value="2026-07-09 23:59">
+        <label>每页条数:</label>
+        <select class="select page-size">
+          <option>10</option>
+          <option>20</option>
+          <option>50</option>
+        </select>
+        <label><input class="checkbox" type="checkbox"> 标识筛选</label>
+        <button class="btn" id="searchBtn">搜索</button>
+      </section>
+
+      <section class="content-layout">
+        <div class="workbench">
+          <section class="toolbar">
+            <div class="actions">
+              <button class="btn orange" id="batchPassBtn">批量审核通过</button>
+              <button class="btn orange feature-entry click-cue" id="batchRejectBtn">批量取消</button>
+              <button class="btn ghost feature-entry click-cue" id="reasonManageBtn">取消原因维护</button>
+            </div>
+            <div class="summary">待审核：3　复审：1　取消：1　当前页订单数：5</div>
+            <div class="actions">
+              <button class="btn">一键导出excel</button>
+              <button class="btn">刷新右边数据</button>
+            </div>
+          </section>
+
+          <section class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th class="w-check"><input class="checkbox" id="selectAll" type="checkbox"></th>
+                  <th class="w-id">ID</th>
+                  <th class="w-user">订单号</th>
+                  <th class="w-name">UID / 标识 / 新用户提款</th>
+                  <th>当前余额</th>
+                  <th>提现姓名 / 账号</th>
+                  <th>类型 / 申请金额</th>
+                  <th>转账金额 / 换算</th>
+                  <th class="w-name">注册时间 / 总输赢 / 充值金额</th>
+                  <th>提现方式</th>
+                  <th>风控原因</th>
+                  <th>备注</th>
+                  <th class="w-status">审核状态</th>
+                  <th class="w-reason">取消原因</th>
+                  <th class="w-time">申请 / 初审 / 复审时间</th>
+                  <th>审核人</th>
+                  <th class="w-op">操作</th>
+                </tr>
+              </thead>
+              <tbody id="activityBody"></tbody>
+            </table>
+          </section>
+        </div>
+
+        <aside class="requirement-panel">
+          <div class="requirement-title">需求说明</div>
+          <div class="requirement-section">
+            <div class="requirement-label">菜单路径</div>
+            <p class="requirement-text">提现管理 - 风控审核 / 风控复审 - 取消原因维护</p>
+          </div>
+          <div class="requirement-section">
+            <div class="requirement-label">修改范围</div>
+            <p class="requirement-text">风控审核 - 风控审核 / 风控复审列表所有取消提现操作</p>
+          </div>
+          <div class="requirement-divider"></div>
+          <div class="requirement-section">
+            <div class="requirement-label">场景</div>
+            <p class="requirement-text">风控审核或风控复审人员取消提现订单时，经常手动输入原因，容易出现错别字；部分风控取消原因重复出现，需要维护常用原因并选择，提高处理效率。</p>
+          </div>
+          <div class="requirement-section">
+            <div class="requirement-label">功能说明</div>
+            <ol class="requirement-list">
+              <li>点击「取消原因维护」弹窗维护风控审核、风控复审常用取消原因，支持新增、编辑、删除。</li>
+              <li>新增取消原因只填写原因内容，序号由系统自动生成。</li>
+              <li>风控审核或风控复审取消提现时必须选择已维护原因，不再手动输入备注。</li>
+              <li>取消原因较多时，支持输入关键词便捷搜索并选择匹配原因。</li>
+              <li>页面上与本需求相关的功能入口使用红色虚线框标识。</li>
+            </ol>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-mask" id="rejectModal" aria-hidden="true">
+    <div class="modal">
+      <div class="modal-head">
+        <span id="rejectTitle">风控审核处理</span>
+        <button class="modal-close" type="button" data-close>×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <label>玩家账号:</label>
+          <div class="object-value" id="targetPlayer"></div>
+
+          <label>提款账号:</label>
+          <div class="object-value" id="targetAccount"></div>
+
+          <label>提现金额:</label>
+          <div class="object-value" id="targetAmount"></div>
+
+          <label class="required">取消原因:</label>
+          <div>
+            <div class="combo feature-entry click-cue" id="rejectReasonCombo">
+              <input class="input combo-search" id="rejectReasonKeyword" type="text" placeholder="输入关键词查询并选择取消原因" autocomplete="off">
+              <div class="combo-menu" id="rejectReasonMenu"></div>
+            </div>
+            <input id="rejectReasonValue" type="hidden">
+            <div class="error" id="rejectReasonError">请选择取消原因</div>
+          </div>
+
+          <label>原因内容:</label>
+          <textarea class="textarea" id="reasonPreview" readonly></textarea>
+
+          <label></label>
+          <div class="field-note">保存后，列表「取消原因」展示所选原因内容。</div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn ghost" type="button" data-close>取消</button>
+        <button class="btn orange" type="button" id="confirmRejectBtn">确定取消</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-mask" id="manageModal" aria-hidden="true">
+    <div class="modal large">
+      <div class="modal-head">
+        <span>风控取消原因维护</span>
+        <button class="modal-close" type="button" data-close>×</button>
+      </div>
+      <div class="modal-body">
+        <div class="manage-search">
+          <input class="input" id="manageKeyword" type="text" placeholder="输入关键词查询取消原因">
+          <button class="btn" id="manageSearchBtn">查询</button>
+          <button class="btn ghost" id="manageResetBtn">重置</button>
+        </div>
+        <div class="manage-head">
+          <button class="btn green" id="addReasonBtn">新增</button>
+        </div>
+        <textarea class="textarea" id="reasonContentInput" placeholder="取消原因内容，将在取消提现时下拉选择"></textarea>
+        <div class="reason-result-bar">
+          <span id="reasonQueryInfo">共 0 条取消原因</span>
+          <span>输入关键词后点击查询，列表会按原因内容筛选</span>
+        </div>
+        <div class="table-wrap" style="margin-top:12px">
+          <table class="reason-table">
+            <thead>
+              <tr>
+                <th style="width:70px">排序</th>
+                <th class="reason-content">取消原因</th>
+                <th style="width:122px">最后更新</th>
+                <th style="width:126px">操作</th>
+              </tr>
+            </thead>
+            <tbody id="reasonBody"></tbody>
+          </table>
+        </div>
+        <div class="pager">
+          <span>每页</span>
+          <select class="select" id="reasonPageSize">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+          </select>
+          <span>条</span>
+          <button type="button" id="reasonPrevPage">上一页</button>
+          <span id="reasonPageInfo">1 / 1</span>
+          <button type="button" id="reasonNextPage">下一页</button>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn ghost" type="button" data-close>关闭</button>
+        <button class="btn" type="button" id="saveReasonConfigBtn">保存配置</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const activities = [
+      {
+        id: 93021,
+        orderNo: "TX202607090001",
+        user: "u88102 / 高危 / 新用户提款",
+        balance: "1,286.00",
+        account: "张* / 6222 **** 8821",
+        typeAmount: "银行卡 / 800.00",
+        transfer: "800.00 / CNY",
+        profile: "2026-07-01 / -2,420.00 / 500.00",
+        withdrawMethod: "银行卡",
+        riskReason: "同IP多账号",
+        note: "同设备登录",
+        reviewer: "-",
+        status: "待审核",
+        reasonId: "",
+        date: "2026-07-07 14:02"
+      },
+      {
+        id: 93022,
+        orderNo: "TX202607090002",
+        user: "u77018 / 普通 / 老用户",
+        balance: "4,200.00",
+        account: "李* / TRX-TY12...8X",
+        typeAmount: "USDT / 1,200.00",
+        transfer: "166.67 / USDT",
+        profile: "2025-11-18 / 860.00 / 9,300.00",
+        withdrawMethod: "USDT",
+        riskReason: "异常流水",
+        note: "-",
+        reviewer: "-",
+        status: "待审核",
+        reasonId: "",
+        date: "2026-07-07 13:45"
+      },
+      {
+        id: 93017,
+        orderNo: "TX202607090003",
+        user: "u60229 / 命中 / 代理下级",
+        balance: "890.00",
+        account: "王* / 6217 **** 2309",
+        typeAmount: "银行卡 / 500.00",
+        transfer: "500.00 / CNY",
+        profile: "2026-06-20 / 30.00 / 100.00",
+        withdrawMethod: "银行卡",
+        riskReason: "黑名单命中",
+        note: "风控命中",
+        reviewer: "admin01",
+        status: "复审",
+        reasonId: "risk",
+        date: "2026-07-07 10:21"
+      },
+      {
+        id: 93008,
+        orderNo: "TX202607080019",
+        user: "u56120 / 正常 / 老用户",
+        balance: "9,300.00",
+        account: "赵* / 6228 **** 1902",
+        typeAmount: "银行卡 / 600.00",
+        transfer: "600.00 / CNY",
+        profile: "2024-09-02 / -1,690.00 / 21,000.00",
+        withdrawMethod: "银行卡",
+        riskReason: "人工抽检",
+        note: "-",
+        reviewer: "admin02",
+        status: "审核通过",
+        reasonId: "",
+        date: "2026-07-06 18:12"
+      },
+      {
+        id: 93002,
+        orderNo: "TX202607080011",
+        user: "u10036 / 可疑 / 新用户提款",
+        balance: "320.00",
+        account: "陈* / 6226 **** 0821",
+        typeAmount: "银行卡 / 300.00",
+        transfer: "300.00 / CNY",
+        profile: "2026-07-05 / -60.00 / 0.00",
+        withdrawMethod: "银行卡",
+        riskReason: "资料不完整",
+        note: "资料不完整",
+        reviewer: "admin01",
+        status: "取消",
+        reasonId: "condition",
+        date: "2026-07-06 16:40"
+      }
+    ];
+
+    let reasons = [
+      {
+        id: "condition",
+        sort: 10,
+        content: "提现资料不完整或收款信息与实名信息不一致。",
+        updatedAt: "2026-07-07 13:58"
+      },
+      {
+        id: "duplicate",
+        sort: 20,
+        content: "同设备、同IP或同收款账号存在多账号异常提现。",
+        updatedAt: "2026-07-07 13:58"
+      },
+      {
+        id: "risk",
+        sort: 30,
+        content: "账号命中风控黑名单或高危标签，需取消提现。",
+        updatedAt: "2026-07-07 13:58"
+      },
+      {
+        id: "expired",
+        sort: 40,
+        content: "有效流水不足或近期存在异常套利投注，需要取消提现。",
+        updatedAt: "2026-07-06 19:30"
+      },
+      {
+        id: "deposit",
+        sort: 50,
+        content: "充值记录异常，提现金额与充值行为不匹配。",
+        updatedAt: "2026-07-06 18:20"
+      },
+      {
+        id: "turnover",
+        sort: 60,
+        content: "提现申请触发人工复核规则，等待风控补充核验。",
+        updatedAt: "2026-07-06 18:12"
+      },
+      {
+        id: "ip",
+        sort: 70,
+        content: "银行卡或虚拟币地址与其他风险账号存在关联。",
+        updatedAt: "2026-07-06 17:45"
+      },
+      {
+        id: "blacklist",
+        sort: 80,
+        content: "登录、投注、提款行为短时间集中，疑似批量操作。",
+        updatedAt: "2026-07-06 17:20"
+      },
+      {
+        id: "already-paid",
+        sort: 90,
+        content: "指定人复核未通过，订单需取消。",
+        updatedAt: "2026-07-06 16:55"
+      },
+      {
+        id: "material",
+        sort: 100,
+        content: "备注信息缺失，需补充风控审核说明后再处理。",
+        updatedAt: "2026-07-06 16:30"
+      },
+      {
+        id: "manual-check",
+        sort: 110,
+        content: "人工复核发现提现申请信息与后台记录不一致。",
+        updatedAt: "2026-07-06 16:10"
+      }
+    ];
+
+    let currentRejectIds = [];
+    let editingReasonId = "";
+    let reasonPage = 1;
+
+    const activityBody = document.getElementById("activityBody");
+    const reasonBody = document.getElementById("reasonBody");
+    const selectAll = document.getElementById("selectAll");
+    const rejectModal = document.getElementById("rejectModal");
+    const manageModal = document.getElementById("manageModal");
+    const rejectReasonCombo = document.getElementById("rejectReasonCombo");
+    const rejectReasonKeyword = document.getElementById("rejectReasonKeyword");
+    const rejectReasonMenu = document.getElementById("rejectReasonMenu");
+    const rejectReasonValue = document.getElementById("rejectReasonValue");
+    const reasonPreview = document.getElementById("reasonPreview");
+    const toast = document.getElementById("toast");
+    let manageReasonKeyword = "";
+
+    function reasonById(id) {
+      return reasons.find(reason => reason.id === id);
+    }
+
+    function renderActivities() {
+      const statusFilter = document.getElementById("statusFilter").value;
+      const filtered = activities.filter(item => {
+        return statusFilter === "全部" || item.status === statusFilter;
+      });
+
+      activityBody.innerHTML = filtered.map(item => {
+        const reason = reasonById(item.reasonId);
+        const statusClass = item.status === "待审核" ? "pending" : item.status === "审核通过" ? "approved" : "rejected";
+        const canAudit = item.status === "待审核";
+        return `
+          <tr>
+            <td><input class="checkbox row-check" type="checkbox" value="${item.id}" ${canAudit ? "" : "disabled"}></td>
+            <td>${item.id}</td>
+            <td>${item.orderNo}</td>
+            <td>${item.user}</td>
+            <td>${item.balance}</td>
+            <td>${item.account}</td>
+            <td>${item.typeAmount}</td>
+            <td>${item.transfer}</td>
+            <td>${item.profile}</td>
+            <td>${item.withdrawMethod}</td>
+            <td>${item.riskReason}</td>
+            <td>${item.note}</td>
+            <td><span class="tag ${statusClass}">${item.status}</span></td>
+            <td title="${reason ? reason.content : ""}"><span class="reason-box">${reason ? reason.content : "-"}</span></td>
+            <td>${item.date}</td>
+            <td>${item.reviewer}</td>
+            <td>${canAudit ? `<span class="link" data-pass="${item.id}">通过</span>　<span class="danger-link feature-entry click-cue" data-reject="${item.id}">取消提现</span>` : `<span class="link">详情</span>`}</td>
+          </tr>
+        `;
+      }).join("");
+      selectAll.checked = false;
+    }
+
+    function renderRejectReasonOptions(keyword = "") {
+      const key = keyword.trim().toLowerCase();
+      const filteredReasons = reasons
+        .filter(reason => !key || reason.content.toLowerCase().includes(key))
+        .sort((a, b) => a.sort - b.sort);
+      rejectReasonMenu.innerHTML = filteredReasons.map(reason => (
+        `<div class="combo-option" data-select-reason="${reason.id}" title="${reason.content}">${reason.content}</div>`
+      )).join("") || `<div class="combo-empty">没有匹配的取消原因</div>`;
+    }
+
+    function renderReasonOptions() {
+      renderRejectReasonOptions(rejectReasonKeyword ? rejectReasonKeyword.value : "");
+    }
+
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function highlightKeyword(value, keyword) {
+      const safeValue = escapeHtml(value);
+      const key = keyword.trim();
+      if (!key) return safeValue;
+      const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return safeValue.replace(new RegExp(escapedKey, "gi"), match => `<span class="highlight">${match}</span>`);
+    }
+
+    function renderReasons() {
+      const keyword = manageReasonKeyword.trim().toLowerCase();
+      const sorted = [...reasons]
+        .filter(reason => !keyword || reason.content.toLowerCase().includes(keyword))
+        .sort((a, b) => a.sort - b.sort);
+      const pageSize = Number(document.getElementById("reasonPageSize").value);
+      const totalPages = Math.max(1, Math.ceil(sorted.length / pageSize));
+      reasonPage = Math.min(reasonPage, totalPages);
+      const start = (reasonPage - 1) * pageSize;
+      const pageRows = sorted.slice(start, start + pageSize);
+
+      document.getElementById("reasonQueryInfo").innerHTML = manageReasonKeyword
+        ? `关键词：<b>${escapeHtml(manageReasonKeyword)}</b>，命中 <b>${sorted.length}</b> 条`
+        : `共 <b>${sorted.length}</b> 条取消原因`;
+      document.getElementById("reasonPageInfo").textContent = `${reasonPage} / ${totalPages}`;
+      document.getElementById("reasonPrevPage").disabled = reasonPage <= 1;
+      document.getElementById("reasonNextPage").disabled = reasonPage >= totalPages;
+
+      reasonBody.innerHTML = pageRows.map(reason => `
+        <tr>
+          <td>${reason.sort}</td>
+          <td class="reason-content">${highlightKeyword(reason.content, manageReasonKeyword)}</td>
+          <td>${reason.updatedAt}</td>
+          <td>
+            <span class="link" data-edit-reason="${reason.id}">编辑</span>
+            　
+            <span class="danger-link" data-delete-reason="${reason.id}">删除</span>
+          </td>
+        </tr>
+      `).join("") || `<tr><td colspan="4">没有匹配的取消原因</td></tr>`;
+    }
+
+    function amountText(item) {
+      const parts = item.typeAmount.split("/");
+      return parts.length > 1 ? parts[1].trim() : item.typeAmount;
+    }
+
+    function renderCancelObjectInfo(ids) {
+      const selected = ids
+        .map(id => activities.find(item => item.id === Number(id)))
+        .filter(Boolean);
+
+      if (selected.length === 1) {
+        document.getElementById("targetPlayer").textContent = "3h260703161217（UID：883795）";
+        document.getElementById("targetAccount").textContent = "陆李 -- 623075913314883803";
+        document.getElementById("targetAmount").textContent = "100";
+        return;
+      }
+
+      document.getElementById("targetPlayer").textContent = `已选择 ${selected.length} 个取消对象`;
+      document.getElementById("targetAccount").textContent = "批量取消，提款账号以列表勾选记录为准";
+      document.getElementById("targetAmount").textContent = `共 ${selected.length} 笔，提现金额以列表勾选记录为准`;
+    }
+
+    function openReject(ids) {
+      currentRejectIds = ids;
+      document.getElementById("rejectTitle").textContent = ids.length > 1 ? "批量取消提现" : "取消提现处理";
+      renderCancelObjectInfo(ids);
+      rejectReasonKeyword.value = "";
+      rejectReasonValue.value = "";
+      rejectReasonCombo.classList.remove("open");
+      renderRejectReasonOptions();
+      reasonPreview.value = "";
+      document.getElementById("rejectReasonError").classList.remove("show");
+      rejectModal.classList.add("show");
+      rejectModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeModal(modal) {
+      modal.classList.remove("show");
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 1700);
+    }
+
+    function todayText() {
+      const now = new Date();
+      const pad = value => String(value).padStart(2, "0");
+      return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+    }
+
+    document.addEventListener("click", event => {
+      const rejectId = event.target.dataset.reject;
+      const passId = event.target.dataset.pass;
+      const editReasonId = event.target.dataset.editReason;
+      const deleteReasonId = event.target.dataset.deleteReason;
+      const selectReasonId = event.target.dataset.selectReason;
+
+      if (rejectId) openReject([rejectId]);
+
+      if (passId) {
+        const item = activities.find(activity => activity.id === Number(passId));
+        if (item) {
+          item.status = "审核通过";
+          item.reviewer = "bulu";
+          renderActivities();
+          showToast("已通过该风控审核");
+        }
+      }
+
+      if (editReasonId) {
+        const reason = reasonById(editReasonId);
+        if (!reason) return;
+        editingReasonId = reason.id;
+        document.getElementById("reasonContentInput").value = reason.content;
+        document.getElementById("addReasonBtn").textContent = "更新";
+      }
+
+      if (deleteReasonId) {
+        const reason = reasonById(deleteReasonId);
+        if (!reason) return;
+        if (!window.confirm(`确定删除该取消原因吗？\n${reason.content}`)) return;
+        reasons = reasons.filter(item => item.id !== deleteReasonId);
+        activities.forEach(item => {
+          if (item.reasonId === deleteReasonId) item.reasonId = "";
+        });
+        if (editingReasonId === deleteReasonId) {
+          editingReasonId = "";
+          document.getElementById("addReasonBtn").textContent = "新增";
+          document.getElementById("reasonContentInput").value = "";
+        }
+        reasonPage = 1;
+        renderReasons();
+        renderReasonOptions();
+        renderActivities();
+        showToast("取消原因已删除");
+      }
+
+      if (selectReasonId) {
+        const reason = reasonById(selectReasonId);
+        if (!reason) return;
+        rejectReasonValue.value = reason.id;
+        rejectReasonKeyword.value = reason.content;
+        reasonPreview.value = reason.content;
+        rejectReasonCombo.classList.remove("open");
+        document.getElementById("rejectReasonError").classList.remove("show");
+      }
+
+      if (event.target.dataset.close !== undefined) {
+        closeModal(event.target.closest(".modal-mask"));
+      }
+    });
+
+    document.querySelectorAll(".modal-mask").forEach(mask => {
+      mask.addEventListener("click", event => {
+        if (event.target === mask) closeModal(mask);
+      });
+    });
+
+    selectAll.addEventListener("change", () => {
+      document.querySelectorAll(".row-check:not(:disabled)").forEach(check => {
+        check.checked = selectAll.checked;
+      });
+    });
+
+    document.getElementById("batchRejectBtn").addEventListener("click", () => {
+      const ids = Array.from(document.querySelectorAll(".row-check:checked")).map(check => check.value);
+      if (!ids.length) {
+        showToast("请先勾选申请记录");
+        return;
+      }
+      openReject(ids);
+    });
+
+    document.getElementById("batchPassBtn").addEventListener("click", () => {
+      const ids = Array.from(document.querySelectorAll(".row-check:checked")).map(check => Number(check.value));
+      if (!ids.length) {
+        showToast("请先勾选申请记录");
+        return;
+      }
+      activities.forEach(item => {
+        if (ids.includes(item.id) && item.status === "待审核") {
+          item.status = "审核通过";
+          item.reviewer = "bulu";
+        }
+      });
+      renderActivities();
+      showToast(`已批量审核通过 ${ids.length} 条订单`);
+    });
+
+    rejectReasonKeyword.addEventListener("input", () => {
+      rejectReasonValue.value = "";
+      renderRejectReasonOptions(rejectReasonKeyword.value);
+      rejectReasonCombo.classList.add("open");
+      reasonPreview.value = "";
+      document.getElementById("rejectReasonError").classList.remove("show");
+    });
+
+    rejectReasonKeyword.addEventListener("focus", () => {
+      renderRejectReasonOptions(rejectReasonKeyword.value);
+      rejectReasonCombo.classList.add("open");
+    });
+
+    document.addEventListener("click", event => {
+      if (!rejectReasonCombo.contains(event.target)) {
+        rejectReasonCombo.classList.remove("open");
+      }
+    });
+
+    document.getElementById("confirmRejectBtn").addEventListener("click", () => {
+      const reasonId = rejectReasonValue.value;
+      if (!reasonId) {
+        document.getElementById("rejectReasonError").classList.add("show");
+        rejectReasonCombo.classList.add("open");
+        return;
+      }
+      const ids = currentRejectIds.map(Number);
+      activities.forEach(item => {
+        if (ids.includes(item.id)) {
+          item.status = "取消";
+          item.reasonId = reasonId;
+          item.reviewer = "bulu";
+        }
+      });
+      closeModal(rejectModal);
+      renderActivities();
+      showToast(`已取消 ${ids.length} 条提现订单`);
+    });
+
+    document.getElementById("reasonManageBtn").addEventListener("click", () => {
+      manageReasonKeyword = "";
+      reasonPage = 1;
+      document.getElementById("manageKeyword").value = "";
+      renderReasons();
+      manageModal.classList.add("show");
+      manageModal.setAttribute("aria-hidden", "false");
+    });
+
+    document.getElementById("addReasonBtn").addEventListener("click", () => {
+      const contentInput = document.getElementById("reasonContentInput");
+      const content = contentInput.value.trim();
+      if (!content) {
+        showToast("请填写取消原因");
+        return;
+      }
+
+      if (editingReasonId) {
+        const reason = reasonById(editingReasonId);
+        reason.content = content;
+        reason.updatedAt = todayText();
+        editingReasonId = "";
+        document.getElementById("addReasonBtn").textContent = "新增";
+        showToast("取消原因已更新");
+      } else {
+        reasons.push({
+          id: `custom-${Date.now()}`,
+          sort: reasons.length ? Math.max(...reasons.map(reason => reason.sort)) + 10 : 10,
+          content,
+          updatedAt: todayText()
+        });
+        showToast("取消原因已新增");
+      }
+
+      contentInput.value = "";
+      reasonPage = 1;
+      renderReasons();
+      renderReasonOptions();
+      renderActivities();
+    });
+
+    document.getElementById("saveReasonConfigBtn").addEventListener("click", () => {
+      closeModal(manageModal);
+      showToast("取消原因配置已保存");
+    });
+
+    document.getElementById("searchBtn").addEventListener("click", renderActivities);
+    document.getElementById("statusFilter").addEventListener("change", renderActivities);
+    document.getElementById("manageSearchBtn").addEventListener("click", () => {
+      manageReasonKeyword = document.getElementById("manageKeyword").value;
+      reasonPage = 1;
+      renderReasons();
+    });
+    document.getElementById("manageKeyword").addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        manageReasonKeyword = event.target.value;
+        reasonPage = 1;
+        renderReasons();
+      }
+    });
+    document.getElementById("manageResetBtn").addEventListener("click", () => {
+      document.getElementById("manageKeyword").value = "";
+      manageReasonKeyword = "";
+      reasonPage = 1;
+      renderReasons();
+    });
+    document.getElementById("reasonPageSize").addEventListener("change", () => {
+      reasonPage = 1;
+      renderReasons();
+    });
+    document.getElementById("reasonPrevPage").addEventListener("click", () => {
+      reasonPage -= 1;
+      renderReasons();
+    });
+    document.getElementById("reasonNextPage").addEventListener("click", () => {
+      reasonPage += 1;
+      renderReasons();
+    });
+
+    renderReasonOptions();
+    renderActivities();
+    renderReasons();
+  </script>
+</body>
+</html>
