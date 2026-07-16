@@ -181,26 +181,26 @@
           <div class="panel-head"><div class="panel-title"><span class="index">1</span>初审单量预警 <span class="panel-desc">按单个指定人账号分别统计；指定人为空的订单统一归入“--”账号分组</span></div><div class="head-actions"><span class="cycle">每 <input class="num-input cycle-input" value="10" data-unit="分钟"> 分钟检测</span><span class="rule-status status-enabled">已开启</span><label class="switch" title="单独控制初审单量预警"><input type="checkbox" checked><span class="slider"></span></label></div></div>
           <div class="type-push"><span>推送飞机群：</span><input class="group-choice" value="提现风控预警群（-1002111540277）" readonly><button class="btn edit-group" data-alert="初审单量预警">配置当前类型群</button><button class="btn test-group">测试推送</button><span class="tip">该群配置仅作用于“初审单量预警”</span></div>
           <div class="rule"><div class="rule-name"><strong>待审核单量过多</strong><span class="tag">初审</span><span class="tag red">单量</span></div><div class="conditions"><div class="condition-row">单个指定人账号，状态为 <b>待审核</b> 的订单 <label>≥</label><input class="num-input live" value="50" data-bind="firstCount"> 单时触发</div><div class="condition-row"><label>指定人为空时显示并归入</label><input class="num-input" value="--" disabled><span>账号分组统计</span></div></div><div class="template"><div class="template-label"><span>飞机群消息预览</span><a href="#" class="copy">复制</a></div><div class="message"><b class="notify-text">@risk_duty</b><br>平台<b>3号台</b>，指定人：<b>fengkong003</b>，待审核单量<b data-text="firstCount">50</b>单，最早订单申请时间 <b>2026-07-15 13:06:25</b></div></div></div>
-          <div class="rule"><div class="rule-name"><strong>超15分钟积压</strong><span class="tag">初审</span><span class="tag red">超时+单量</span></div><div class="conditions"><div class="condition-row">单个指定人账号下，从申请时间算起 <label>＞</label><input class="num-input live" value="15" data-bind="firstAge"> 分钟，且待审核订单 <label>≥</label><input class="num-input live" value="20" data-bind="firstAgeCount"> 单时触发</div></div><div class="template"><div class="template-label"><span>飞机群消息预览</span><a href="#" class="copy">复制</a></div><div class="message"><b class="notify-text">@risk_duty</b><br>平台<b>3号台</b>，指定人：<b>fengkong003</b>，<b data-text="firstAge">15</b>分钟以上待审核单量<b data-text="firstAgeCount">20</b>单，最早订单申请时间 <b>2026-07-15 13:06:25</b></div></div></div>
+          <div class="rule"><div class="rule-name"><strong>超15分钟积压</strong><span class="tag">初审</span><span class="tag red">超时+单量</span></div><div class="conditions"><div class="condition-row">单个指定人账号下，从申请时间算起 <label>＞</label><input class="num-input live" value="15" data-bind="firstAge"> 分钟，且待审核订单 <label>≥</label><input class="num-input live" value="20" data-bind="firstAgeCount"> 单时触发</div><div class="condition-row"><label>指定人为空时显示并归入</label><input class="num-input" value="--" disabled><span>账号分组统计</span></div></div><div class="template"><div class="template-label"><span>飞机群消息预览</span><a href="#" class="copy">复制</a></div><div class="message"><b class="notify-text">@risk_duty</b><br>平台<b>3号台</b>，指定人：<b>fengkong003</b>，<b data-text="firstAge">15</b>分钟以上待审核单量<b data-text="firstAgeCount">20</b>单，最早订单申请时间 <b>2026-07-15 13:06:25</b></div></div></div>
         </div>
 
         <div class="panel" data-rule>
-          <div class="panel-head"><div class="panel-title"><span class="index">2</span>复审单量预警 <span class="panel-desc">按单个指定人账号统计；指定人为空的订单归入“--”账号分组</span></div><div class="head-actions"><span class="cycle">每 <input class="num-input cycle-input" value="10"> 分钟检测</span><span class="rule-status status-enabled">已开启</span><label class="switch" title="单独控制复审单量预警"><input type="checkbox" checked><span class="slider"></span></label></div></div>
+          <div class="panel-head"><div class="panel-title"><span class="index">2</span>复审单量预警 <span class="panel-desc">统计复审列表中所有状态为“待审核”的订单，不按指定人拆分</span></div><div class="head-actions"><span class="cycle">每 <input class="num-input cycle-input" value="10"> 分钟检测</span><span class="rule-status status-enabled">已开启</span><label class="switch" title="单独控制复审单量预警"><input type="checkbox" checked><span class="slider"></span></label></div></div>
           <div class="type-push"><span>推送飞机群：</span><input class="group-choice" value="复审值班群（-1002111540318）" readonly><button class="btn edit-group" data-alert="复审单量预警">配置当前类型群</button><button class="btn test-group">测试推送</button><span class="tip">该群配置仅作用于“复审单量预警”</span></div>
-          <div class="rule"><div class="rule-name"><strong>复审订单积压</strong><span class="tag">复审</span><span class="tag red">单量</span></div><div class="conditions"><div class="condition-row">单个指定人账号，状态为 <b>待审核</b> 的订单 <label>≥</label><input class="num-input live" value="30" data-bind="reviewCount"> 单时触发</div></div><div class="template"><div class="template-label"><span>飞机群消息预览</span><a href="#" class="copy">复制</a></div><div class="message"><b class="notify-text">@risk_duty</b><br>平台<b>3号台</b>，指定人：<b>fengkong003</b>，待审核单量<b data-text="reviewCount">30</b>单，最早订单申请时间 <b>2026-07-15 12:45:10</b></div></div></div>
+          <div class="rule"><div class="rule-name"><strong>复审订单积压</strong><span class="tag">复审</span><span class="tag red">单量</span></div><div class="conditions"><div class="condition-row">复审列表中所有状态为 <b>待审核</b> 的订单 <label>≥</label><input class="num-input live" value="30" data-bind="reviewCount"> 单时触发</div></div><div class="template"><div class="template-label"><span>飞机群消息预览</span><a href="#" class="copy">复制</a></div><div class="message"><b class="notify-text">@risk_duty</b><br>平台<b>3号台</b>，待审核单量<b data-text="reviewCount">30</b>单，最早订单申请时间 <b>2026-07-15 12:45:10</b></div></div></div>
         </div>
 
         <div class="panel" data-rule>
           <div class="panel-head"><div class="panel-title"><span class="index">3</span>长时间待审核预警 <span class="panel-desc">按单个指定人账号下的单个订单检测；指定人为空时归入“--”账号分组</span></div><div class="head-actions"><span class="cycle">每 <input class="num-input cycle-input" value="10"> 分钟检测</span><span class="rule-status status-enabled">已开启</span><label class="switch" title="单独控制长时间待审核预警"><input type="checkbox" checked><span class="slider"></span></label></div></div>
           <div class="type-push"><span>推送飞机群：</span><input class="group-choice" value="提现风控预警群（-1002111540277）" readonly><button class="btn edit-group" data-alert="长时间待审核预警">配置当前类型群</button><button class="btn test-group">测试推送</button><span class="tip">该群配置仅作用于“长时间待审核预警”</span></div>
-          <div class="rule"><div class="rule-name"><strong>初审超时</strong><span class="tag">待审核</span><span class="tag red">长时间</span></div><div class="conditions"><div class="condition-row">单个指定人账号下，单个订单状态为“待审核”，从申请时间算起 <label>≥</label><input class="num-input live" value="30" data-bind="pendingMins"> 分钟触发</div></div><div class="template"><div class="template-label"><span>飞机群消息预览</span><a href="#" class="copy">复制</a></div><div class="message"><b class="notify-text">@risk_duty</b><br>平台<b>3号台</b>，订单号：<b>WD20260715001873</b>，指定人：<b>--</b>，提现金额<b>8,500.00</b>，审核时长<b data-text="pendingMins">30</b>分钟</div></div></div>
-          <div class="rule"><div class="rule-name"><strong>复审超时</strong><span class="tag">复审中</span><span class="tag red">长时间</span></div><div class="conditions"><div class="condition-row">单个指定人账号下，单个订单状态为“复审中”，从申请时间算起 <label>≥</label><input class="num-input live" value="90" data-bind="reviewMins"> 分钟触发</div></div><div class="template"><div class="template-label"><span>飞机群消息预览</span><a href="#" class="copy">复制</a></div><div class="message"><b class="notify-text">@risk_duty</b><br>平台<b>3号台</b>，订单号：<b>WD20260715001529</b>，指定人：<b>fengkong003</b>，提现金额<b>20,000.00</b>，审核时长<b data-text="reviewMins">90</b>分钟</div></div></div>
+          <div class="rule"><div class="rule-name"><strong>初审超时</strong><span class="tag">待审核</span><span class="tag red">长时间</span></div><div class="conditions"><div class="condition-row">单个指定人账号下，单个订单状态为“待审核”，从申请时间算起 <label>≥</label><input class="num-input live" value="30" data-bind="pendingMins"> 分钟触发</div><div class="condition-row"><label>指定人为空时显示并归入</label><input class="num-input" value="--" disabled><span>账号分组统计</span></div></div><div class="template"><div class="template-label"><span>飞机群消息预览</span><a href="#" class="copy">复制</a></div><div class="message"><b class="notify-text">@risk_duty</b><br>平台<b>3号台</b>，订单号：<b>WD20260715001873</b>，指定人：<b>--</b>，提现金额<b>8,500.00</b>，审核时长<b data-text="pendingMins">30</b>分钟</div></div></div>
+          <div class="rule"><div class="rule-name"><strong>复审超时</strong><span class="tag">复审中</span><span class="tag red">长时间</span></div><div class="conditions"><div class="condition-row">单个指定人账号下，单个订单状态为“复审中”，从申请时间算起 <label>≥</label><input class="num-input live" value="90" data-bind="reviewMins"> 分钟触发</div><div class="condition-row"><label>指定人为空时显示并归入</label><input class="num-input" value="--" disabled><span>账号分组统计</span></div></div><div class="template"><div class="template-label"><span>飞机群消息预览</span><a href="#" class="copy">复制</a></div><div class="message"><b class="notify-text">@risk_duty</b><br>平台<b>3号台</b>，订单号：<b>WD20260715001529</b>，指定人：<b>fengkong003</b>，提现金额<b>20,000.00</b>，审核时长<b data-text="reviewMins">90</b>分钟</div></div></div>
         </div>
 
         <div class="panel" data-rule>
-          <div class="panel-head"><div class="panel-title"><span class="index">4</span>防提现卡单不进风控预警 <span class="panel-desc">对比提现查询页审核中订单量，发现可能未进入风控队列的卡单</span></div><div class="head-actions"><span class="cycle">每 <input class="num-input cycle-input" value="10"> 分钟检测</span><span class="rule-status status-enabled">已开启</span><label class="switch" title="单独控制防提现卡单预警"><input type="checkbox" checked><span class="slider"></span></label></div></div>
+          <div class="panel-head"><div class="panel-title"><span class="index">4</span>防提现卡单不进风控预警 <span class="panel-desc">统计初审＋复审的审核中订单总量，发现可能未进入风控队列的卡单</span></div><div class="head-actions"><span class="cycle">每 <input class="num-input cycle-input" value="10"> 分钟检测</span><span class="rule-status status-enabled">已开启</span><label class="switch" title="单独控制防提现卡单预警"><input type="checkbox" checked><span class="slider"></span></label></div></div>
           <div class="type-push"><span>推送飞机群：</span><input class="group-choice" value="卡单专项群（-1002111540366）" readonly><button class="btn edit-group" data-alert="防提现卡单不进风控预警">配置当前类型群</button><button class="btn test-group">测试推送</button><span class="tip">该群配置仅作用于“防提现卡单预警”</span></div>
-          <div class="rule"><div class="rule-name"><strong>审核中订单过多</strong><span class="tag">提现查询</span><span class="tag red">卡单</span></div><div class="conditions"><div class="condition-row"><label>“审核中”状态订单量 ≥</label><input class="num-input live" value="150" data-bind="stuckCount"> 单时触发</div></div><div class="template"><div class="template-label"><span>飞机群消息预览</span><a href="#" class="copy">复制</a></div><div class="message"><b class="notify-text">@risk_duty</b><br>平台<b>3号台</b>，审核中订单数 <b data-text="stuckCount">150</b></div></div></div>
+          <div class="rule"><div class="rule-name"><strong>审核中订单过多</strong><span class="tag">提现查询</span><span class="tag red">卡单</span></div><div class="conditions"><div class="condition-row"><label>初审＋复审的“审核中”状态订单量 ≥</label><input class="num-input live" value="150" data-bind="stuckCount"> 单时触发</div></div><div class="template"><div class="template-label"><span>飞机群消息预览</span><a href="#" class="copy">复制</a></div><div class="message"><b class="notify-text">@risk_duty</b><br>平台<b>3号台</b>，审核中订单数 <b data-text="stuckCount">150</b></div></div></div>
         </div>
 
         <div class="panel" data-rule>
@@ -266,8 +266,8 @@
             <table class="req-table">
               <tr><th>规则项</th><th>需求说明</th></tr>
               <tr><td>平台口径</td><td>配置仅作用于当前平台，页面不提供平台选择项；消息中的平台名称由系统自动带入。</td></tr>
-              <tr><td>指定人统计</td><td>初审、复审和长时间待审核均按<span class="req-important">单个指定人账号</span>统计。不同账号的数据互不合并。</td></tr>
-              <tr><td>空指定人</td><td>订单指定人为空时显示 <span class="req-important">--</span>，所有空指定人订单统一归入“--”账号分组参与数量及超时统计。</td></tr>
+              <tr><td>指定人统计</td><td>初审单量预警和长时间待审核预警按<span class="req-important">单个指定人账号</span>统计。复审单量预警不按指定人拆分，统计复审列表所有待审核订单。</td></tr>
+              <tr><td>空指定人</td><td>初审及长时间待审核订单的指定人为空时显示 <span class="req-important">--</span>，统一归入“--”账号分组参与数量及超时统计。</td></tr>
               <tr><td>独立启停</td><td>五种预警类型均有独立开关。关闭某一类型后停止该类型的检测和推送，其他类型不受影响。</td></tr>
               <tr><td>飞机群</td><td>五种预警类型分别维护各自的飞机群配置，不使用全局配置，也不提供群下拉选择；需通过“配置当前类型群”修改当前类型绑定的群。</td></tr>
               <tr><td>通知人</td><td>每种类型可配置独立通知人，格式为 @账号；未输入“@”时系统自动补充。支持多个通知人，多个账号之间使用英文逗号（,）分隔，消息预览必须显示全部 @通知人。</td></tr>
@@ -281,10 +281,10 @@
               <tbody>
                 <tr><td rowspan="2"><b>初审单量预警</b></td><td rowspan="2">每10分钟</td><td>单个指定人账号，状态为“待审核”</td><td>待审核订单数 ≥ 50单</td></tr>
                 <tr><td>单个指定人账号，状态为“待审核”</td><td>从申请时间算起 ＞ 15分钟，且符合条件订单数 ≥ 20单；两个条件必须同时满足</td></tr>
-                <tr><td><b>复审单量预警</b></td><td>每10分钟</td><td>单个指定人账号，状态为“待审核”</td><td>待审核订单数 ≥ 30单</td></tr>
+                <tr><td><b>复审单量预警</b></td><td>每10分钟</td><td>复审列表所有状态为“待审核”的订单，不区分指定人</td><td>待审核订单总数 ≥ 30单</td></tr>
                 <tr><td rowspan="2"><b>长时间待审核预警</b></td><td rowspan="2">每10分钟</td><td>单个指定人账号下的单个订单，状态为“待审核”</td><td>从申请时间算起 ≥ 30分钟</td></tr>
                 <tr><td>单个指定人账号下的单个订单，状态为“复审中”</td><td>从申请时间算起 ≥ 90分钟</td></tr>
-                <tr><td><b>防提现卡单不进风控</b></td><td>每10分钟</td><td>提现查询/提现出款页面，状态为“审核中”</td><td>审核中订单数 ≥ 150单</td></tr>
+                <tr><td><b>防提现卡单不进风控</b></td><td>每10分钟</td><td>提现查询/提现出款页面，合计统计初审＋复审的“审核中”订单</td><td>初审＋复审的审核中订单总数 ≥ 150单</td></tr>
                 <tr><td><b>审核效率推送</b></td><td>每1小时</td><td>近1小时内，单个初审人账号</td><td>平均审核时间 ≥ 10分钟</td></tr>
               </tbody>
             </table>
@@ -303,7 +303,7 @@
             <h3>2. 初审超15分钟积压</h3>
             <div class="req-message">@通知人　平台{平台名称}，指定人：{指定人账号}，15分钟以上待审核单量{订单数}单，最早订单申请时间 {最早申请时间}</div>
             <h3>3. 复审单量</h3>
-            <div class="req-message">@通知人　平台{平台名称}，指定人：{指定人账号}，待审核单量{订单数}单，最早订单申请时间 {最早申请时间}</div>
+            <div class="req-message">@通知人　平台{平台名称}，待审核单量{订单数}单，最早订单申请时间 {最早申请时间}</div>
             <h3>4. 长时间待审核</h3>
             <div class="req-message">@通知人　平台{平台名称}，订单号：{订单号}，指定人：{指定人账号}，提现金额{提现金额}，审核时长{分钟数}分钟</div>
             <h3>5. 防提现卡单</h3>
@@ -335,7 +335,7 @@
               <li>配置页面无平台选择项，推送消息能自动带入当前平台。</li>
               <li>五种预警可分别开启、关闭并保存状态。</li>
               <li>五种预警类型分别配置并保存各自的飞机群，不出现可切换群的下拉框，并可独立配置 @通知人。</li>
-              <li>指定人为空时显示“--”，相关订单归入“--”分组参与统计。</li>
+              <li>初审及长时间待审核的指定人为空时显示“--”，相关订单归入“--”分组参与统计；复审单量预警统计复审列表所有待审核订单，不使用指定人条件。</li>
               <li>各类预警按配置周期和最终阈值正确触发。</li>
               <li>审核效率计算结果符合规定公式。</li>
               <li>推送记录可筛选、分页、直接查看实际完整消息内容，并支持导出。</li>
