@@ -198,9 +198,10 @@
         </div>
 
         <div class="panel" data-rule>
-          <div class="panel-head"><div class="panel-title"><span class="index">4</span>防提现卡单不进风控预警 <span class="panel-desc">统计初审＋复审的审核中订单总量，发现可能未进入风控队列的卡单</span></div><div class="head-actions"><span class="cycle">每 <input class="num-input cycle-input" value="10"> 分钟检测</span><span class="rule-status status-enabled">已开启</span><label class="switch" title="单独控制防提现卡单预警"><input type="checkbox" checked><span class="slider"></span></label></div></div>
+          <div class="panel-head"><div class="panel-title"><span class="index">4</span>防提现卡单不进风控预警 <span class="panel-desc">统计初审＋复审的审核中订单总量及超时待审核积压，发现可能未进入风控队列的卡单</span></div><div class="head-actions"><span class="cycle">每 <input class="num-input cycle-input" value="10"> 分钟检测</span><span class="rule-status status-enabled">已开启</span><label class="switch" title="单独控制防提现卡单预警"><input type="checkbox" checked><span class="slider"></span></label></div></div>
           <div class="type-push"><span>推送飞机群：</span><input class="group-choice" value="卡单专项群（-1002111540366）" readonly><button class="btn edit-group" data-alert="防提现卡单不进风控预警">配置当前类型群</button><button class="btn test-group">测试推送</button><span class="tip">该群配置仅作用于“防提现卡单预警”</span></div>
           <div class="rule"><div class="rule-name"><strong>审核中订单过多</strong><span class="tag">提现查询</span><span class="tag red">卡单</span></div><div class="conditions"><div class="condition-row"><label>初审＋复审的“审核中”状态订单量 ≥</label><input class="num-input live" value="150" data-bind="stuckCount"> 单时触发</div></div><div class="template"><div class="template-label"><span>飞机群消息预览</span><a href="#" class="copy">复制</a></div><div class="message"><b class="notify-text">@risk_duty</b><br>平台<b>3号台</b>，审核中订单数 <b data-text="stuckCount">150</b></div></div></div>
+          <div class="rule"><div class="rule-name"><strong>超时待审核积压</strong><span class="tag">初审＋复审</span><span class="tag red">超时+单量</span></div><div class="conditions"><div class="condition-row">初审＋复审的订单，从申请时间算起 <label>＞</label><input class="num-input live" value="15" data-bind="stuckAge"> 分钟，且待审核订单 <label>≥</label><input class="num-input live" value="150" data-bind="stuckAgeCount"> 单时触发</div></div><div class="template"><div class="template-label"><span>飞机群消息预览</span><a href="#" class="copy">复制</a></div><div class="message"><b class="notify-text">@risk_duty</b><br>平台<b>3号台</b>，指定人：<b data-text="stuckAge">15</b>分钟以上待审核单量<b data-text="stuckAgeCount">150</b>单，最早订单申请时间 <b>2026-07-15 13:06:25</b></div></div></div>
         </div>
 
         <div class="panel" data-rule>
@@ -284,7 +285,8 @@
                 <tr><td><b>复审单量预警</b></td><td>每10分钟</td><td>复审列表所有状态为“待审核”的订单，不区分指定人</td><td>待审核订单总数 ≥ 30单</td></tr>
                 <tr><td rowspan="2"><b>长时间待审核预警</b></td><td rowspan="2">每10分钟</td><td>单个指定人账号下的单个订单，状态为“待审核”</td><td>从申请时间算起 ≥ 30分钟</td></tr>
                 <tr><td>单个指定人账号下的单个订单，状态为“复审中”</td><td>从申请时间算起 ≥ 90分钟</td></tr>
-                <tr><td><b>防提现卡单不进风控</b></td><td>每10分钟</td><td>提现查询/提现出款页面，合计统计初审＋复审的“审核中”订单</td><td>初审＋复审的审核中订单总数 ≥ 150单</td></tr>
+                <tr><td rowspan="2"><b>防提现卡单不进风控</b></td><td rowspan="2">每10分钟</td><td>提现查询/提现出款页面，合计统计初审＋复审的“审核中”订单</td><td>初审＋复审的审核中订单总数 ≥ 150单</td></tr>
+                <tr><td>初审＋复审中，从申请时间算起超过配置分钟数的待审核订单</td><td>申请时长 ＞ 15分钟，且符合条件的待审核订单数 ≥ 150单；两个条件必须同时满足</td></tr>
                 <tr><td><b>审核效率推送</b></td><td>每1小时</td><td>近1小时内，单个初审人账号</td><td>平均审核时间 ≥ 10分钟</td></tr>
               </tbody>
             </table>
@@ -308,7 +310,9 @@
             <div class="req-message">@通知人　平台{平台名称}，订单号：{订单号}，指定人：{指定人账号}，提现金额{提现金额}，审核时长{分钟数}分钟</div>
             <h3>5. 防提现卡单</h3>
             <div class="req-message">@通知人　平台{平台名称}，审核中订单数{订单数}</div>
-            <h3>6. 审核效率</h3>
+            <h3>6. 防提现卡单—超时待审核积压</h3>
+            <div class="req-message">@通知人　平台{平台名称}，指定人：{分钟数}分钟以上待审核单量{订单数}单，最早订单申请时间 {最早申请时间}</div>
+            <h3>7. 审核效率</h3>
             <div class="req-message">@通知人　平台{平台名称}，指定人：{初审人账号}，审核单量：{订单数}，平均审核时长{分钟数}分钟</div>
           </div>
 
