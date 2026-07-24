@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+  <title>虚拟币充提原型</title>
+  <style>
+    *{box-sizing:border-box} :root{--blue:#2878ff;--ink:#14213d;--muted:#8d97aa;--line:#e6ebf3;--bg:#f2f5fb}
+    body{margin:0;background:#e8edf5;color:var(--ink);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+    button,input{font:inherit}.prototype{min-height:100vh;display:grid;grid-template-columns:220px 360px;justify-content:center;gap:28px;padding:28px}
+    .control{align-self:start;position:sticky;top:28px;background:#fff;border-radius:20px;padding:20px;box-shadow:0 16px 45px #1736641c}
+    .control h1{font-size:18px;margin:0 0 5px}.control p{color:var(--muted);font-size:12px;margin:0 0 18px}
+    .flow{display:block;width:100%;text-align:left;border:1px solid var(--line);background:white;border-radius:12px;padding:12px 14px;margin:8px 0;color:#45516a;cursor:pointer}
+    .flow.active{color:white;border-color:var(--blue);background:linear-gradient(135deg,#478cff,#1769ef);box-shadow:0 8px 18px #2878ff35}
+    .hint{margin-top:16px;padding:12px;border-radius:12px;background:#f4f7fb;color:#657189;font-size:12px}
+    .requirements-note{margin-top:12px;padding:12px;border:1px solid #d8e5ff;border-radius:10px;background:#f7faff;color:#52617a;font-size:11px}.requirements-note b{display:block;color:#276be8;margin-bottom:5px}.requirements-note span{display:block;margin:3px 0}
+    .phone{position:relative;width:360px;min-height:780px;background:var(--bg);border:2px solid #333;border-radius:0;overflow:hidden;box-shadow:0 20px 60px #14213d25}
+    .status{display:none}
+    .topbar{height:45px;background:#fff;display:flex;align-items:center;justify-content:center;border-bottom:1px solid #edf0f5;position:relative}
+    .topbar .back{position:absolute;left:12px;font-size:28px;font-weight:300;top:1px}.topbar h2{font-size:17px;margin:0}.screen{display:none}.screen.active{display:block}
+    .notice{margin:10px 14px;padding:8px 12px;border-radius:11px;background:#f4f6fb;color:#ff405e;font-size:12px;white-space:nowrap;overflow:hidden}
+    .notice:before{content:"🔊";margin-right:8px}.card{background:white;margin:10px 0;padding:15px 10px}
+    #deposit>.card:first-of-type{padding:0 10px 15px;margin-top:10px}#deposit>.card:first-of-type .section-title{display:none}
+    #withdraw .card{padding-left:14px;padding-right:14px}
+    #bind .protocol-card{padding-left:16px!important;padding-right:16px!important}
+    .balance{margin:10px 14px;background:linear-gradient(135deg,#10c7ee,#3475f3 65%,#5d6ee9);height:126px;border-radius:15px;padding:16px;color:white;position:relative;overflow:hidden}
+    .balance:after{content:"";position:absolute;width:180px;height:220px;background:#ffffff1c;transform:rotate(36deg);right:25px;top:-68px}
+    .balance small{opacity:.85}.balance strong{float:right;font-size:28px}.balance b{display:block;font-size:18px;margin-top:22px}.section-title{font-size:13px;margin:0 0 12px}
+    .coins{display:grid;grid-template-columns:repeat(4,74px);gap:7px 10px}.coin{width:74px;height:63px;border:1px solid #d8deea;border-radius:5px;background:#fff;padding:7px 3px;text-align:center;position:relative;cursor:pointer}
+    .coin.active{border:1.5px solid var(--blue);color:var(--blue)}.coin .icon{display:block;width:29px;height:29px;border-radius:50%;margin:0 auto 5px;color:#fff;font-weight:800;font-size:17px;line-height:29px}
+    .usdt{background:#25b88a}.pay{background:#1b95dc}.rmb{background:#e62847}.bank{background:#222}.coin span:last-child{font-size:11px}
+    .protocol-head{display:flex;justify-content:space-between;align-items:center}.help{color:var(--blue);font-size:12px}
+    .protocols{display:grid;grid-template-columns:104px 104px;gap:10px;margin-top:9px;align-items:end}.protocol-item{width:104px;display:grid;grid-template-rows:25px 32px;gap:2px}.protocol{width:104px;height:32px;border:1px solid #d8deea;background:#fff;color:#45516a;border-radius:5px;cursor:pointer;position:relative;font-size:12px;overflow:hidden;padding:0}
+    .protocol.active{border:1.5px solid var(--blue);color:var(--blue)}.protocol.active:after{content:"✓";position:absolute;right:2px;bottom:-2px;font-size:11px;color:#fff;background:var(--blue);clip-path:polygon(100% 0,100% 100%,0 100%);padding:5px 2px 1px 7px}
+    .protocol-label{display:block;line-height:31px}.erc-mini{width:104px;height:25px;display:block;object-fit:contain;object-position:center;background:transparent}
+    .feature-front{position:relative;outline:2px dashed #ff4d4f;outline-offset:-3px}.feature-front:before{content:"前端新增";position:absolute;z-index:6;right:4px;top:3px;padding:1px 5px;border-radius:2px;background:#ff4d4f;color:#fff;font-size:9px}
+    .gesture-target{position:relative}.click-hand{position:absolute;z-index:7;right:28px;bottom:-18px;font-size:25px;filter:drop-shadow(0 2px 2px #0003);pointer-events:none;animation:fingerTap 1.35s ease-in-out infinite}.protocol:active{transform:scale(.94);background:#eef5ff}.tap-ripple{position:absolute;width:24px;height:24px;border:2px solid #2878ff;border-radius:50%;right:39px;bottom:3px;pointer-events:none;animation:ripple 1.35s ease-out infinite}
+    .channels,.amounts{display:grid;grid-template-columns:104px 104px;gap:9px}.channel{width:104px;height:43px;padding:4px 3px;background:white;border:1px solid #d8deea;border-radius:5px;font-size:11px;color:#43516c}.channel.active{border-color:var(--blue);color:var(--blue)}
+    .amounts{grid-template-columns:repeat(4,73px);gap:8px 9px}.amount{width:73px;height:38px;border:1px solid #d8deea;background:#fff;border-radius:5px;font-size:13px}.amount.active{border-color:var(--blue);color:var(--blue)}
+    .inputrow{display:flex;align-items:center;margin-top:12px;border-bottom:1px solid var(--line);padding:10px 2px}.inputrow input{border:0;outline:0;flex:1;min-width:0}.inputrow .calc{color:#ff305c}.primary{width:100%;height:48px;border:0;border-radius:8px;background:linear-gradient(90deg,#58d5f1,#4689ff);color:white;font-weight:700;font-size:16px;margin-top:12px;cursor:pointer}.primary:disabled{background:#e4e4e6}
+    .account-row{display:flex;justify-content:space-between;padding:15px 16px;background:#fff;margin-top:10px}.add{color:var(--blue);cursor:pointer}.empty{padding:16px;color:#a4aab7;background:white}
+    .form{padding:14px;background:#eef0ff;min-height:700px}.selectbox,.field{width:100%;height:54px;background:white;border:0;border-radius:6px;margin-bottom:10px;padding:0 15px;color:#45516a}.selectbox{display:flex;align-items:center;font-size:16px}.selectbox .icon{margin:0 10px 0 0}.field{outline:none}.sms{position:relative}.sms button{position:absolute;right:12px;top:16px;border:0;background:none;color:var(--blue);font-size:12px}.fine{font-size:10px;color:#ff3b4f;margin:-4px 0 5px}.tips{text-align:center;color:#2878ff;font-size:12px;margin-bottom:18px}
+    .modal-wrap{display:none;position:absolute;inset:0;background:#10182866;z-index:9;align-items:center;justify-content:center;padding:23px}.modal-wrap.show{display:flex}
+    .modal{width:100%;background:white;border-radius:20px;padding:22px 18px 17px;position:relative;box-shadow:0 20px 50px #0003;animation:pop .18s ease-out}.close{position:absolute;right:15px;top:12px;border:0;background:#eef1f6;width:26px;height:26px;border-radius:50%;color:#8690a2;cursor:pointer}
+    .prompt-image{display:block;width:100%;max-height:360px;object-fit:contain;border-radius:12px;margin-bottom:14px}.modal.config-image .close{z-index:2}.modal.config-image h3,.modal.config-image .reason,.modal.config-image .modal-note{display:none}
+    .modal h3{margin:0 0 18px;font-size:19px}.reason{display:flex;gap:11px;margin:14px 0}.reason i{font-style:normal;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#e7fbf6}.reason:nth-of-type(2) i{background:#fff7df}.reason:nth-of-type(3) i{background:#fff0f3}.reason b{display:block;font-size:13px}.reason span{display:block;color:#929bad;font-size:11px;margin-top:2px}
+    .modal-note{color:#7f899a;font-size:12px;margin:18px 0}.actions{display:grid;grid-template-columns:1fr 1.18fr;gap:9px}.secondary,.recommend{height:45px;border-radius:8px;cursor:pointer}.secondary{border:1px solid #cfd6e2;background:#fff;color:#59657a}.recommend{border:0;background:linear-gradient(135deg,#1baeff,#286aff);color:#fff;font-weight:700;box-shadow:0 5px 12px #277bff43}
+    .toast{position:absolute;left:50%;bottom:28px;transform:translateX(-50%) translateY(30px);background:#172033e8;color:white;border-radius:30px;padding:10px 18px;opacity:0;pointer-events:none;transition:.25s;z-index:12;white-space:nowrap;font-size:12px}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .admin-panel{display:none;min-height:100vh;background:#fff;color:#555;font:12px Arial,"Microsoft YaHei",sans-serif}.prototype.admin-view{display:block;padding:0}.prototype.admin-view>.control,.prototype.admin-view>.phone{display:none}.prototype.admin-view>.admin-panel{display:block}
+    .admin-top{height:39px;background:linear-gradient(90deg,#44c7ef,#3896ef);color:#fff;display:flex;align-items:center;padding:0 15px;font-size:15px}.admin-tools{display:flex;gap:5px;margin-left:16px}.admin-tool{width:27px;height:23px;border:1px solid #ffffff66;color:#fff;background:#18a3d8;border-radius:2px}.admin-user{margin-left:auto;font-size:11px}.admin-tabs{height:33px;margin-left:150px;border-bottom:1px solid #ddd;background:#fafafa;display:flex}.admin-tab{padding:8px 18px;border:0;border-right:1px solid #ddd;background:#f3f3f3;color:#1378b7}.admin-tab.active{background:#e9f1f5}
+    .admin-shell{display:grid;grid-template-columns:150px 1fr;min-height:calc(100vh - 72px)}.admin-side{border-right:1px solid #ccc;background:#fafafa}.admin-side h4{margin:0;padding:10px 12px;border-bottom:1px solid #ddd;color:#2486bc}.admin-menu{padding:8px 18px;border-bottom:1px solid #ddd}.admin-menu.active{color:#148bd0;background:#fff;border-left:3px solid #2bb4e9}
+    .admin-main{padding:16px 18px}.admin-operation-nav{border-bottom:1px solid #ddd;padding:0 10px 8px;display:flex;flex-wrap:wrap;gap:3px 18px;line-height:25px}.admin-operation-nav span{color:#078edd;white-space:nowrap}.admin-operation-nav .config-entry{border:2px solid #ef392d;border-radius:3px;padding:0 14px;background:#fff6f5;color:#d92a20;font-weight:700}.admin-title{border:1px solid #ddd;border-bottom:0;display:inline-block;padding:8px 12px;margin-top:16px}.admin-subtabs{border-top:1px solid #ddd;border-bottom:1px solid #ddd;padding:9px 10px;display:flex;gap:22px;color:#078edd}.admin-subtab{border:0;background:none;color:#078edd;padding:5px 7px;cursor:pointer}.admin-subtab.active{color:#555;border:1px solid #ddd;background:#fff}
+    .feature-back{position:relative;border:2px solid #168fe5!important;background:#f6fbff}.feature-back:before{content:"后台新增";position:absolute;z-index:4;right:8px;top:8px;background:#168fe5;color:#fff;padding:2px 7px;border-radius:2px}.config-form{max-width:720px;padding:32px 72px 23px}.form-row{display:grid;grid-template-columns:120px 1fr;align-items:start;margin-bottom:20px}.form-row>label{text-align:right;padding:7px 14px 0 0}.admin-input,.admin-select,.admin-textarea{border:1px solid #bbb;border-radius:3px;padding:7px 9px;background:#fff}.admin-input{width:220px;height:32px}.admin-textarea{width:335px;height:110px;resize:none}.radio-group{padding-top:6px}.radio-group label{margin-right:14px}.admin-help{color:#888;margin-top:7px}.upload-preview{width:180px;min-height:90px;border:1px dashed #bbb;background:#f7f7f7;display:grid;place-items:center;margin-bottom:7px;overflow:hidden}.upload-preview img{display:block;max-width:100%;max-height:130px}.savebar{border-top:1px solid #ddd;background:#f5f5f5;padding:16px 144px}.admin-save,.back-front{border:1px solid #1689c2;border-radius:3px;background:linear-gradient(#42b9ec,#239ad2);color:#fff;padding:6px 16px;cursor:pointer}.back-front{position:fixed;right:18px;bottom:18px;z-index:20;box-shadow:0 5px 16px #0002}
+    .admin-requirements{margin:18px 0 0;max-width:900px;border:1px solid #f0bd69;background:#fffaf0;padding:14px 18px;color:#666}.admin-requirements h3{margin:0 0 8px;color:#c57916;font-size:14px}.admin-requirements ol{margin:0;padding-left:20px}.admin-requirements li{margin:5px 0}
+    @keyframes pop{from{transform:scale(.92);opacity:.4}}@keyframes fingerTap{0%,100%{transform:translate(8px,8px) scale(1)}45%{transform:translate(0,0) scale(.88)}65%{transform:translate(0,0) scale(.88)}}@keyframes ripple{0%,35%{transform:scale(.2);opacity:0}50%{opacity:.8}90%,100%{transform:scale(1.7);opacity:0}}@media(max-width:650px){body{background:#fff}.prototype{display:block;padding:0}.control{display:none}.phone{width:100%;min-height:100vh;border:0;max-width:360px;margin:auto;box-shadow:none}}
+  </style>
+</head>
+<body>
+  <main class="prototype">
+    <aside class="control">
+      <h1>虚拟币充提交互原型</h1><p>选择流程并点击 TRC20 查看提示</p>
+      <div class="flows">
+        <button class="flow active" data-screen="deposit">1. 虚拟币充值</button>
+        <button class="flow" data-screen="bind">2. 绑定提现账户</button>
+        <button class="flow" data-screen="withdraw">3. 虚拟币提现</button>
+        <button class="flow" id="openAdmin">4. 后台配置新增功能</button>
+      </div>
+      <div class="hint">演示逻辑：当日选择 TRC20 次数未达上限时弹出推荐 ERC20 提示。</div>
+      <div class="requirements-note"><b>需求说明</b><span>红色虚线框：前端新增功能</span><span>蓝色实线框：后台新增功能</span><span>适用：充值、绑定提现账户、提现</span></div>
+    </aside>
+    <section class="phone">
+      <div class="status"><span>9:41</span><span>● ● ● 100%</span></div>
+
+      <div class="screen active" id="deposit">
+        <header class="topbar"><span class="back">‹</span><h2>存款</h2></header>
+        <div class="notice">温馨提示：请确认充值网络与钱包网络一致</div>
+        <section class="card">
+          <p class="section-title">请选择充值方式：</p>
+          <div class="coins">
+            <button class="coin"><i class="icon pay">C</i><span>CGpay</span></button><button class="coin active"><i class="icon usdt">₮</i><span>虚拟币充值</span></button><button class="coin"><i class="icon pay">支</i><span>支付宝秒存</span></button><button class="coin"><i class="icon rmb">¥</i><span>数字RMB秒存</span></button>
+            <button class="coin"><i class="icon pay">支</i><span>支付宝充值</span></button><button class="coin"><i class="icon pay">卡</i><span>卡密充值</span></button><button class="coin"><i class="icon usdt">微</i><span>微信充值</span></button><button class="coin"><i class="icon rmb">¥</i><span>数字人民币</span></button>
+            <button class="coin"><i class="icon bank">银</i><span>银联扫码</span></button><button class="coin"><i class="icon bank">Q</i><span>QQ扫码</span></button>
+          </div>
+        </section>
+        <section class="card protocol-card feature-front"></section>
+        <section class="card">
+          <p class="section-title">请选择通道：</p><div class="channels"><button class="channel active">ERC小额充值<br>100–3000</button><button class="channel">ERC大额充值<br>3001–1000000</button></div>
+        </section>
+        <section class="card"><p class="section-title">存款金额：<span style="float:right">汇率：<b style="color:#ff315b">6.76</b></span></p><div class="amounts"></div><div class="inputrow">￥&nbsp;<input id="depositAmount" placeholder="请输入金额(100~3000)" inputmode="numeric"><span class="calc">≈ 0.000 USDT</span></div><button class="primary" data-toast="充值信息已确认">确认存款</button></section>
+      </div>
+
+      <div class="screen" id="withdraw">
+        <header class="topbar"><span class="back">‹</span><h2>取款</h2></header>
+        <div class="notice">一致支付账户否则不到账，取款过程中遇到支付宝...</div>
+        <div class="balance"><small>▣ 账户总资产</small><strong>¥303.00</strong><b>93.00</b><small>主账号余额</small></div>
+        <section class="card"><p class="section-title">取款类型</p><div class="coins"><button class="coin"><i class="icon pay">C</i><span>CGPay</span></button><button class="coin active"><i class="icon usdt">₮</i><span>虚拟币</span></button><button class="coin"><i class="icon pay">支</i><span>支付宝</span></button><button class="coin"><i class="icon rmb">¥</i><span>数字人民币</span></button><button class="coin"><i class="icon bank">卡</i><span>银行卡</span></button><button class="coin"><i class="icon usdt">微</i><span>微信</span></button></div></section>
+        <section class="card protocol-card feature-front"></section>
+        <div class="account-row"><span>取款账户</span><span class="add" data-go="bind">⊕ 添加</span></div><div class="empty">当前暂未添加提现账户，点击右侧添加即可</div>
+      </div>
+
+      <div class="screen" id="bind">
+        <header class="topbar"><span class="back" data-go="withdraw">‹</span><h2>添加提现账户</h2></header>
+        <div class="form">
+          <div class="selectbox"><i class="icon usdt">₮</i>虚拟币 <span style="margin-left:auto">▼</span></div>
+          <section class="card protocol-card feature-front" style="margin:0 0 10px;border-radius:7px"></section>
+          <input class="field" placeholder="请输入钱包地址">
+          <input class="field" placeholder="1******71" inputmode="tel">
+          <div class="sms"><input class="field" placeholder="请输入验证码" inputmode="numeric"><button data-toast="验证码已发送">发送验证码</button></div>
+          <p class="fine">说明：收不到验证码可通过下方短信绑定账户</p>
+          <p class="tips">提示:请勿从苹果商店直接下载 okex 或火币交易所！<br>只能通过官网下载！</p>
+          <button class="primary" data-toast="提现账户添加成功">确认添加</button>
+          <p class="tips" style="margin-top:12px;color:#ff334f">未收到验证码，请点击 <u style="color:#2878ff">短信绑定账户</u></p>
+        </div>
+      </div>
+
+      <div class="modal-wrap" id="trcModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal config-image feature-front"><button class="close" aria-label="关闭">×</button><h3 id="modalTitle">推荐使用 ERC20 网络</h3>
+          <img class="prompt-image" id="promptImage" src="default-trc20-prompt.png" alt="后台配置的 TRC20 提示内容">
+          <div class="reason"><i>◷</i><div><b>到账速度更快</b><span>ERC20 网络处理更快，预计更快到账</span></div></div>
+          <div class="reason"><i>◎</i><div><b>网络稳定性更高</b><span>交易拥堵更少，链上确认更稳定</span></div></div>
+          <div class="reason"><i>♧</i><div><b>充值赠送 3% 福利</b><span>选择 ERC20 网络可享专属活动</span></div></div>
+          <p class="modal-note">今日仍可选择 TRC20。为获得更好的充提体验，建议优先使用 ERC20 网络。</p>
+          <div class="actions"><button class="secondary" id="keepTrc">继续使用 TRC20</button><button class="recommend" id="useErc">使用 ERC20（推荐）</button></div>
+        </div>
+      </div>
+      <div class="toast" id="toast"></div>
+    </section>
+
+    <section class="admin-panel" id="adminPanel">
+      <header class="admin-top">群版本平台管理系统 v0.22
+        <span class="admin-tools"><button class="admin-tool">⌂</button><button class="admin-tool">▦</button><button class="admin-tool">✎</button></span>
+        <span class="admin-user">提现催单：0　优惠大厅审核预警(0)　异常用户列表：0　　您好，bulu⌄</span>
+      </header>
+      <nav class="admin-tabs"><span class="admin-tab">首页</span><span class="admin-tab">充值复审日志</span><span class="admin-tab">财务入账</span><span class="admin-tab active">TRC20提示配置 ×</span></nav>
+      <div class="admin-shell">
+        <aside class="admin-side"><h4>▣ 账务中心　›</h4><div class="admin-menu">› 综合支付</div><div class="admin-menu">› 充值管理</div><div class="admin-menu">› 提现管理</div><div class="admin-menu">　× 提现记录</div><div class="admin-menu">　× 提现费率</div><div class="admin-menu">　× 提现类型配置</div><div class="admin-menu">› 匹配交易管理</div><div class="admin-menu">› 三方平台管理</div><div class="admin-menu active">　× TRC20提示配置</div><div class="admin-menu">› 活动管理</div><div class="admin-menu">› 代理公告</div></aside>
+        <main class="admin-main">
+          <div class="admin-operation-nav"><span>新增提现记录</span><span>特殊订单</span><span>匹配异常操作日志</span><span>提现设置</span><span>活动提现设置</span><span>费率设置</span><span>账户异常管理</span><span>财务导出记录</span><span>代付通道列表</span><span>提现银行卡</span><span>代付推送配置</span><span>代付推送处理日志</span><span>提现订单分流设置</span><span>自动匹配设置</span><span>自动代付设置</span><span>自动取消提现配置</span><span class="config-entry">TRC20提示配置</span><span>三方代付群状态变化日志</span><span>提现取消和提现退回原因配置</span></div>
+          <div class="admin-title">TRC20提示配置</div>
+          <div class="admin-subtabs"><button class="admin-subtab active" data-config="withdraw">虚拟币提现</button><button class="admin-subtab" data-config="bind">绑定虚拟币提现账户</button><button class="admin-subtab" data-config="deposit">虚拟币充值</button></div>
+          <div class="config-form feature-back">
+            <div class="form-row"><label>提示开关：</label><div class="radio-group"><label><input type="radio" name="enabled" value="true" checked> 开启</label><label><input type="radio" name="enabled" value="false"> 关闭</label><div class="admin-help">* 开启后，用户选择 TRC20 且当日次数未达到配置值时弹出提示。</div></div></div>
+            <div class="form-row"><label>当日提示次数：</label><div><input class="admin-input" id="adminLimit" type="number" min="0" max="99" value="3"><div class="admin-help">当日已提示次数小于该值时显示，达到后不再提示。</div></div></div>
+            <div class="form-row"><label>提示内容类型：</label><div class="radio-group"><label><input type="radio" checked> 图片</label><div class="admin-help">前台弹窗内容使用后台上传的图片。</div></div></div>
+            <div class="form-row"><label>提示图片：</label><div><div class="upload-preview"><img id="adminPreview" src="default-trc20-prompt.png" alt="提示图片预览"></div><input id="adminUpload" type="file" accept="image/png,image/jpeg,image/webp"></div></div>
+          </div>
+          <div class="savebar"><button class="admin-save" id="saveConfig">保存</button></div>
+          <section class="admin-requirements"><h3>需求说明</h3><ol><li>虚拟币充值、绑定虚拟币提现账户、虚拟币提现三个场景分别独立配置。</li><li>用户点击 TRC20 时，若提示开关开启且当日已提示次数小于配置次数，则展示后台上传的图片弹窗。</li><li>达到当日提示次数后不再弹窗，直接选中 TRC20；三个场景的次数分别统计。</li><li>弹窗底部提供“继续使用 TRC20”和“使用 ERC20（推荐）”两个操作按钮。</li><li>ERC20 按钮上方的动态图片保持常驻显示，不受当前协议选择状态影响。</li></ol></section>
+        </main>
+      </div>
+      <button class="back-front" id="backFront">返回前台原型</button>
+    </section>
+  </main>
+  <script>
+    const screens=document.querySelectorAll('.screen'), flows=document.querySelectorAll('.flow'), modal=document.getElementById('trcModal'), toast=document.getElementById('toast');
+    const defaultImage='default-trc20-prompt.png';
+    const defaultConfigs={deposit:{enabled:true,limit:3,image:defaultImage},bind:{enabled:true,limit:3,image:defaultImage},withdraw:{enabled:true,limit:3,image:defaultImage}};
+    let configs=JSON.parse(localStorage.getItem('trc20PromptConfigs')||'null')||defaultConfigs;
+    let current='deposit', pendingCard=null,adminScene='withdraw',draftImage='';
+    function protocolMarkup(){return `<div class="protocol-head"><span class="section-title">请选择钱包协议：</span><span class="help">什么是钱包协议？</span></div><div class="protocols"><div class="protocol-item"><video class="erc-mini" src="erc20-recommend.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video><button class="protocol active" data-protocol="ERC20"><span class="protocol-label">ERC20</span></button></div><div class="protocol-item gesture-target"><span></span><button class="protocol" data-protocol="TRC20"><span class="protocol-label">TRC20</span></button><span class="tap-ripple"></span><span class="click-hand">☝</span></div></div>`}
+    document.querySelectorAll('.protocol-card').forEach(x=>x.innerHTML=protocolMarkup());
+    function showScreen(id){current=id;screens.forEach(s=>s.classList.toggle('active',s.id===id));flows.forEach(f=>f.classList.toggle('active',f.dataset.screen===id))}
+    flows.forEach(f=>f.onclick=()=>showScreen(f.dataset.screen));document.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>showScreen(x.dataset.go));
+    function todayCountKey(scene){return 'trc20PromptCount:v2:'+new Date().toISOString().slice(0,10)+':'+scene}
+    document.addEventListener('click',event=>{
+      const btn=event.target.closest('[data-protocol]');if(!btn)return;
+      const card=btn.closest('.protocol-card');
+      if(btn.dataset.protocol==='TRC20'){
+        pendingCard=card;
+        const cfg=configs[current]||defaultConfigs[current],key=todayCountKey(current),count=Number(localStorage.getItem(key)||0);
+        if(cfg.enabled&&count<Number(cfg.limit)){document.getElementById('promptImage').src=cfg.image||defaultImage;localStorage.setItem(key,count+1);modal.classList.add('show')}
+        else{setProtocol(card,'TRC20');notify(cfg.enabled?'今日提示次数已达上限':'当前场景提示已关闭')}
+      }else setProtocol(card,'ERC20')
+    });
+    function setProtocol(card,type){card.querySelectorAll('.protocol').forEach(b=>b.classList.toggle('active',b.dataset.protocol===type));card.querySelector('.erc-mini').play().catch(()=>{})}
+    document.getElementById('keepTrc').onclick=()=>{setProtocol(pendingCard,'TRC20');modal.classList.remove('show');notify('已继续使用 TRC20')};
+    document.getElementById('useErc').onclick=()=>{setProtocol(pendingCard,'ERC20');modal.classList.remove('show');notify('已切换至推荐的 ERC20 网络')};
+    document.querySelector('.close').onclick=()=>modal.classList.remove('show');modal.onclick=e=>{if(e.target===modal)modal.classList.remove('show')};
+    function notify(text){toast.textContent=text;toast.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>toast.classList.remove('show'),1800)}
+    document.querySelectorAll('[data-toast]').forEach(x=>x.onclick=()=>notify(x.dataset.toast));
+    const amounts=[100,200,500,1000,1500,2000,2500,3000], box=document.querySelector('.amounts'), input=document.getElementById('depositAmount'), calc=document.querySelector('.calc');
+    amounts.forEach(n=>{const b=document.createElement('button');b.className='amount';b.textContent='￥ '+n;b.onclick=()=>{document.querySelectorAll('.amount').forEach(x=>x.classList.remove('active'));b.classList.add('active');input.value=n;updateCalc()};box.appendChild(b)});
+    function updateCalc(){const n=Number(input.value)||0;calc.textContent='≈ '+(n/6.76).toFixed(3)+' USDT'}input.oninput=updateCalc;
+    const prototype=document.querySelector('.prototype'),adminLimit=document.getElementById('adminLimit'),adminPreview=document.getElementById('adminPreview'),adminUpload=document.getElementById('adminUpload');
+    document.getElementById('openAdmin').onclick=()=>prototype.classList.add('admin-view');
+    document.getElementById('backFront').onclick=()=>prototype.classList.remove('admin-view');
+    function loadAdmin(scene){
+      adminScene=scene;const cfg=configs[scene]||defaultConfigs[scene];draftImage=cfg.image||defaultImage;
+      document.querySelectorAll('[data-config]').forEach(b=>b.classList.toggle('active',b.dataset.config===scene));
+      document.querySelector(`input[name="enabled"][value="${String(cfg.enabled)}"]`).checked=true;
+      adminLimit.value=cfg.limit;adminPreview.src=draftImage;
+    }
+    document.querySelectorAll('[data-config]').forEach(b=>b.onclick=()=>loadAdmin(b.dataset.config));
+    adminUpload.onchange=()=>{
+      const file=adminUpload.files[0];if(!file)return;
+      if(file.size>2*1024*1024){alert('图片不能超过 2MB');adminUpload.value='';return}
+      const reader=new FileReader();reader.onload=()=>{draftImage=reader.result;adminPreview.src=draftImage};reader.readAsDataURL(file);
+    };
+    document.getElementById('saveConfig').onclick=()=>{
+      configs[adminScene]={enabled:document.querySelector('input[name="enabled"]:checked').value==='true',limit:Math.max(0,Number(adminLimit.value)||0),image:draftImage||defaultImage};
+      localStorage.setItem('trc20PromptConfigs',JSON.stringify(configs));notifyAdmin('配置保存成功');
+    };
+    function notifyAdmin(text){const b=document.getElementById('saveConfig'),old=b.textContent;b.textContent='✓ '+text;b.disabled=true;setTimeout(()=>{b.textContent=old;b.disabled=false},1300)}
+    loadAdmin('withdraw');
+  </script>
+</body>
+</html>
