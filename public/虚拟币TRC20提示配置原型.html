@@ -169,7 +169,7 @@
         pendingCard=card;
         const cfg=configs[current]||defaultConfigs[current],key=todayCountKey(current),count=Number(localStorage.getItem(key)||0);
         if(cfg.enabled&&count<Number(cfg.limit)){document.getElementById('promptImage').src=cfg.image||defaultImage;localStorage.setItem(key,count+1);modal.classList.add('show')}
-        else{setProtocol(card,'TRC20');notify(cfg.enabled?'今日提示次数已达上限':'当前场景提示已关闭')}
+        else{setProtocol(card,'TRC20')}
       }else setProtocol(card,'ERC20')
     });
     function setProtocol(card,type){card.querySelectorAll('.protocol').forEach(b=>b.classList.toggle('active',b.dataset.protocol===type));card.querySelector('.erc-mini').play().catch(()=>{})}
