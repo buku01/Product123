@@ -51,7 +51,8 @@
     .admin-shell{display:grid;grid-template-columns:150px 1fr;min-height:calc(100vh - 72px)}.admin-side{border-right:1px solid #ccc;background:#fafafa}.admin-side h4{margin:0;padding:10px 12px;border-bottom:1px solid #ddd;color:#2486bc}.admin-menu{padding:8px 18px;border-bottom:1px solid #ddd}.admin-menu.active{color:#148bd0;background:#fff;border-left:3px solid #2bb4e9}
     .admin-main{padding:16px 18px}.admin-operation-nav{border-bottom:1px solid #ddd;padding:0 10px 8px;display:flex;flex-wrap:wrap;gap:3px 18px;line-height:25px}.admin-operation-nav span{color:#078edd;white-space:nowrap}.admin-operation-nav .config-entry{border:2px solid #ef392d;border-radius:3px;padding:0 14px;background:#fff6f5;color:#d92a20;font-weight:700}.admin-title{border:1px solid #ddd;border-bottom:0;display:inline-block;padding:8px 12px;margin-top:16px}.admin-subtabs{border-top:1px solid #ddd;border-bottom:1px solid #ddd;padding:9px 10px;display:flex;gap:22px;color:#078edd}.admin-subtab{border:0;background:none;color:#078edd;padding:5px 7px;cursor:pointer}.admin-subtab.active{color:#555;border:1px solid #ddd;background:#fff}
     .feature-back{position:relative;border:2px solid #168fe5!important;background:#f6fbff}.feature-back:before{content:"后台新增";position:absolute;z-index:4;right:8px;top:8px;background:#168fe5;color:#fff;padding:2px 7px;border-radius:2px}.config-form{max-width:720px;padding:32px 72px 23px}.form-row{display:grid;grid-template-columns:120px 1fr;align-items:start;margin-bottom:20px}.form-row>label{text-align:right;padding:7px 14px 0 0}.admin-input,.admin-select,.admin-textarea{border:1px solid #bbb;border-radius:3px;padding:7px 9px;background:#fff}.admin-input{width:220px;height:32px}.admin-textarea{width:335px;height:110px;resize:none}.radio-group{padding-top:6px}.radio-group label{margin-right:14px}.admin-help{color:#888;margin-top:7px}.upload-preview{width:180px;min-height:90px;border:1px dashed #bbb;background:#f7f7f7;display:grid;place-items:center;margin-bottom:7px;overflow:hidden}.upload-preview img{display:block;max-width:100%;max-height:130px}.savebar{border-top:1px solid #ddd;background:#f5f5f5;padding:16px 144px}.admin-save,.back-front{border:1px solid #1689c2;border-radius:3px;background:linear-gradient(#42b9ec,#239ad2);color:#fff;padding:6px 16px;cursor:pointer}.back-front{position:fixed;right:18px;bottom:18px;z-index:20;box-shadow:0 5px 16px #0002}
-    .admin-requirements{margin:18px 0 0;max-width:900px;border:1px solid #f0bd69;background:#fffaf0;padding:14px 18px;color:#666}.admin-requirements h3{margin:0 0 8px;color:#c57916;font-size:14px}.admin-requirements ol{margin:0;padding-left:20px}.admin-requirements li{margin:5px 0}
+    .logic-and-row{display:grid;grid-template-columns:120px 1fr;margin:-10px 0 10px}.logic-and{justify-self:start;margin-left:14px;display:inline-flex;align-items:center;gap:7px;color:#157cc1;font-weight:700}.logic-and:before,.logic-and:after{content:"";width:34px;height:1px;background:#69afe0}.logic-and em{font-style:normal;border:1px solid #168fe5;border-radius:13px;background:#eaf7ff;padding:3px 12px}.logic-explain{font-weight:400;color:#718292}.admin-requirements{margin:18px 0 0;max-width:900px;border:1px solid #f0bd69;background:#fffaf0;padding:14px 18px;color:#666}.admin-requirements h3{margin:0 0 8px;color:#c57916;font-size:14px}.admin-requirements ol{margin:0;padding-left:20px}.admin-requirements li{margin:5px 0}
+    .dual-limits{display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:54px;margin:0 0 14px}.limit-box label{display:block;margin-bottom:7px;color:#555}.limit-box .admin-input{width:100%}.limit-example{margin:0 0 22px;padding:11px 14px;border-left:3px solid #36a4e8;background:#eef8ff;color:#607386;line-height:1.8}.limit-example b{color:#157cc1}.limit-example ul{margin:5px 0 0;padding-left:20px}.limit-example span{color:#159447;font-weight:700}.limit-example .no{color:#e04b43}
     @keyframes pop{from{transform:scale(.92);opacity:.4}}@keyframes fingerTap{0%,100%{transform:translate(8px,8px) scale(1)}45%{transform:translate(0,0) scale(.88)}65%{transform:translate(0,0) scale(.88)}}@keyframes ripple{0%,35%{transform:scale(.2);opacity:0}50%{opacity:.8}90%,100%{transform:scale(1.7);opacity:0}}@media(max-width:650px){body{background:#fff}.prototype{display:block;padding:0}.control{display:none}.phone{width:100%;min-height:100vh;border:0;max-width:360px;margin:auto;box-shadow:none}}
   </style>
 </head>
@@ -139,13 +140,17 @@
           <div class="admin-title">TRC20提示配置</div>
           <div class="admin-subtabs"><button class="admin-subtab active" data-config="withdraw">虚拟币提现</button><button class="admin-subtab" data-config="bind">绑定虚拟币提现账户</button><button class="admin-subtab" data-config="deposit">虚拟币充值</button></div>
           <div class="config-form feature-back">
-            <div class="form-row"><label>提示开关：</label><div class="radio-group"><label><input type="radio" name="enabled" value="true" checked> 开启</label><label><input type="radio" name="enabled" value="false"> 关闭</label><div class="admin-help">* 开启后，用户选择 TRC20 且当日次数未达到配置值时弹出提示。</div></div></div>
-            <div class="form-row"><label>当日提示次数：</label><div><input class="admin-input" id="adminLimit" type="number" min="0" max="99" value="3"><div class="admin-help">当日已提示次数小于该值时显示，达到后不再提示。</div></div></div>
+            <div class="form-row"><label>提示开关：</label><div class="radio-group"><label><input type="radio" name="enabled" value="true" checked> 开启</label><label><input type="radio" name="enabled" value="false"> 关闭</label><div class="admin-help">* 开启后才进行提示条件判断；关闭后不显示提示。</div></div></div>
+            <div class="dual-limits">
+              <div class="limit-box"><label>总累计提示次数：</label><input class="admin-input" id="adminTotalLimit" type="number" min="0" max="9999" value="20"><div class="admin-help">用户总累计已展示次数小于该值时允许提示；达到或超过该值后，后续不再提示。</div></div>
+              <div class="limit-box"><label>当日提示次数：</label><input class="admin-input" id="adminDailyLimit" type="number" min="0" max="99" value="3"><div class="admin-help">用户当日已展示次数小于该值时允许提示；达到或超过该值后，当日不再提示，次日重新计数。</div></div>
+            </div>
+            <div class="limit-example"><b>判断示例：</b>配置总累计提示次数 20、当日提示次数 3。<ul><li>总累计 10 次、当日 2 次：<span>展示弹窗</span>；展示后计数更新为总累计 11 次、当日 3 次。</li><li>总累计 20 次、当日 0 次：总累计已达上限，<span class="no">不展示弹窗</span>。</li><li>总累计 10 次、当日 3 次：当日已达上限，<span class="no">不展示弹窗</span>。</li><li>总累计 20 次、当日 3 次：两个条件均已达上限，<span class="no">不展示弹窗</span>。</li><li>次日当日次数重置为 0；若总累计仍小于 20，则可继续展示，若总累计已达到 20，则仍不展示。</li></ul></div>
             <div class="form-row"><label>提示内容类型：</label><div class="radio-group"><label><input type="radio" checked> 图片</label><div class="admin-help">前台弹窗内容使用后台上传的图片。</div></div></div>
             <div class="form-row"><label>提示图片：</label><div><div class="upload-preview"><img id="adminPreview" src="default-trc20-prompt.png" alt="提示图片预览"></div><input id="adminUpload" type="file" accept="image/png,image/jpeg,image/webp"></div></div>
           </div>
           <div class="savebar"><button class="admin-save" id="saveConfig">保存</button></div>
-          <section class="admin-requirements"><h3>需求说明</h3><ol><li>虚拟币充值、绑定虚拟币提现账户、虚拟币提现三个场景分别独立配置。</li><li>用户点击 TRC20 时，若提示开关开启且当日已提示次数小于配置次数，则展示后台上传的图片弹窗。</li><li>达到当日提示次数后不再弹窗，直接选中 TRC20；三个场景的次数分别统计。</li><li>弹窗底部提供“继续使用 TRC20”和“使用 ERC20（推荐）”两个操作按钮。</li><li>ERC20 按钮上方的动态图片保持常驻显示，不受当前协议选择状态影响。</li></ol></section>
+          <section class="admin-requirements"><h3>技术说明</h3><ol><li>统计维度：按用户、业务场景分别统计；虚拟币充值、绑定虚拟币提现账户、虚拟币提现互不影响。</li><li>判断顺序：先判断提示开关，再判断总累计次数，最后判断当日次数。</li><li>展示条件：提示开关开启，并且以下两项均未达到配置上限：① 总累计已展示次数小于总累计提示次数；② 当日已展示次数小于当日提示次数。全部满足时展示弹窗，任意一项不满足时不展示。</li><li>计数规则：弹窗成功展示后，总累计已展示次数和当日已展示次数同时加 1；用户仅点击 TRC20 但未展示弹窗时不计数。</li><li>重置规则：当日已展示次数在次日重新计数；总累计已展示次数不随日期清零。</li><li>未满足条件：不展示弹窗，直接选中 TRC20，且不向用户显示额外提示。</li><li>弹窗操作：用户可选择“继续使用 TRC20”或“使用 ERC20（推荐）”。</li><li>ERC20 动态图片常驻显示，不受当前协议选择状态影响。</li></ol></section>
         </main>
       </div>
       <button class="back-front" id="backFront">返回前台原型</button>
@@ -154,21 +159,26 @@
   <script>
     const screens=document.querySelectorAll('.screen'), flows=document.querySelectorAll('.flow'), modal=document.getElementById('trcModal'), toast=document.getElementById('toast');
     const defaultImage='default-trc20-prompt.png';
-    const defaultConfigs={deposit:{enabled:true,limit:3,image:defaultImage},bind:{enabled:true,limit:3,image:defaultImage},withdraw:{enabled:true,limit:3,image:defaultImage}};
+    const defaultConfigs={deposit:{enabled:true,dailyLimit:3,totalLimit:20,image:defaultImage},bind:{enabled:true,dailyLimit:3,totalLimit:20,image:defaultImage},withdraw:{enabled:true,dailyLimit:3,totalLimit:20,image:defaultImage}};
     let configs=JSON.parse(localStorage.getItem('trc20PromptConfigs')||'null')||defaultConfigs;
+    Object.keys(configs).forEach(scene=>{if(configs[scene].totalLimit==null||configs[scene].totalLimit===10)configs[scene].totalLimit=20;if(configs[scene].dailyLimit==null||configs[scene].dailyLimit===10)configs[scene].dailyLimit=3});
+    localStorage.setItem('trc20PromptConfigs',JSON.stringify(configs));
     let current='deposit', pendingCard=null,adminScene='withdraw',draftImage='';
     function protocolMarkup(){return `<div class="protocol-head"><span class="section-title">请选择钱包协议：</span><span class="help">什么是钱包协议？</span></div><div class="protocols"><div class="protocol-item"><video class="erc-mini" src="erc20-recommend.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video><button class="protocol active" data-protocol="ERC20"><span class="protocol-label">ERC20</span></button></div><div class="protocol-item gesture-target"><span></span><button class="protocol" data-protocol="TRC20"><span class="protocol-label">TRC20</span></button><span class="tap-ripple"></span><span class="click-hand">☝</span></div></div>`}
     document.querySelectorAll('.protocol-card').forEach(x=>x.innerHTML=protocolMarkup());
     function showScreen(id){current=id;screens.forEach(s=>s.classList.toggle('active',s.id===id));flows.forEach(f=>f.classList.toggle('active',f.dataset.screen===id))}
     flows.forEach(f=>f.onclick=()=>showScreen(f.dataset.screen));document.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>showScreen(x.dataset.go));
     function todayCountKey(scene){return 'trc20PromptCount:v2:'+new Date().toISOString().slice(0,10)+':'+scene}
+    function totalCountKey(scene){return 'trc20PromptTotalCount:v1:'+scene}
     document.addEventListener('click',event=>{
       const btn=event.target.closest('[data-protocol]');if(!btn)return;
       const card=btn.closest('.protocol-card');
       if(btn.dataset.protocol==='TRC20'){
         pendingCard=card;
-        const cfg=configs[current]||defaultConfigs[current],key=todayCountKey(current),count=Number(localStorage.getItem(key)||0);
-        if(cfg.enabled&&count<Number(cfg.limit)){document.getElementById('promptImage').src=cfg.image||defaultImage;localStorage.setItem(key,count+1);modal.classList.add('show')}
+        const cfg=configs[current]||defaultConfigs[current],dailyKey=todayCountKey(current),totalKey=totalCountKey(current);
+        const dailyCount=Number(localStorage.getItem(dailyKey)||0),totalCount=Number(localStorage.getItem(totalKey)||0);
+        const dailyLimit=Number(cfg.dailyLimit??cfg.limit??3),totalLimit=Number(cfg.totalLimit??20);
+        if(cfg.enabled&&dailyCount<dailyLimit&&totalCount<totalLimit){document.getElementById('promptImage').src=cfg.image||defaultImage;localStorage.setItem(dailyKey,dailyCount+1);localStorage.setItem(totalKey,totalCount+1);modal.classList.add('show')}
         else{setProtocol(card,'TRC20')}
       }else setProtocol(card,'ERC20')
     });
@@ -181,14 +191,14 @@
     const amounts=[100,200,500,1000,1500,2000,2500,3000], box=document.querySelector('.amounts'), input=document.getElementById('depositAmount'), calc=document.querySelector('.calc');
     amounts.forEach(n=>{const b=document.createElement('button');b.className='amount';b.textContent='￥ '+n;b.onclick=()=>{document.querySelectorAll('.amount').forEach(x=>x.classList.remove('active'));b.classList.add('active');input.value=n;updateCalc()};box.appendChild(b)});
     function updateCalc(){const n=Number(input.value)||0;calc.textContent='≈ '+(n/6.76).toFixed(3)+' USDT'}input.oninput=updateCalc;
-    const prototype=document.querySelector('.prototype'),adminLimit=document.getElementById('adminLimit'),adminPreview=document.getElementById('adminPreview'),adminUpload=document.getElementById('adminUpload');
-    document.getElementById('openAdmin').onclick=()=>prototype.classList.add('admin-view');
+    const prototype=document.querySelector('.prototype'),adminTotalLimit=document.getElementById('adminTotalLimit'),adminDailyLimit=document.getElementById('adminDailyLimit'),adminPreview=document.getElementById('adminPreview'),adminUpload=document.getElementById('adminUpload');
+    document.getElementById('openAdmin').onclick=()=>{loadAdmin(adminScene);prototype.classList.add('admin-view')};
     document.getElementById('backFront').onclick=()=>prototype.classList.remove('admin-view');
     function loadAdmin(scene){
       adminScene=scene;const cfg=configs[scene]||defaultConfigs[scene];draftImage=cfg.image||defaultImage;
       document.querySelectorAll('[data-config]').forEach(b=>b.classList.toggle('active',b.dataset.config===scene));
       document.querySelector(`input[name="enabled"][value="${String(cfg.enabled)}"]`).checked=true;
-      adminLimit.value=cfg.limit;adminPreview.src=draftImage;
+      adminTotalLimit.value=cfg.totalLimit??20;adminDailyLimit.value=cfg.dailyLimit??cfg.limit??3;adminPreview.src=draftImage;
     }
     document.querySelectorAll('[data-config]').forEach(b=>b.onclick=()=>loadAdmin(b.dataset.config));
     adminUpload.onchange=()=>{
@@ -197,7 +207,7 @@
       const reader=new FileReader();reader.onload=()=>{draftImage=reader.result;adminPreview.src=draftImage};reader.readAsDataURL(file);
     };
     document.getElementById('saveConfig').onclick=()=>{
-      configs[adminScene]={enabled:document.querySelector('input[name="enabled"]:checked').value==='true',limit:Math.max(0,Number(adminLimit.value)||0),image:draftImage||defaultImage};
+      configs[adminScene]={enabled:document.querySelector('input[name="enabled"]:checked').value==='true',dailyLimit:Math.max(0,Number(adminDailyLimit.value)||0),totalLimit:Math.max(0,Number(adminTotalLimit.value)||0),image:draftImage||defaultImage};
       localStorage.setItem('trc20PromptConfigs',JSON.stringify(configs));notifyAdmin('配置保存成功');
     };
     function notifyAdmin(text){const b=document.getElementById('saveConfig'),old=b.textContent;b.textContent='✓ '+text;b.disabled=true;setTimeout(()=>{b.textContent=old;b.disabled=false},1300)}
