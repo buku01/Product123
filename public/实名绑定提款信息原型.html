@@ -26,10 +26,10 @@
     .bar{margin-top:10px;background:#f4f4f4;border-top:1px solid #ddd;padding:18px 0 18px 145px}
     .primary,.secondary{height:31px;padding:0 18px;border-radius:3px;cursor:pointer}.primary{border:1px solid #2296c8;background:linear-gradient(#41b7e8,#269dd1);color:white}.secondary{border:1px solid #ccc;background:linear-gradient(#fff,#eee);color:#555;margin-left:6px}
     .toast{position:fixed;left:50%;top:24px;transform:translateX(-50%) translateY(-60px);background:#3d4b52;color:white;padding:11px 20px;border-radius:4px;box-shadow:0 3px 14px #777;opacity:0;transition:.25s;z-index:5}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    .view-switch{position:fixed;right:20px;bottom:20px;z-index:20;background:#fff;border:1px solid #d5d5d5;border-radius:6px;padding:5px;box-shadow:0 3px 14px rgba(0,0,0,.18)}
-    .view-switch button{border:0;background:transparent;padding:8px 14px;border-radius:4px;color:#555;cursor:pointer}.view-switch button.active{background:#279fd0;color:#fff}
-    .prototype-view{height:100%}.prototype-view.hidden{display:none}
-    .frontend-view{min-height:100%;padding:22px;background:#eef1f5;overflow:auto}.phone{width:360px;height:740px;margin:auto;background:#edf6ff;border:8px solid #1f2630;border-radius:28px;box-shadow:0 12px 35px rgba(0,0,0,.28);overflow:hidden;position:relative}
+    .prototype-board{display:grid;grid-template-columns:minmax(900px,1fr) 420px;min-width:1320px;min-height:820px}.prototype-view{height:820px;position:relative}
+    .prototype-view:before{position:absolute;top:8px;right:14px;z-index:10;padding:4px 10px;border-radius:12px;background:rgba(31,47,62,.78);color:#fff;font-size:12px}
+    #adminView:before{content:"后台配置"}#frontView:before{content:"前端效果"}
+    .frontend-view{padding:34px 22px 20px;background:#eef1f5;overflow:auto;border-left:1px solid #ccd3da}.phone{width:360px;height:740px;margin:auto;background:#edf6ff;border:8px solid #1f2630;border-radius:28px;box-shadow:0 12px 35px rgba(0,0,0,.28);overflow:hidden;position:relative}
     .phone-head{height:44px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 12px;color:#142144;font-size:19px;font-weight:bold}.app-logo{font-size:13px;color:#168dc7;border:2px solid #168dc7;border-radius:5px;padding:1px 4px}.download{font-size:12px;color:#fff;background:#3889d1;padding:4px 8px;border-radius:5px}
     .hero{height:148px;margin:0 6px;border-radius:10px;background:linear-gradient(135deg,#cde6f5,#719cca 52%,#8abf82);position:relative;overflow:hidden}.hero:after{content:"虚拟币充值\\A笔笔送3%";white-space:pre;position:absolute;left:34px;top:32px;color:#eaffbb;font-size:26px;line-height:1.15;font-weight:bold;text-shadow:2px 2px #176025,-1px -1px #176025}.hero-btn{position:absolute;left:80px;bottom:17px;background:#e5d438;color:#7b6510;border:1px solid #a78f14;border-radius:15px;padding:3px 22px}
     .balance{height:56px;background:#fff;margin-top:8px;padding:8px 12px;color:#40527c}.balance b{display:block;color:#1c2a51;font-size:17px}.games{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 7px}.game{height:110px;background:#fff;border:1px solid #bdd5e8;border-radius:12px;padding:10px 7px;color:#304269}.game strong{display:block;font-size:14px}.game span{font-size:11px;color:#e65069}.join{margin-top:28px;background:#39b9e4;color:white;border:0;border-radius:12px;padding:4px 10px;font-size:11px}
@@ -37,13 +37,13 @@
     .shade{position:absolute;inset:0;background:rgba(30,39,55,.34);z-index:2}.packet{position:absolute;z-index:3;left:42px;right:42px;top:205px;height:335px;background:linear-gradient(#ff725c,#ee323b 62%,#ffe4af 63%,#fff0d1);border-radius:30px 30px 22px 22px;box-shadow:0 10px 22px rgba(130,23,18,.35);text-align:center;color:#fff;padding-top:28px}.packet:before{content:"请拆开任一红包";font-weight:bold;font-size:23px}.packet-row{margin:24px 24px 0;height:78px;border-radius:12px;background:linear-gradient(#f5373f,#ff5548);border:2px solid #ffb28d;box-shadow:0 5px 10px rgba(145,25,21,.35);font-size:23px;font-weight:bold;padding:22px 62px 0 10px;position:relative}.grab{position:absolute;right:10px;top:13px;width:49px;height:49px;border-radius:50%;background:#ffedbb;color:#dd3830;border:2px solid #fff0c9;padding-top:8px}
     .close-packet{position:absolute;z-index:4;left:calc(50% - 20px);top:535px;width:42px;height:42px;border:0;border-radius:7px;background:#fff;color:#e52c31;font-size:31px;line-height:38px}
     .front-alert{position:absolute;z-index:5;left:20px;right:20px;bottom:72px;background:rgba(55,55,55,.92);color:#fff;border:3px solid #f04444;border-radius:8px;padding:13px 10px;text-align:center;font-size:15px;box-shadow:0 3px 12px rgba(0,0,0,.35)}
-    .front-note{width:650px;max-width:100%;margin:16px auto 0;border:1px dashed #f04444;background:#fff;padding:10px 14px;color:#555}.front-note strong{color:#e53636;margin-right:8px}
-    @media(max-width:800px){.layout{grid-template-columns:0 1fr}aside{display:none}.status{display:none}.content{padding:14px}.form{width:720px}.tabs{overflow:hidden}}
+    .front-note{width:360px;max-width:100%;margin:16px auto 0;border:1px dashed #f04444;background:#fff;padding:10px 14px;color:#555}.front-note strong{color:#e53636;margin-right:8px}
+    @media(max-width:1000px){.prototype-board{display:block;min-width:900px}.frontend-view{border-left:0;border-top:1px solid #ccd3da}.layout{grid-template-columns:0 1fr}aside{display:none}.status{display:none}.content{padding:14px}.form{width:720px}.tabs{overflow:hidden}}
   </style>
 </head>
 <body>
   <div class="toast" id="toast" role="status"></div>
-  <div class="view-switch"><button id="showAdmin" class="active" type="button">后台配置</button><button id="showFront" type="button">前端效果</button></div>
+  <div class="prototype-board">
   <div class="prototype-view" id="adminView">
   <header class="top">
     <div class="brand">群版本平台管理系统 v0.22</div>
@@ -93,7 +93,7 @@
     </main>
   </div>
   </div>
-  <div class="prototype-view frontend-view hidden" id="frontView">
+  <div class="prototype-view frontend-view" id="frontView">
     <div class="phone">
       <div class="phone-head"><span class="app-logo">28圈</span><span>大厅</span><span class="download">⬇ 立即下载APP</span></div>
       <div class="hero"><button class="hero-btn">查看详情</button></div>
@@ -114,6 +114,7 @@
     </div>
     <div class="front-note"><strong>前端提示修改</strong>当用户未同时绑定提现姓名和手机号时，点击抢红包后提示：“请先完成提现姓名和手机号绑定，再参与抢红包”。</div>
   </div>
+  </div>
   <script>
     const $=id=>document.getElementById(id), toast=$("toast");
     function notify(msg){toast.textContent=msg;toast.classList.add("show");clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>toast.classList.remove("show"),2200)}
@@ -122,14 +123,6 @@
       notify("活动新增成功");
     });
     $("back").addEventListener("click",()=>notify("返回活动列表"));
-    function switchView(front){
-      $("adminView").classList.toggle("hidden",front);
-      $("frontView").classList.toggle("hidden",!front);
-      $("showAdmin").classList.toggle("active",!front);
-      $("showFront").classList.toggle("active",front);
-    }
-    $("showAdmin").addEventListener("click",()=>switchView(false));
-    $("showFront").addEventListener("click",()=>switchView(true));
   </script>
 </body>
 </html>
