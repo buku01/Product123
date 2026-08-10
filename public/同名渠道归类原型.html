@@ -24,7 +24,7 @@
   <div class="requirement-section"><span class="requirement-label">修改范围</span><p>后台支付平台列表增加配置入口及开关；前台线上充值渠道列表增加同名归类展示。</p></div>
   <div class="requirement-section"><span class="requirement-label">场景</span><p>线上充值存在多个展示名称相同的渠道时，列表内容重复且较长。通过同名归类和二次选择，减少重复展示，同时保留具体渠道的选择能力。</p></div>
   <div class="requirement-section"><span class="requirement-label">功能说明</span><ol>
-    <li>后台新增“线上充值渠道同名归类配置”开关。开启时归类展示，关闭时按原列表逐条展示。</li>
+    <li>后台新增“线上充值渠道同名归类配置”开关，<strong>默认关闭</strong>。开启时归类展示，关闭时按原列表逐条展示。</li>
     <li>仅针对线上充值渠道生效，其他充值类型不受该开关影响。</li>
     <li>开启后，按“渠道展示名称”完全相同进行分组，同名渠道外层仅显示一张卡片。</li>
     <li>同名组保留现有渠道排序，外层默认显示并选中组内排序第一的渠道。</li>
@@ -51,7 +51,7 @@
       <main class="admin-main">
         <div class="admin-tabs"><span>通用设置</span></div>
         <nav class="admin-nav"><span>通用配置管理</span><b>支付平台列表</b><span>通道排序</span><span>备用充值通道设置</span><button id="configEntry">线上充值渠道同名归类配置</button></nav>
-        <section class="admin-panel" id="configPanel"><div class="admin-panel-head"><span>线上充值渠道同名归类配置</span><small>入口位置：通用设置 › 支付平台列表</small></div><div class="setting-row"><div class="setting-name">线上充值渠道同名归类</div><div class="setting-desc">开启后，仅将线上充值中名称相同的渠道合并展示，用户点击后再选择具体渠道。<br>关闭后，线上充值渠道按原样式逐条展示；其他充值类型不受此开关影响。</div><div class="setting-action"><span id="configState">已开启</span><label class="switch"><input id="groupSwitch" type="checkbox" checked><span class="slider"></span></label></div></div></section>
+        <section class="admin-panel" id="configPanel"><div class="admin-panel-head"><span>线上充值渠道同名归类配置</span><small>入口位置：通用设置 › 支付平台列表</small></div><div class="setting-row"><div class="setting-name">线上充值渠道同名归类</div><div class="setting-desc">默认关闭。开启后，仅将线上充值中名称相同的渠道合并展示，用户点击后再选择具体渠道。<br>关闭后，线上充值渠道按原样式逐条展示；其他充值类型不受此开关影响。</div><div class="setting-action"><span id="configState" style="color:#8b94a5">已关闭</span><label class="switch"><input id="groupSwitch" type="checkbox"><span class="slider"></span></label></div></div></section>
       </main>
     </div>
   </div>
@@ -69,7 +69,7 @@ const groups=[
 ['风花卡',[['fh-a','风花直连','约 2 分钟','97.1%','']]],['亮亮卡',[['ll-a','亮亮直连','约 1 分钟','98.0%','']]],
 ['龙行卡',[['lx-a','龙行通道 A','约 1 分钟','98.4%','推荐'],['lx-b','龙行通道 B','约 2 分钟','97.6%','']]],
 ['四季鑫旺卡',[['sj-a','四季直连','约 2 分钟','97.7%','']]],['岭峰卡',[['lf-a','岭峰直连','约 1 分钟','98.2%','']]],['金御卡',[['jy-a','金御直连','约 2 分钟','97.8%','']]]];
-let selected='jh-a',active=null,timer,groupEnabled=true;
+let selected='jh-a',active=null,timer,groupEnabled=false;
 const $=s=>document.querySelector(s);
 $('#methods').innerHTML=methods.map((m,i)=>`<button class="method ${i===8?'active':''}">${m[2]?`<em>${m[2]}</em>`:''}<span class="icon ${m[3]}">${m[0]}</span><b>${m[1]}</b></button>`).join('');
 function render(){
