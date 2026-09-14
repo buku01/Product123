@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>通用设置 - 累计充值金额限制</title>
+<style>
+*{box-sizing:border-box}body{margin:0;color:#555;background:#fff;font:12px Arial,"Microsoft YaHei",sans-serif;min-width:1360px}button,input{font:inherit}header{height:34px;background:linear-gradient(110deg,#66d1f8,#85cce6 65%,#218aff);color:#fff;display:flex;align-items:center;padding:0 15px;gap:14px}.brand{font-size:14px}.shortcut{background:#ff8700;padding:4px 9px}.shortcut.green{background:#79b13c}.right{margin-left:auto;font-size:11px}aside{position:absolute;top:34px;bottom:0;width:150px;background:#f4f4f4;border-right:1px solid #ddd;overflow:auto;padding-right:10px}.menu{height:33px;border-bottom:1px solid #ddd;display:flex;align-items:center;gap:9px;padding:0 10px}.menu i{font-style:normal;font-size:15px;width:15px}.menu span:last-child{margin-left:auto}.menu.active{color:#1687c6;background:#fafafa}.sub{height:30px;padding:8px 20px;background:white;border-bottom:1px solid #ddd;font-size:11px}main{margin-left:150px}.tabs{height:32px;border-bottom:1px solid #ddd;background:#fafafa;display:flex;color:#0089cf}.tab{padding:9px 37px;border-right:1px solid #eee}.tab.selected{background:#e1edf0}.refresh{margin-left:auto;margin-right:14px;font-size:23px;line-height:28px;color:#00c9af}.content{padding:20px 18px 60px}.form-row{display:flex;margin-bottom:25px;align-items:flex-start}.label{width:144px;flex-shrink:0;text-align:right;padding:6px 23px 0 0}.field{padding-top:2px}.radio-line{height:23px;display:flex;align-items:center;gap:20px}.radio-line label{display:flex;align-items:center;gap:6px}input[type=radio]{margin:0;accent-color:#2188ff}.standard{width:172px;height:25px;padding:3px 6px;border:1px solid #ccc;border-radius:3px;background:#fff}.help{color:#888;margin:9px 0 0;line-height:18px}.danger{color:red;margin-top:5px}.inline{display:flex;align-items:center;gap:4px}.compact{margin-bottom:17px}.rules{width:632px;border:1px solid #ddd;border-radius:3px;overflow:hidden}table{width:100%;border-collapse:collapse;table-layout:fixed}th,td{height:32px;border-right:1px solid #ddd;border-bottom:1px solid #ddd;text-align:center}th:last-child,td:last-child{border-right:0}th{font-size:12px;font-weight:600;background:#fff}td{font-size:11px}th:nth-child(1){width:116px}th:nth-child(2){width:315px}th:nth-child(3){width:126px}.range{display:flex;align-items:center;justify-content:center;gap:3px}.amount{width:82px;height:20px;border:1px solid #999;padding:1px 4px;border-radius:0;appearance:textfield}.amount::-webkit-inner-spin-button{appearance:none}.range span{font-size:11px;color:#777}.add-row{padding:7px;text-align:center}.button{border:1px solid #ddd;background:linear-gradient(#fff,#f8f8f8);border-radius:3px;color:#555;padding:4px 10px;cursor:pointer}.link{border:0;background:none;color:#189cde;padding:0;cursor:pointer;font:inherit}.config-note{margin:10px 0 0;line-height:22px;color:#888}.config-note strong{font-weight:400;color:#f08b23}.table-row{margin-bottom:32px}.log{margin-left:144px;margin-bottom:16px}.footer{margin-top:31px;background:#f5f5f5;border-top:1px solid #e5e5e5;padding:15px 0 15px 144px;display:flex;gap:9px}.primary{color:#fff;border-color:#2499d0;background:linear-gradient(#49b9ee,#27a3e0)}.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);padding:12px 24px;background:#333e;color:#fff;border-radius:4px;box-shadow:0 3px 15px #0002;display:none}button:hover{filter:brightness(.97)}input:focus{outline:1px solid #37aef0;border-color:#37aef0}
+.new-feature{display:inline-block;background:#ff3838;color:#fff;border-radius:12px;padding:1px 8px;font-size:11px;font-weight:600;line-height:18px;vertical-align:middle;margin-left:8px}.change-box{border:1px solid #ff3838;padding:9px 11px;margin-top:10px;width:632px}.change-title{font-weight:600;color:#444}.change-box .config-note{margin-top:6px}.table-row>.field{flex:0 0 632px}.requirements{margin:2px 0 0 24px;flex:1;min-width:380px;max-width:560px;border:1px solid #ddd;border-radius:3px;line-height:1.8}.requirements h2{font-size:14px;margin:0;padding:11px 16px;background:#fafafa;border-bottom:1px solid #e5e5e5}.requirements dl{margin:0;padding:14px 16px;display:grid;grid-template-columns:90px 1fr;gap:10px 14px}.requirements dt{font-weight:600;color:#444}.requirements dd{margin:0}.requirements .annotation{padding:10px 16px;border-top:1px solid #eee;color:#888;margin:0}
+</style>
+</head>
+<body>
+<header><span class="brand">群版本平台管理系统 v0.22</span><span class="shortcut">⌂</span><span class="shortcut green">▦</span><span>🟢</span><span class="right">提现催单：<b>0</b>　 优惠大厅待审核预警(0)　 异常用户列表：0　 挂起计时 30:00　 |　 您好，bulu ⌄</span></header>
+<aside id="sidebar"></aside>
+<main>
+<nav class="tabs"><div class="tab">首页</div><div class="tab selected">通用设置　 ×</div><span class="refresh">⟳</span></nav>
+<div class="content">
+<div class="form-row"><div class="label">弹窗提示开关：</div><div class="field"><div class="radio-line"><label><input type="radio" name="popup">开启</label><label><input type="radio" name="popup" checked>关闭</label></div><p class="help">* 开启后才会弹窗展示提示</p></div></div>
+<div class="form-row"><label class="label" for="countdown">确认倒计时：</label><div class="field"><input class="standard" id="countdown" value="0"><p class="help">为0时，没有倒计时</p></div></div>
+<div class="form-row"><label class="label" for="cancel">累计取消上限：</label><div class="field"><div class="inline">本渠道60天内累计取消次数大于等于 <input class="standard" id="cancel" value="0"> 次则进入永久匹配黑名单。</div><div class="danger">本渠道充值成功或移除永久匹配黑名单后累计取消次数重新计算。</div></div></div>
+<div class="form-row"><label class="label" for="daily">每日次数隐藏：</label><div class="field"><input class="standard" id="daily" value="0"><p class="help">该充值通道每日成功充值次数达到上限次数后，隐藏本通道</p></div></div>
+<div class="form-row compact"><div class="label">充值金额限制配置：</div><div class="field radio-line"><label><input type="radio" name="limit" checked>累计充值金额限制</label><label><input type="radio" name="limit">单笔充值最大值限制</label></div></div>
+<div class="form-row table-row"><div class="label">累计充值金额限制：</div><div class="field">
+<div class="rules"><table><thead><tr><th>排列序号</th><th>(60天) 全渠道累计充值金额</th><th>单笔充值最高上限</th><th>操作</th></tr></thead><tbody id="rules"></tbody></table><div class="add-row"><button class="button" id="add">添加限制规则</button></div></div>
+<div class="change-box"><div class="change-title">累计充值金额区间配置说明<span class="new-feature">新增功能</span></div><p class="config-note"><strong>配置说明：</strong>累计充值金额限制：<strong>大于等于</strong> 起始金额 <strong>至 小于</strong> 结束金额（包含起始金额，不包含结束金额）。</p></div>
+</div>
+<section class="requirements" aria-labelledby="requirements-title"><h2 id="requirements-title">需求说明 · 累计充值金额限制配置备注</h2><dl>
+<dt>需求目的</dt><dd>仅新增累计充值金额限制的配置备注说明，帮助配置人员理解“XX 至 XX”的填写含义。</dd>
+<dt>页面位置</dt><dd>系统管理 → 通用设置 → 充值金额限制配置 → 累计充值金额限制，规则表格下方。</dd>
+<dt>新增内容</dt><dd>新增固定备注：“配置说明：累计充值金额限制：大于等于 起始金额 至 小于 结束金额（包含起始金额，不包含结束金额）。”备注只读，用于说明所有规则的金额区间。</dd>
+<dt>备注性质</dt><dd>本次新增功能仅为页面上的固定说明文案，不是可编辑、可保存的备注配置项，也不新增或调整金额区间判断规则。</dd>
+<dt>显示要求</dt><dd>备注在规则表格下方常驻显示；添加或删除规则后仍保留，整张表格共用一条说明。</dd>
+<dt>变更范围</dt><dd>本次仅增加配置备注说明的展示。原有金额计算、区间匹配、输入校验、规则增删和保存逻辑均保持不变；不涉及接口、数据库或后台配置字段变更。</dd>
+<dt>验收标准</dt><dd>进入页面可看到完整备注，清晰展示“大于等于”和“小于”；增删规则后备注仍正常显示，不遮挡输入和操作；原有业务逻辑及校验行为保持不变。</dd>
+</dl><p class="annotation">原型评审标注：红色边框与“新增功能”标签用于标识本次新增内容；本需求说明区和评审标注不属于正式业务页面。</p></section>
+</div>
+<div class="log"><button class="link" id="logs">查看日志</button></div>
+<div class="form-row"><label class="label" for="verification">谷歌验证码：</label><div class="field"><input id="verification" class="standard" placeholder="请输入谷歌验证码" inputmode="numeric" maxlength="6"><p class="help">请输入谷歌验证码</p></div></div>
+<div class="footer"><button class="button primary" id="save">保存</button><button class="button primary" id="cache">刷新缓存</button></div>
+
+</div>
+</main><div class="toast" id="toast" role="status"></div>
+<script>
+const menus=['账务中心','活动管理new','邀请好友','合营代理管理','活动管理','电销管理','代理公告','彩票管理','返水中心','游戏管理','APP管理','站内消息','代理中心','系统管理','管理员管理','内容管理','会员管理','刷冰查询','活动中心','统计报表','推广回访'];
+document.getElementById('sidebar').innerHTML=menus.map((name,i)=>`<div class="menu ${name==='系统管理'?'active':''}"><i>${['▤','♙','▣','▣','♙','▣','▣','❂','◀','♧','♟','✉','▣','⚙'][i%14]}</i><span>${name}</span><span>›</span></div>${name==='系统管理'?['通用设置','风控管理','增加VIP专属客服','系统设置','操作日志'].map(s=>`<div class="sub">› ${s}</div>`).join(''):''}`).join('');
+const tbody=document.getElementById('rules');
+function renumber(){[...tbody.rows].forEach((row,i)=>{row.cells[0].textContent=i+1;row.querySelectorAll('input').forEach((input,j)=>input.setAttribute('aria-label',`规则${i+1}${['起始金额（大于等于）','结束金额（小于）','单笔充值最高上限'][j]}`));});}
+function addRule(){const row=tbody.insertRow();row.innerHTML='<td></td><td><div class="range"><input class="amount" type="number" min="0" step="0.01"><span>至</span><input class="amount" type="number" min="0" step="0.01"></div></td><td><input class="amount" type="number" min="0" step="0.01"></td><td><button class="link">删除</button></td>';row.querySelector('button').onclick=()=>{row.remove();renumber();};renumber();}
+for(let i=0;i<4;i++)addRule();
+document.getElementById('add').onclick=addRule;
+let timer;function toast(message){const el=document.getElementById('toast');el.textContent=message;el.style.display='block';clearTimeout(timer);timer=setTimeout(()=>el.style.display='none',2600);}
+document.getElementById('save').onclick=()=>{for(const row of tbody.rows){const inputs=[...row.querySelectorAll('input')];if(inputs.every(i=>i.value===''))continue;if(inputs.some(i=>i.value===''||!i.validity.valid)){toast('请完整填写有效的金额配置');return;}if(Number(inputs[0].value)>Number(inputs[1].value)){toast('起始金额不能大于结束金额');inputs[0].focus();return;}}toast('原型演示：配置已保存（未提交后台）');};
+document.getElementById('cache').onclick=()=>toast('原型演示：缓存已刷新');
+document.getElementById('logs').onclick=()=>toast('原型演示：暂无操作日志');
+</script>
+</body>
+</html>
