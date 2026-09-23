@@ -22,59 +22,26 @@
 <nav class="tabs"><div class="tab">首页</div><div class="tab selected">通用设置　×</div><div class="tab">APP设置　×</div><div class="tab">系统设置　×</div><span class="refresh">⟳</span></nav>
 <nav class="subnav"><button>网站设置</button><button>会员设置</button><button>游戏开放设置</button><button>开奖设置</button><button>新游戏权限</button><button>出款平台</button><button>余额通知广告</button><button>回扣邮箱配置</button><button>回扣手机号配置</button><button>备用地址配置</button><button>平台层级管理</button><button class="current new-feature-entry">云信密钥配置</button></nav>
 <section class="content">
-<div class="page-head"><div><h1>云信密钥配置</h1><p>用于动态管理云信 App Key。切换后立即对前端生效，无需重新发包。</p></div><div class="status-chip"><span class="dot"></span>当前服务正常</div></div>
-<div class="notice"><b>安全提示：</b>密钥仅显示首尾字符，保存或切换前请先进行连通性测试。切换操作会写入操作日志。</div>
-<section class="card" data-key="primary"><div class="card-head"><h2>主用云信配置</h2><span class="primary-tag role-tag">当前使用</span><span class="enabled card-status">● 已启用</span></div><div class="card-body"><div class="form-grid">
-<label class="label required" for="primaryKey">App Key：</label><div class="input-wrap"><input class="input secret" id="primaryKey" type="password" value="6f4d83ad37b44952b2c9e8" autocomplete="new-password"><button class="eye" type="button" aria-label="显示或隐藏主用 App Key">◉</button></div><div class="help">请填写云信后台分配的 App Key</div>
-<div class="label">连通性测试：</div><div class="test-row"><button class="btn test" type="button">测试连接</button><span class="test-result">未测试</span></div>
-</div><div class="operation" hidden><button class="btn danger switch-current" type="button">切换为当前使用</button><span class="op-note">切换后新请求将立即使用该组密钥</span></div></div></section>
-<section class="card" data-key="backup"><div class="card-head"><h2>备用云信配置</h2><span class="standby-tag role-tag">备用</span><span class="enabled card-status">已配置</span></div><div class="card-body"><div class="form-grid">
-<label class="label required" for="backupKey">App Key：</label><div class="input-wrap"><input class="input secret" id="backupKey" type="password" value="a19f762cdfb34ef89e8710" autocomplete="new-password"><button class="eye" type="button" aria-label="显示或隐藏备用 App Key">◉</button></div><div class="help">请配置与主用 App Key 不同的备用 Key</div>
-<div class="label">连通性测试：</div><div class="test-row"><button class="btn test" type="button">测试连接</button><span class="test-result">未测试</span></div>
-</div><div class="operation"><button class="btn danger switch-current" type="button">切换为当前使用</button><span class="op-note">切换后新请求将立即使用该组密钥</span></div></div></section>
-<div class="footer"><button class="btn primary" id="save" type="button">保存配置</button><button class="btn" id="logs" type="button">查看操作日志</button></div>
+<div class="page-head"><div><h1>云信密钥配置</h1><p>展示当前系统正在使用的云信 Key，用于动态管理 App/H5 云信 Key。</p></div><div class="status-chip"><span class="dot"></span>当前服务正常</div></div>
+<div class="notice"><b>配置说明：</b>本页仅用于查看当前主云信 Key，不支持在后台修改。如需更换 Key，请联系技术人员在数据库中修改。</div>
+<section class="card is-active"><div class="card-head"><h2>主用云信配置</h2><span class="primary-tag">当前使用</span><span class="enabled">● 已启用</span></div><div class="card-body"><div class="form-grid">
+<label class="label" for="primaryKey">云信 Key：</label><input class="input" id="primaryKey" type="text" value="••••••••••••••••••e8" readonly aria-readonly="true">
+<div class="help">云信 Key 已脱敏显示，此配置为只读</div>
+</div></div></section>
 <section class="requirements" aria-labelledby="requirementsTitle"><h2 id="requirementsTitle">需求说明·新增云信密钥配置<span class="review-tag">新增需求</span></h2><dl>
-<dt>需求背景</dt><dd>目前云信 App Key 出现失效等异常时，需要通过前端重新发版才能更换，处理周期较长且存在发版风险。</dd>
-<dt>需求目标</dt><dd>将云信 App Key 改为后台动态配置，运营人员可在后台保存并切换备用 App Key，新配置立即对前端生效，前端无需重新发包。</dd>
+<dt>需求背景</dt><dd>目前云信 Key 出现失效等异常时，需要通过前端重新发版才能更换，处理周期较长且存在发版风险。</dd>
+<dt>需求目标</dt><dd>在后台展示系统当前使用的主云信 Key，便于超管理员确认当前配置。</dd>
 <dt>页面位置</dt><dd>系统管理 → 通用设置 → 云信密钥配置。</dd>
-<dt>配置内容</dt><dd>支持维护主用和备用两组 App Key，两组字段均为必填项；不配置云信账号和 App Secret。</dd>
-<dt>密钥安全</dt><dd>App Key 默认脱敏显示，可通过显隐按钮临时查看；操作日志中不得记录完整 App Key。</dd>
-<dt>保存规则</dt><dd>点击“保存配置”时校验必填项；保存只更新配置内容，不自动改变当前正在使用的密钥。</dd>
-<dt>连通性测试</dt><dd>主用和备用配置均可独立测试。如信息不完整或验证失败，页面应显示失败原因；未通过测试的备用配置不允许切换。</dd>
-<dt>切换规则</dt><dd><ol><li>点击“切换为当前使用”后，必须弹出二次确认。</li><li>确认后备用配置立即成为当前使用配置，原主用配置转为备用。</li><li>切换完成后，后续新发起的云信请求使用新密钥，前端无需刷新或重新发包。</li></ol></dd>
-<dt>异常处理</dt><dd>如切换失败，系统应保持原主用配置不变并提示失败原因，不得出现两组密钥同时失效的中间状态。</dd>
-<dt>操作日志</dt><dd>保存、连通性测试和密钥切换均需记录操作人、操作时间、操作类型、结果和失败原因，日志中不得记录完整密钥。</dd>
+<dt>展示内容</dt><dd>仅展示一组当前主云信 Key；不展示备用 Key，不配置云信账号和 App Secret。</dd>
+<dt>只读规则</dt><dd>云信 Key 输入框为只读状态，后台不提供编辑、保存、连通性测试或密钥切换功能。</dd>
+<dt>密钥安全</dt><dd>云信 Key 仅脱敏显示，不提供查看完整明文的功能。</dd>
+<dt>更换方式</dt><dd>后续如需更换云信 Key，由技术人员在数据库中修改；本页不承担修改入口。</dd>
 <dt>权限要求</dt><dd>仅超管理员可见此菜单。</dd>
-<dt>验收标准</dt><dd>可完整保存主用与备用配置；未通过测试时无法切换；通过测试并二次确认后可立即切换；切换后前端无需发包即使用新密钥；异常情况不影响原可用配置；全部关键操作可追溯。</dd>
+<dt>验收标准</dt><dd>超管理员可进入页面并看到当前主云信 Key；Key 为脱敏、只读状态。</dd>
 </dl><p class="annotation">原型评审标注：红色边框的“需求说明”区域用于产品、开发和测试评审，不属于正式业务页面。</p></section>
 </section></main></div>
-<div class="dialog-mask" id="dialog"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"><div class="dialog-title" id="dialogTitle">确认切换云信 App Key</div><div class="dialog-body">即将将当前使用的配置切换为 <strong id="targetKey"></strong>。<br>切换后将立即生效，请确认目标 App Key 已通过连通性测试。</div><div class="dialog-actions"><button class="btn" id="cancelSwitch">取消</button><button class="btn primary" id="confirmSwitch">确认切换</button></div></div></div>
-<div class="dialog-mask" id="logDialog"><div class="dialog log-dialog" role="dialog" aria-modal="true" aria-labelledby="logTitle"><div class="dialog-title" id="logTitle">云信密钥操作日志<button class="close-x" id="closeLogs" type="button" aria-label="关闭">×</button></div><div class="log-filters"><label for="logType">操作类型</label><select id="logType"><option value="">全部</option><option>保存配置</option><option>连通性测试</option><option>切换密钥</option></select><label for="logResult">操作结果</label><select id="logResult"><option value="">全部</option><option>成功</option><option>失败</option></select><input id="logKeyword" placeholder="输入操作人或 App Key"><button class="btn primary" id="searchLogs" type="button">查询</button><button class="btn" id="resetLogs" type="button">重置</button></div><div class="log-count" id="logCount"></div><div class="log-table-wrap"><table class="log-table"><thead><tr><th>操作时间</th><th>操作人</th><th>操作类型</th><th>结果</th><th>操作内容</th><th>IP 地址</th></tr></thead><tbody id="logRows"></tbody></table></div><div class="log-pagination" id="logPagination"></div><div class="dialog-actions"><button class="btn primary" id="closeLogsBottom" type="button">关闭</button></div></div></div>
-<div class="toast" id="toast" role="status"></div>
 <script>
 const menus=['账务中心','活动管理new','邀请好友','合营代理管理','活动管理','电销管理','代理公告','彩票管理','返水中心','游戏管理','APP管理','站内消息','代理中心','系统管理','管理员管理','内容管理','会员管理','刷冰查询','活动中心','统计报表','推广回访'];
 document.getElementById('sidebar').innerHTML=menus.map((name,i)=>`<div class="menu ${name==='系统管理'?'active':''}"><span class="ico">${['▤','♙','▣','▣','♙','▣','▣','❂','◀','♧','♠','✉','▣','⚙'][i%14]}</span><span>${name}</span><span class="arr">›</span></div>${name==='系统管理'?['通用设置','风控管理','增加VIP专属客服','系统设置','操作日志'].map(s=>`<div class="submenu ${s==='通用设置'?'selected':''}">› ${s}</div>`).join(''):''}`).join('');
-const tested={primary:false,backup:false};let activeKey='primary',pendingKey=null,timer;const logData=[
-{time:'2026-09-22 14:36:18',user:'bulu',type:'切换密钥',result:'成功',detail:'当前使用配置切换为 App Key •••710',ip:'10.20.8.16'},
-{time:'2026-09-22 14:35:42',user:'bulu',type:'连通性测试',result:'成功',detail:'备用 App Key •••710 连接正常',ip:'10.20.8.16'},
-{time:'2026-09-22 11:08:07',user:'admin',type:'保存配置',result:'成功',detail:'更新备用云信配置（密钥已脱敏）',ip:'10.20.5.21'},
-{time:'2026-09-21 19:22:31',user:'admin',type:'连通性测试',result:'失败',detail:'主用 App Key •••e8 验证失败：App Key 无效',ip:'10.20.5.21'},
-{time:'2026-09-20 09:16:55',user:'system',type:'保存配置',result:'成功',detail:'初始化主用云信配置（密钥已脱敏）',ip:'127.0.0.1'}];
-function toast(message){const el=document.getElementById('toast');el.textContent=message;el.classList.add('show');clearTimeout(timer);timer=setTimeout(()=>el.classList.remove('show'),2200)}
-document.querySelectorAll('.eye').forEach(button=>button.onclick=()=>{const input=button.previousElementSibling;input.type=input.type==='password'?'text':'password';button.textContent=input.type==='password'?'◉':'◉̸'});
-document.querySelectorAll('.test').forEach(button=>button.onclick=()=>{const card=button.closest('.card'),key=card.dataset.key,result=card.querySelector('.test-result');const values=[...card.querySelectorAll('input')].map(x=>x.value.trim());if(values.some(v=>!v)){result.textContent='配置不完整';result.classList.remove('ok');tested[key]=false;return}button.disabled=true;result.textContent='正在测试…';setTimeout(()=>{button.disabled=false;result.textContent='✓ 连接成功';result.classList.add('ok');tested[key]=true},700)});
-document.getElementById('save').onclick=()=>{const inputs=[...document.querySelectorAll('.card input')];if(inputs.some(x=>!x.value.trim())){toast('请完整填写主用和备用云信配置');return}toast('保存成功，配置已更新')};
-function renderActive(){document.querySelectorAll('.card[data-key]').forEach(card=>{const key=card.dataset.key,isActive=key===activeKey,tag=card.querySelector('.role-tag'),status=card.querySelector('.card-status'),operation=card.querySelector('.operation');card.classList.toggle('is-active',isActive);tag.textContent=isActive?'当前使用':'备用';tag.className=(isActive?'primary-tag':'standby-tag')+' role-tag';status.textContent=isActive?'● 已启用':'已配置';operation.hidden=isActive});}
-document.querySelectorAll('.switch-current').forEach(button=>button.onclick=()=>{const card=button.closest('.card'),key=card.dataset.key;if(!tested[key]){toast(`请先对${key==='primary'?'主用':'备用'}配置进行连通性测试`);return}pendingKey=key;const value=document.getElementById(key+'Key').value;document.getElementById('targetKey').textContent=`${key==='primary'?'主用':'备用'} App Key（••••${value.slice(-4)}）`;document.getElementById('dialog').classList.add('show')});
-document.getElementById('cancelSwitch').onclick=()=>document.getElementById('dialog').classList.remove('show');
-document.getElementById('confirmSwitch').onclick=()=>{if(!pendingKey)return;activeKey=pendingKey;pendingKey=null;renderActive();document.getElementById('dialog').classList.remove('show');toast('切换成功，新密钥已生效')};
-document.getElementById('dialog').onclick=e=>{if(e.target.id==='dialog')e.currentTarget.classList.remove('show')};
-function escapeHtml(value){return String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))}
-let currentLogPage=1;const logPageSize=3;
-function renderLogs(resetPage=false){if(resetPage)currentLogPage=1;const type=document.getElementById('logType').value,result=document.getElementById('logResult').value,keyword=document.getElementById('logKeyword').value.trim().toLowerCase();const rows=logData.filter(item=>(!type||item.type===type)&&(!result||item.result===result)&&(!keyword||`${item.user} ${item.detail}`.toLowerCase().includes(keyword))),totalPages=Math.max(1,Math.ceil(rows.length/logPageSize));currentLogPage=Math.min(currentLogPage,totalPages);const start=(currentLogPage-1)*logPageSize,pageRows=rows.slice(start,start+logPageSize);document.getElementById('logCount').textContent=`共 ${rows.length} 条记录（密钥内容不会记录到日志）`;document.getElementById('logRows').innerHTML=pageRows.length?pageRows.map(item=>`<tr><td>${escapeHtml(item.time)}</td><td>${escapeHtml(item.user)}</td><td>${escapeHtml(item.type)}</td><td class="${item.result==='成功'?'result-ok':'result-fail'}">${item.result==='成功'?'✓':'✕'} ${escapeHtml(item.result)}</td><td>${escapeHtml(item.detail)}</td><td>${escapeHtml(item.ip)}</td></tr>`).join(''):'<tr><td colspan="6" class="empty-log">暂无符合条件的操作日志</td></tr>';document.getElementById('logPagination').innerHTML=`<span class="page-summary">第 ${currentLogPage} / ${totalPages} 页</span><button class="page-btn" data-page="prev" ${currentLogPage===1?'disabled':''}>上一页</button>${Array.from({length:totalPages},(_,i)=>`<button class="page-btn ${i+1===currentLogPage?'active':''}" data-page="${i+1}">${i+1}</button>`).join('')}<button class="page-btn" data-page="next" ${currentLogPage===totalPages?'disabled':''}>下一页</button>`}
-document.getElementById('logs').onclick=()=>{renderLogs();document.getElementById('logDialog').classList.add('show')};
-function closeLogs(){document.getElementById('logDialog').classList.remove('show')}
-document.getElementById('closeLogs').onclick=closeLogs;document.getElementById('closeLogsBottom').onclick=closeLogs;document.getElementById('searchLogs').onclick=()=>renderLogs(true);document.getElementById('logKeyword').onkeydown=e=>{if(e.key==='Enter')renderLogs(true)};document.getElementById('resetLogs').onclick=()=>{document.getElementById('logType').value='';document.getElementById('logResult').value='';document.getElementById('logKeyword').value='';renderLogs(true)};document.getElementById('logPagination').onclick=e=>{const button=e.target.closest('[data-page]');if(!button||button.disabled)return;const page=button.dataset.page;currentLogPage=page==='prev'?currentLogPage-1:page==='next'?currentLogPage+1:Number(page);renderLogs()};document.getElementById('logDialog').onclick=e=>{if(e.target.id==='logDialog')closeLogs()};
-renderActive();
 </script>
 </body></html>
