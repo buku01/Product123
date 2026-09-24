@@ -41,7 +41,7 @@ function render(resetPage=true){
   const dates=new Set(events.filter(e=>e.date>=applied.start&&e.date<=applied.end).map(e=>e.date));
   for(const date of dates){dailyValues(date).forEach((value,i)=>current[i]+=value);}
   ['pv1','uv1','pv2','uv2'].forEach((id,i)=>$(id).textContent=current[i]);
-  $('summary').innerHTML='<span class="summary-label">区间汇总</span>'+['互动中心点击次数','互动中心点击人数','个人主页点击游戏次数','个人主页点击游戏人数'].map((label,i)=>'<span>'+label+'<b>'+current[i]+'</b></span>').join('');
+  $('summary').innerHTML=['互动中心点击次数','互动中心点击人数','个人主页点击游戏次数','个人主页点击游戏人数'].map((label,i)=>'<span>'+label+'<b>'+current[i]+'</b></span>').join('');
   $('rangeLabel').textContent=applied.start+' 至 '+applied.end+' · 模拟数据';
   $('rows').replaceChildren();
   for(let index=(page-1)*10;index<Math.min(page*10,count);index++){
