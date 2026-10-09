@@ -40,11 +40,27 @@
 /* 打款完成说明固定单行，增加文字区域宽度。 */
 .confirm-art{flex-basis:22%}
 .confirm-guide p{white-space:nowrap;font-size:clamp(7px,2.65cqi,10px)}
+
+/* 评审标注：红框标出本需求优化区域。 */
+.hint,.confirm-guide{outline:3px solid #ff3030;outline-offset:2px}
+
+.review-mark-note{font-size:12px;color:#d73d3d;margin:12px 0 0}
+.requirement-copy{margin:14px 0;padding:15px;background:#fff7eb;border-radius:7px;font-size:12px}.requirement-copy b{font-size:12px}.requirement-copy p{margin:7px 0 15px;color:#805a31;line-height:1.8}.requirement-copy p:last-child{margin-bottom:0}
+
+/* 桌面端：两张原型左侧并排，需求说明固定在右侧。 */
+.wrap{max-width:1350px}
+.layout{grid-template-columns:391px 391px minmax(260px,1fr);gap:24px;align-items:start}
+.parallel-notes{grid-column:auto}
+.parallel-notes .note-grid{grid-template-columns:1fr;gap:8px}
+.parallel-notes h2{font-size:17px}
+@media(max-width:1200px){.layout{grid-template-columns:repeat(2,minmax(0,391px)) minmax(240px,1fr);gap:16px}.scene-label{font-size:12px}.arrival{font-size:11px}}
+@media(max-width:1000px){.layout{grid-template-columns:repeat(2,minmax(0,391px));justify-content:center}.parallel-notes{grid-column:1/-1}.parallel-notes .note-grid{grid-template-columns:repeat(3,1fr);gap:18px}}
+@media(max-width:650px){.layout{display:flex;flex-direction:column}.phonecolumn{max-width:391px}.parallel-notes{width:100%}.parallel-notes .note-grid{grid-template-columns:1fr;gap:8px}}
 </style>
 </head>
 <body>
 <main class="wrap"><h1>提现到账确认 · 两种状态对比</h1><p class="lead">左侧处理中，右侧可确认到账；沿用平台一蓝色按钮与页面布局。</p>
-<div class="layout"><section class="phonecolumn" aria-label="处理中页面"><h2 class="scene-label"><span>01</span> 处理中 · 暂不可确认到账</h2><div class="preview"><div class="page">
+<p class="review-mark-note">红框为本次优化区域；处理中原到账按钮已隐藏。</p><div class="layout"><section class="phonecolumn" aria-label="处理中页面"><h2 class="scene-label"><span>01</span> 处理中 · 暂不可确认到账</h2><div class="preview"><div class="page">
 <header class="nav"><button class="link back" id="back" aria-label="返回">‹</button><strong>订单审核中</strong><button class="link" id="tutorial">催单教程</button></header>
 <div class="notice"><ol><li>请在提现完成后进行确认到账操作，如不确认将无法发起下一次提现；</li><li>请确认到账金额是否一致，如不一致，请在弹窗输入已收到金额并及时联系客服处理；</li><li>如填写错误到账信息，所造成损失，平台概不负责。</li></ol><span class="bluepoint"></span></div>
 <section class="section info"><h2><span class="icon">¥</span>提现信息</h2><div class="row"><span class="label">订单时间:</span><span>2026–10–09 14:34:49</span></div><div class="row"><span class="label">订单编号:</span><span>179152768964598562</span><button class="link copy" id="copy" aria-label="复制订单编号">⧉</button></div><div class="row"><span class="label">提现方式:</span><span>银行卡</span></div><div class="row"><span class="label">提现金额:</span><span class="amount"><span class="red">0</span>/500.00</span></div><div class="row"><span class="label">收款账号:</span><span>6222******　默*</span></div></section>
@@ -62,7 +78,7 @@
 <div class="buttons" id="readyButtons" aria-label="可确认到账操作"><button class="arrival enabled" aria-haspopup="dialog" data-action="full">全部金额到账</button><button class="arrival enabled" aria-haspopup="dialog" data-action="partial">部分金额到账</button><button class="arrival enabled" aria-haspopup="dialog" data-action="none">全部金额未到账</button></div><div class="ready-result" id="readyResult" role="status" hidden></div></section>
 <section class="rules"><h2><span class="icon">☷</span>规则说明</h2><ol><li>请在提现完成后进行确认到账操作，如不确认将无法发起下一次提现；</li><li>请确认到账金额是否一致，如不一致，请在弹窗输入已收到金额并及时联系客服处理；</li><li>如填写错误到账信息，所造成损失，平台概不负责。</li></ol></section>
 </div></div><p class="caption">示例订单 · 点击蓝色按钮体验到账确认与反馈</p></section>
-<aside class="panel parallel-notes"><span class="tag">平台一 · 两种状态对比</span><h2>处理中隐藏操作，打款成功后引导确认</h2><div class="note-grid"><div><b>处理中</b><p>保留骑马动图和三行提示，隐藏到账按钮。</p></div><div><b>可确认到账</b><p>进度全部点亮，提示打款完成；使用银行卡与完成勾选图标，引导点击三个蓝色按钮。</p></div><div><b>确认与反馈</b><p>全部到账二次确认；部分到账填写金额；未到账提交反馈。按钮保留原文字，无辅助小字。</p></div></div><p>所有提交均为本地演示。真实操作开放与状态提交需由服务端校验。</p><button class="try" id="resetReady">重置右侧演示</button></aside></div></main><div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<aside class="panel parallel-notes"><span class="tag">平台一 · 需求说明</span><h2>根据订单状态展示提示与到账确认按钮</h2><div class="note-grid"><div><b>订单审核中</b><p>显示骑马动图与三行处理提示，隐藏三个确认到账按钮。</p></div><div><b>财务打款中</b><p>继续显示骑马动图与相同三行处理提示，隐藏三个确认到账按钮。</p></div><div><b>打款成功</b><p>移除骑马动图与处理提示，显示“打款已完成”提示和三个确认到账按钮，按钮可点击。</p></div></div><div class="requirement-copy"><b>订单审核中／财务打款中 · 三行提示</b><p><strong>您的提现正在处理中</strong><br>我们正在快马加鞭处理订单，<br>请耐心等待，打款完成后即可确认到账。</p><b>打款成功 · 提示文案</b><p><strong>打款已完成，请确认到账情况</strong><br>请查看收款记录，选择全部到账、部分到账或未到账。</p></div><button class="try" id="resetReady">重置右侧演示</button></aside></div></main><div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <dialog class="arrival-dialog" id="readyDialog" aria-labelledby="dialogTitle"><h3 id="dialogTitle"></h3><div id="dialogContent"></div><div class="dialog-actions"><button class="cancel" id="dialogCancel">取消</button><button id="dialogSubmit">确认</button></div></dialog><script>
 const $=id=>document.getElementById(id);let timer,action='';function toast(text){clearTimeout(timer);$('toast').textContent=text;$('toast').hidden=false;timer=setTimeout(()=>$('toast').hidden=true,3000)}function result(text){$('readyResult').textContent=text;$('readyResult').hidden=false}
 function openAction(type){action=type;$('dialogTitle').textContent=type==='full'?'确认全部金额到账？':type==='partial'?'反馈部分金额到账':'反馈全部金额未到账';$('dialogContent').innerHTML=type==='full'?'<p>请核实银行卡已实际收到本笔提现 ¥500.00，再确认到账。</p>':type==='partial'?'<p>请填写实际收到的金额，提交后联系客服核实。</p><label for="actualAmount">实际到账金额（元）</label><input id="actualAmount" inputmode="decimal" placeholder="大于0且小于500"><div class="error" id="amountError" role="alert"></div>':'<p>请先核实银行卡收款记录。若尚未收到款项，可提交反馈并联系客服。</p>';$('dialogSubmit').textContent=type==='full'?'确认已收到':'提交反馈';$('readyDialog').showModal()}
