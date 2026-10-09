@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>推送接口调用流程</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:#172b45;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}main{max-width:1280px;margin:32px auto;padding:0 24px}header{margin-bottom:24px}h1{font-size:28px;margin:0 0 10px}header p{color:#64748b;margin:0;line-height:1.8}.card{background:#fff;border:1px solid #dce4ef;border-radius:18px;overflow:hidden;box-shadow:0 8px 32px #172b4508}.diagram{overflow-x:auto;padding:16px}svg{display:block;width:100%;min-width:960px;height:auto}svg text{font-family:inherit;fill:#172b45;font-size:16px;text-anchor:middle}svg .label{font-size:13px;fill:#64748b}svg .code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px}svg .title{font-size:18px;font-weight:600}svg .line{fill:none;stroke:#7890ac;stroke-width:2;marker-end:url(#arrow)}svg .node{fill:#fff;stroke:#b7c8dd;stroke-width:1.5}svg .blue{fill:#edf5ff;stroke:#79a9e3}svg .green{fill:#ecfdf3;stroke:#78b995}svg .red{fill:#fff1f2;stroke:#dc9299}.requirements{padding:24px 28px;border-top:1px solid #e5ebf2}h2{font-size:18px;margin:0 0 14px}ol{margin:0;padding-left:22px;color:#465b73;line-height:1.9}code{font-size:13px;background:#eef3f9;padding:2px 5px;border-radius:4px}.note{margin:16px 0 0;font-size:13px;color:#64748b;line-height:1.8}@media(max-width:600px){main{margin:20px auto;padding:0 12px}h1{font-size:23px}.requirements{padding:20px}}@media print{body{background:white}main{margin:0;padding:0;max-width:none}.card{box-shadow:none}.diagram{overflow:visible}svg{min-width:0}.requirements{break-inside:avoid}}
+  </style>
+</head>
+<body>
+<main>
+  <header><h1>推送接口调用流程</h1><p>APP/H5、后台、子平台的推送均由平台后端服务统一转发至起聊。</p></header>
+  <section class="card" aria-label="推送流程及需求说明">
+    <div class="diagram">
+      <svg viewBox="0 0 1200 830" role="img" aria-labelledby="diagram-title diagram-desc">
+        <title id="diagram-title">推送接口调用流程图</title>
+        <desc id="diagram-desc">APP 和 H5 的三个模拟推送方法、后台及子平台的推送，均由平台后端服务统一转发至起聊。起聊校验平台后端服务的公网出口 IP，已加白则处理推送，未加白则拦截。</desc>
+        <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#7890ac"/></marker></defs>
+        <rect x="16" y="16" width="736" height="350" rx="16" fill="#f7faff" stroke="#d8e6f7"/>
+        <rect x="776" y="16" width="192" height="350" rx="16" fill="#fafbfc" stroke="#e1e7ef"/>
+        <rect x="988" y="16" width="196" height="350" rx="16" fill="#fafbfc" stroke="#e1e7ef"/>
+        <text x="384" y="49" class="title">APP / H5</text><text x="872" y="49" class="title">后台</text><text x="1086" y="49" class="title">子平台</text>
+        <path class="line" d="M384 67V94H140V123"/><path class="line" d="M384 67V123"/><path class="line" d="M384 67V94H626V123"/>
+        <rect class="node blue" x="34" y="124" width="212" height="102" rx="12"/>
+        <text x="140" y="151">模拟用户推送</text><text class="code" x="140" y="189">/v1/api/notify-msg</text>
+        <rect class="node blue" x="264" y="124" width="240" height="102" rx="12"/>
+        <text x="384" y="151">模拟客服推送</text><text class="code" x="384" y="181">/v1/tenant/worker/</text><text class="code" x="384" y="201">notify-message</text>
+        <rect class="node blue" x="522" y="124" width="212" height="102" rx="12"/>
+        <text x="628" y="151">模拟客服批量推送</text><text class="code" x="628" y="181">/v1/tenant/worker/</text><text class="code" x="628" y="201">batch-notify-message</text>
+        <path class="line" d="M140 226V257H345V289"/><path class="line" d="M384 226V289"/><path class="line" d="M628 226V257H423V289"/>
+        <rect class="node blue" x="249" y="290" width="270" height="56" rx="12"/><text x="384" y="313">平台后端服务</text><text x="384" y="334">统一转发</text>
+        <path class="line" d="M872 67V289"/><path class="line" d="M1086 67V289"/>
+        <rect class="node blue" x="790" y="290" width="164" height="56" rx="12"/><text x="872" y="313">平台后端服务</text><text x="872" y="334">统一转发</text>
+        <rect class="node blue" x="1002" y="290" width="168" height="56" rx="12"/><text x="1086" y="313">平台后端服务</text><text x="1086" y="334">统一转发</text>
+        <path class="line" d="M384 346V394H560V435"/><path class="line" d="M872 346V394H640V435"/><path class="line" d="M1086 346V414H680V435"/>
+        <rect class="node blue" x="460" y="436" width="280" height="60" rx="12"/><text x="600" y="472" class="title">起聊推送接口</text>
+        <path class="line" d="M600 496V527"/>
+        <path d="M600 528L784 589L600 650L416 589Z" fill="#fff8e8" stroke="#d9b85c" stroke-width="1.5"/>
+        <text x="600" y="584">平台后端公网出口 IP</text><text x="600" y="607">是否已加白？</text>
+        <path class="line" d="M416 589H292V687"/><path class="line" d="M784 589H908V687"/>
+        <text class="label" x="347" y="578">是 · 已加白</text><text class="label" x="851" y="578">否 · 未加白</text>
+        <rect class="node green" x="172" y="688" width="240" height="56" rx="12"/><text x="292" y="722">处理推送并返回结果</text>
+        <rect class="node red" x="788" y="688" width="240" height="56" rx="12"/><text x="908" y="722">拦截请求并返回失败</text>
+        <path class="line" d="M292 744V776H459"/><path class="line" d="M908 744V776H741"/>
+        <rect class="node" x="460" y="752" width="280" height="48" rx="12"/><text x="600" y="782">调用服务将结果反馈给发起端</text>
+      </svg>
+    </div>
+    <div class="requirements">
+      <h2>需求背景</h2>
+      <p style="margin:0 0 22px;color:#465b73;line-height:1.9">部分攻击者已发现并利用推送接口漏洞，向玩家发送未经授权的消息。为限制推送接口的调用来源，起聊需对调用方公网出口 IP 进行白名单校验，拦截非白名单 IP 的推送请求。同时，APP/H5、后台、子平台的推送均需经过平台后端服务，由平台后端服务完成权限及参数校验后统一转发至起聊，并完成平台后端服务公网出口 IP 加白。</p>
+      <h2>需求描述</h2>
+      <ol>
+        <li>起聊推送接口启用 IP 白名单校验，未加白 IP 发起的推送请求将被拦截。</li>
+        <li>APP/H5 的模拟用户、模拟客服、模拟客服批量推送，对应图中三个方法，均需通过平台后端统一转发至起聊。</li>
+        <li>后台、子平台的推送也需由平台后端服务统一转发至起聊，转发前完成权限及参数校验。</li>
+        <li>平台后端服务的实际公网出口 IP 需提前完成加白；多个出口需全部加白，出口变更时同步更新。</li>
+        <li>各调用服务应反馈实际推送结果；IP 拦截、接口异常或超时应明确返回失败，批量推送应准确反馈处理结果。</li>
+      </ol>
+      <p class="note">接口范围说明：图中的三个具体方法仅归属于 APP/H5 分支。后台、子平台的推送均经平台后端服务转发，对应的起聊接口按各自业务确定。各发起端与平台后端服务之间的接口地址及参数由联调确认。</p>
+    </div>
+  </section>
+</main>
+</body>
+</html>
