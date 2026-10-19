@@ -2,7 +2,15 @@
 <html lang="zh-CN">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>起聊关键词功能开关 · 原型与需求</title>
 <style>
+.feature{outline:2px solid #ed342b;outline-offset:6px;border-radius:3px}
+.feature::before{content:"新增功能";position:absolute;right:0;top:-27px;background:#ed342b;color:#fff;font-size:12px;line-height:20px;padding:0 8px;border-radius:3px 3px 0 0}
+.requirements .new-tag{display:inline-block;background:#ed342b;color:#fff;padding:1px 8px;border-radius:3px;margin-left:10px;font-size:12px;font-weight:400}
+
 *{box-sizing:border-box}body{margin:0;font:14px Arial,"Microsoft YaHei",sans-serif;color:#555;background:#fff}.canvas{position:relative;min-width:1280px;width:100%;line-height:0}.reference{display:block;width:100%;height:auto}.feature{position:absolute;left:59%;right:1.5%;top:9.8%;height:4.5%;display:flex;align-items:center;gap:10px;line-height:1.4;font-size:clamp(12px,.72vw,18px);background:#f5f5f5}.feature-label{font-weight:600;color:#555}.switch{position:relative;flex:none;width:38px;height:20px;border:0;border-radius:12px;background:#bfc3c7;cursor:pointer;padding:0;transition:background .15s}.switch:after{content:"";position:absolute;left:2px;top:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0002;transition:transform .15s}.switch[aria-checked="true"]{background:#28b76b}.switch[aria-checked="true"]:after{transform:translateX(18px)}.switch:focus-visible{outline:2px solid #269ed3;outline-offset:3px}.state{min-width:3em;color:#888}.state.on{color:#21995b}.hint{color:#999;font-size:clamp(11px,.65vw,16px)}.requirements{margin:24px auto 40px;width:calc(100% - 48px);max-width:1200px;border:1px solid #e4b8b4;border-top:3px solid #e75248;line-height:1.8}.requirements h1{margin:0;padding:12px 20px;font-size:17px;background:#fff7f6;border-bottom:1px solid #efd6d3;color:#444}.requirements h1 span{font-size:12px;font-weight:400;color:#a37a76;margin-left:12px}.requirements dl{display:grid;grid-template-columns:100px 1fr;gap:12px 20px;margin:20px}.requirements dt{font-weight:600;text-align:right}.requirements dd{margin:0}.note{margin:0;padding:10px 20px;background:#fafafa;border-top:1px solid #eee;font-size:12px;color:#999}.toast{position:fixed;left:50%;top:22px;transform:translateX(-50%);padding:10px 20px;line-height:1.6;background:#333e;color:white;border-radius:4px;z-index:5}.toast[hidden]{display:none}@media(min-width:2400px){.feature{gap:16px}.switch{width:48px;height:26px}.switch:after{width:22px;height:22px}.switch[aria-checked="true"]:after{transform:translateX(22px)}}
+/* 需求说明置于列表下方的页面空白区域 */
+.requirements{position:relative;width:auto;max-width:none;margin:calc(-1 * max(270px,21.1vw)) 4.5% 40px 18%;background:#fff;line-height:1.65;border:2px solid #ed342b;border-radius:3px}
+.requirements dl{gap:8px 18px;margin:16px 20px}
+@media(max-width:1280px){body{min-width:1280px}}
 </style></head>
 <body>
 <main>
@@ -16,8 +24,9 @@
 </div>
 </div>
 <section class="requirements" aria-labelledby="requirementsTitle">
-<h1 id="requirementsTitle">需求说明 · 起聊关键词功能开关<span>产品评审区域</span></h1>
+<h1 id="requirementsTitle">新增需求说明 · 起聊关键词功能开关<span class="new-tag">新增需求</span><span>产品评审区域</span></h1>
 <dl>
+<dt>需求目标</dt><dd>新增“起聊关键词功能”开关，由后台统一控制该功能是否生效，默认关闭。</dd>
 <dt>页面位置</dt><dd>内容管理 → 关键词自动回复配置，顶部筛选区右侧新增“起聊关键词功能”开关。</dd>
 <dt>控制范围</dt><dd>作为起聊关键词功能的全局开关。</dd>
 <dt>默认状态</dt><dd>默认关闭；新平台或未配置开关状态的平台，均按关闭处理。</dd>
@@ -26,7 +35,7 @@
 <dt>保存与反馈</dt><dd>切换后自动保存并提示结果，重新进入页面时显示已保存的状态；保存失败则恢复切换前的状态。</dd>
 <dt>验收要点</dt><dd>初始状态为关闭；关闭时即使命中已配置的起聊关键词也不触发；开启后恢复现有功能；再次关闭后停止触发，原配置仍保留。</dd>
 </dl>
-<p class="note">交互原型：可点击开关体验状态切换，状态仅保存在当前浏览器。截图中的原有列表用于还原页面，不连接业务系统；开发需在服务端执行开关判断。</p>
+<p class="note">红框及“新增功能”标记用于评审标注，不属于正式业务页面。交互原型：可点击开关体验状态切换，状态仅保存在当前浏览器。截图中的原有列表用于还原页面，不连接业务系统；开发需在服务端执行开关判断。</p>
 </section>
 </main>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
