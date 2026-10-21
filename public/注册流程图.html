@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>用户注册 · 流程图</title>
+<style>
+:root{--ink:#24324b;--muted:#7b879a;--blue:#5278db;--line:#94a6c4;--amber:#c18639;--paper:#fff;--error:#c37e73}
+*{box-sizing:border-box}body{margin:0;background:#f2f5fa;color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+.page{max-width:1140px;margin:48px auto;padding:0 32px 40px}header{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:26px}.eyebrow{font-size:11px;letter-spacing:2px;color:var(--blue);font-weight:700;margin-bottom:12px}h1{font-size:28px;letter-spacing:1px;margin:0 0 10px;font-weight:650}.subtitle{font-size:13px;line-height:1.8;color:var(--muted);margin:0}.legend{display:flex;gap:18px;font-size:12px;color:#68778c;white-space:nowrap;padding-bottom:5px}.legend span{display:flex;align-items:center;gap:7px}.dot{width:9px;height:9px;border-radius:3px;background:#e9efff;border:1px solid #7d99df}.dot.check{transform:rotate(45deg);border-radius:1px;background:#fff5df;border-color:#d5b06b}.dot.alert{background:#fff0ed;border-color:#d4a298}
+.sheet{border:1px solid #e0e6ef;border-radius:16px;background:white;box-shadow:0 12px 44px #24324b06;overflow:hidden}.sheet-top{height:48px;padding:0 24px;border-bottom:1px solid #edf0f5;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#8a95a6;letter-spacing:1px}.sheet-top strong{font-weight:500;color:#65758c}.scroll{overflow-x:auto}.diagram{position:relative;width:1040px;height:3660px;margin:16px auto 0;background-image:radial-gradient(#dce3ef 0.7px,transparent 0.7px);background-size:20px 20px}
+.node{position:absolute;display:flex;align-items:center;justify-content:center;text-align:center;z-index:2;font-size:15px;line-height:1.65}.process{left:280px;width:240px;height:64px;border:1px solid #a8bbea;border-radius:9px;background:#f3f6ff;box-shadow:0 3px 8px #405f9c06;font-weight:600}.num{position:absolute;left:16px;font-size:10px;color:#8095c2;font-weight:500}.terminal{left:330px;width:140px;height:40px;border:1px solid #7895d9;border-radius:30px;background:#eaf0ff;color:#4262aa;font-size:13px;font-weight:600}.decision{left:280px;width:240px;height:140px;isolation:isolate}.decision::before,.decision::after{content:"";position:absolute;inset:0;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);background:#d2b67b;z-index:-1}.decision::after{inset:1.5px;background:#fffbf1}.decision b{display:block;font-weight:600;font-size:14px}.decision small{display:block;font-size:12px;color:#967843;line-height:1.6;margin-top:3px}.hint{left:660px;width:250px;height:76px;flex-direction:column;align-items:flex-start;text-align:left;padding:12px 18px;background:#fff6f3;border:1px solid #e7c5bd;border-radius:8px}.hint b{font-size:12px;color:#ae7568;font-weight:500;margin-bottom:3px}.hint span{font-size:13px;color:#775c57}.line{position:absolute;z-index:0;color:var(--line)}.vertical{width:0;border-left:1.5px solid currentColor}.horizontal{height:0;border-top:1.5px solid currentColor}.arrow-down::after{content:"";position:absolute;left:-4.5px;bottom:-1px;border-left:4px solid transparent;border-right:4px solid transparent;border-top:6px solid currentColor}.arrow-right::after{content:"";position:absolute;right:-1px;top:-4.5px;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:6px solid currentColor}.arrow-left::before{content:"";position:absolute;left:-1px;top:-4.5px;border-top:4px solid transparent;border-bottom:4px solid transparent;border-right:6px solid currentColor}.failure{color:#c8a29b}.return{color:#c8a29b;border-style:dashed}.tag{position:absolute;z-index:3;padding:2px 8px;background:#fff;border-radius:4px;font-size:11px;line-height:18px;color:#7188b8}.tag.no{color:#b0796d}.stage{position:absolute;left:28px;color:#a0aabb;font-size:11px;letter-spacing:1px}.stage::before{content:"";display:inline-block;vertical-align:middle;width:18px;border-top:1px solid #d6deeb;margin-right:10px}.footnote{font-size:12px;color:#8b96a7;line-height:1.8;margin:18px 2px 0}
+@media(max-width:700px){.page{margin:28px auto;padding:0 16px 24px}header{display:block}.legend{margin-top:20px}h1{font-size:25px}.sheet-top{padding:0 16px;font-size:10px}.diagram{margin-left:0;margin-right:0}.subtitle{max-width:340px}}
+@media print{@page{size:A3 portrait;margin:10mm}body{background:#fff;print-color-adjust:exact;-webkit-print-color-adjust:exact}.page{margin:0;padding:0;max-width:none}.sheet{box-shadow:none}.scroll{overflow:visible}.diagram{margin-top:0}.footnote{margin-top:8px}}
+
+/* 以分区背景和端侧标签区分前端、后端及结果。 */
+.phase{position:absolute;left:12px;right:12px;border:1px solid #dce6f5;border-left:4px solid #7096de;border-radius:12px;background:rgba(242,247,255,.55);pointer-events:none}
+.phase-title{position:absolute;left:16px;top:20px;width:210px;margin:0;color:#416da9;font-size:17px;font-weight:650;line-height:1.5}
+.phase-title small{display:block;margin-top:8px;font-size:12px;font-weight:400;color:#7d91ad;line-height:1.8}
+.phase.backend{border-color:#e3dff2;border-left-color:#9a85c4;background:rgba(247,244,253,.6)}
+.phase.backend .phase-title{color:#79619f}.phase.backend .phase-title small{color:#9786ad}
+.phase.result{border-color:#dcece3;border-left-color:#7caf96;background:rgba(241,249,245,.6)}
+.phase.result .phase-title{color:#4f8068}.phase.result .phase-title small{color:#829b8b}
+.node.backend-check.decision::before{background:#b4a1d1}.node.backend-check.decision::after{background:#faf7ff}.node.backend-check.decision small{color:#9380ac}
+.submit-label{position:absolute;left:548px;top:1932px;background:#fff;border:1px solid #e1e5ee;border-radius:12px;padding:3px 12px;color:#7e8497;font-size:11px;z-index:3}
+</style>
+</head>
+<body>
+<main class="page">
+<header><div><div class="eyebrow">ACCOUNT / REGISTRATION</div><h1>用户注册流程</h1><p class="subtitle">前端验证格式与必填项；点击注册后，后端验证账号信息、验证码及注册限制。</p></div><div class="legend" aria-label="图例"><span><i class="dot"></i>输入步骤</span><span><i class="dot check"></i>条件判断</span><span><i class="dot alert"></i>错误提示</span></div></header>
+<section class="sheet" aria-label="用户注册流程图"><div class="sheet-top"><strong>前端验证 → 提交注册 → 后端验证 → 注册结果</strong><span>实线：流程推进 · 虚线：返回修改</span></div><div class="scroll"><div class="diagram">
+<div class="phase" style="top:0;height:1948px"><h2 class="phase-title">前端注册验证<small>用户填写时校验格式与必填项<br>验证通过后，允许点击注册</small></h2></div>
+<div class="phase backend" style="top:1960px;height:1304px"><h2 class="phase-title">后端注册验证<small>接收注册请求后依次校验<br>任一项失败，返回对应提示</small></h2></div>
+<div class="phase result" style="top:3280px;height:330px"><h2 class="phase-title">注册结果<small>后端全部校验通过<br>注册成功后返回登录页</small></h2></div>
+<span class="submit-label">提交注册请求 → 后端验证</span>
+
+<span class="stage" style="top:142px">01 / 用户名</span>
+<span class="stage" style="top:482px">02 / 密码</span>
+<span class="stage" style="top:822px">03 / 确认密码</span>
+<span class="stage" style="top:1422px">04 / 验证码</span>
+<div class="node terminal" style="top:28px">开始注册</div>
+<div class="line vertical arrow-down " style="left:400px;top:68px;height:52px" aria-hidden="true"></div>
+<div class="node process" style="top:120px"><span class="num">01</span>输入用户名</div>
+<div class="line vertical arrow-down " style="left:400px;top:184px;height:56px" aria-hidden="true"></div>
+<div class="node decision" style="top:240px"><div><b>用户名格式是否正确？</b><small>6–20 位数字或英文字母</small></div></div>
+<div class="line horizontal arrow-right failure" style="left:520px;top:310px;width:140px" aria-hidden="true"></div><span class="tag no" style="left:574px;top:298px">否</span>
+<div class="node hint" style="top:272px"><b>前端校验提示</b><span>用户名须为 6–20 位数字或英文</span></div>
+<div class="line horizontal return" style="left:910px;top:310px;width:40px" aria-hidden="true"></div>
+<div class="line vertical return" style="left:950px;top:152px;height:158px" aria-hidden="true"></div>
+<div class="line horizontal arrow-left return" style="left:520px;top:152px;width:430px" aria-hidden="true"></div>
+<span class="tag no" style="left:684px;top:140px">返回修改</span>
+<div class="line vertical arrow-down " style="left:400px;top:380px;height:80px" aria-hidden="true"></div>
+<span class="tag" style="left:410px;top:402px">是</span>
+<div class="node process" style="top:460px"><span class="num">02</span>输入密码</div>
+<div class="line vertical arrow-down " style="left:400px;top:524px;height:56px" aria-hidden="true"></div>
+<div class="node decision" style="top:580px"><div><b>密码格式是否正确？</b><small>6–16 位，字母 + 数字组合</small></div></div>
+<div class="line horizontal arrow-right failure" style="left:520px;top:650px;width:140px" aria-hidden="true"></div><span class="tag no" style="left:574px;top:638px">否</span>
+<div class="node hint" style="top:612px"><b>前端校验提示</b><span>密码须为 6–16 位字母和数字组合</span></div>
+<div class="line horizontal return" style="left:910px;top:650px;width:40px" aria-hidden="true"></div>
+<div class="line vertical return" style="left:950px;top:492px;height:158px" aria-hidden="true"></div>
+<div class="line horizontal arrow-left return" style="left:520px;top:492px;width:430px" aria-hidden="true"></div>
+<span class="tag no" style="left:684px;top:480px">返回修改</span>
+<div class="line vertical arrow-down " style="left:400px;top:720px;height:80px" aria-hidden="true"></div>
+<span class="tag" style="left:410px;top:742px">是</span>
+<div class="node process" style="top:800px"><span class="num">03</span>再次输入密码</div>
+<div class="line vertical arrow-down " style="left:400px;top:864px;height:56px" aria-hidden="true"></div>
+<div class="node decision" style="top:920px"><div><b>确认密码格式是否正确？</b><small>6–16 位，字母 + 数字组合</small></div></div>
+<div class="line horizontal arrow-right failure" style="left:520px;top:990px;width:140px" aria-hidden="true"></div><span class="tag no" style="left:574px;top:978px">否</span>
+<div class="node hint" style="top:952px"><b>前端校验提示</b><span>密码须为 6–16 位字母和数字组合</span></div>
+<div class="line horizontal return" style="left:910px;top:990px;width:40px" aria-hidden="true"></div>
+<div class="line vertical return" style="left:950px;top:832px;height:158px" aria-hidden="true"></div>
+<div class="line horizontal arrow-left return" style="left:520px;top:832px;width:430px" aria-hidden="true"></div>
+<span class="tag no" style="left:684px;top:820px">返回修改</span>
+<div class="line vertical arrow-down " style="left:400px;top:1060px;height:100px" aria-hidden="true"></div>
+<span class="tag" style="left:410px;top:1094px">是</span>
+<div class="node decision" style="top:1160px"><div><b>两次密码是否一致？</b><small>比对密码与确认密码</small></div></div>
+<div class="line horizontal arrow-right failure" style="left:520px;top:1230px;width:140px" aria-hidden="true"></div><span class="tag no" style="left:574px;top:1218px">否</span>
+<div class="node hint" style="top:1192px"><b>前端校验提示</b><span>两次密码输入不一致，请重新输入</span></div>
+<div class="line horizontal return" style="left:910px;top:1230px;width:80px" aria-hidden="true"></div>
+<div class="line vertical return" style="left:990px;top:832px;height:398px" aria-hidden="true"></div>
+<div class="line horizontal arrow-left return" style="left:520px;top:832px;width:470px" aria-hidden="true"></div>
+<span class="tag no" style="left:684px;top:820px">返回修改</span>
+<div class="line vertical arrow-down " style="left:400px;top:1300px;height:100px" aria-hidden="true"></div>
+<span class="tag" style="left:410px;top:1334px">是</span>
+<div class="node process" style="top:1400px"><span class="num">04</span>输入验证码</div>
+<div class="line vertical arrow-down" style="left:400px;top:1464px;height:56px" aria-hidden="true"></div>
+<div class="node decision" style="top:1520px"><div><b>是否输入验证码？</b><small>检查验证码是否已填写</small></div></div>
+<div class="line horizontal arrow-right failure" style="left:520px;top:1590px;width:140px" aria-hidden="true"></div>
+<span class="tag no" style="left:574px;top:1578px">否</span>
+<div class="node hint" style="top:1552px"><b>前端必填提示</b><span>请输入验证码</span></div>
+<div class="line horizontal return" style="left:910px;top:1590px;width:40px" aria-hidden="true"></div>
+<div class="line vertical return" style="left:950px;top:1432px;height:158px" aria-hidden="true"></div>
+<div class="line horizontal arrow-left return" style="left:520px;top:1432px;width:430px" aria-hidden="true"></div>
+<span class="tag no" style="left:684px;top:1420px">返回输入验证码</span>
+<div class="line vertical arrow-down" style="left:400px;top:1660px;height:80px" aria-hidden="true"></div>
+<span class="tag" style="left:410px;top:1682px">是</span>
+<div class="node process" style="top:1740px;border-color:#9bc9b5;background:#eef9f3;color:#357359">注册按钮可以点击</div>
+<div class="line vertical arrow-down" style="left:400px;top:1804px;height:56px" aria-hidden="true"></div>
+<span class="stage" style="top:1882px">05 / 提交注册</span><div class="node process" style="top:1860px"><span class="num">05</span>点击注册</div>
+<div class="line vertical arrow-down" style="left:400px;top:1924px;height:56px" aria-hidden="true"></div>
+
+<div class="node decision backend-check" style="top:1980px"><div><b>用户名和密码是否正确？</b><small>后端校验 · 01</small></div></div>
+<div class="line horizontal arrow-right failure" style="left:520px;top:2050px;width:140px" aria-hidden="true"></div>
+<span class="tag no" style="left:574px;top:2038px">否</span>
+<div class="node hint" style="top:2012px;height:76px"><b>后端返回提示</b><span>用户名或密码不正确</span></div>
+<div class="line vertical arrow-down" style="left:400px;top:2120px;height:80px" aria-hidden="true"></div>
+<span class="tag" style="left:410px;top:2142px">是</span>
+<div class="node decision backend-check" style="top:2200px"><div><b>验证码是否正确？</b><small>后端校验 · 02</small></div></div>
+<div class="line horizontal arrow-right failure" style="left:520px;top:2270px;width:140px" aria-hidden="true"></div>
+<span class="tag no" style="left:574px;top:2258px">否</span>
+<div class="node hint" style="top:2232px;height:76px"><b>后端返回提示</b><span>请输入正确验证码</span></div>
+<div class="line vertical arrow-down" style="left:400px;top:2340px;height:80px" aria-hidden="true"></div>
+<span class="tag" style="left:410px;top:2362px">是</span>
+<div class="node decision backend-check" style="top:2420px"><div><b>验证码是否已过期？</b><small>后端校验 · 03</small></div></div>
+<div class="line horizontal arrow-right failure" style="left:520px;top:2490px;width:140px" aria-hidden="true"></div>
+<span class="tag no" style="left:574px;top:2478px">是</span>
+<div class="node hint" style="top:2452px;height:76px"><b>后端返回提示</b><span>验证码已过期</span></div>
+<div class="line vertical arrow-down" style="left:400px;top:2560px;height:80px" aria-hidden="true"></div>
+<span class="tag" style="left:410px;top:2582px">否</span>
+<div class="node decision backend-check" style="top:2640px"><div><b>用户名是否已存在？</b><small>后端校验 · 04</small></div></div>
+<div class="line horizontal arrow-right failure" style="left:520px;top:2710px;width:140px" aria-hidden="true"></div>
+<span class="tag no" style="left:574px;top:2698px">是</span>
+<div class="node hint" style="top:2672px;height:76px"><b>后端返回提示</b><span>用户名已存在</span></div>
+<div class="line vertical arrow-down" style="left:400px;top:2780px;height:80px" aria-hidden="true"></div>
+<span class="tag" style="left:410px;top:2802px">否</span>
+<div class="node decision backend-check" style="top:2860px"><div><b>单个 IP 累计注册数量<br>是否达到上限？</b><small>后端校验 · 05</small></div></div>
+<div class="line horizontal arrow-right failure" style="left:520px;top:2930px;width:140px" aria-hidden="true"></div>
+<span class="tag no" style="left:574px;top:2918px">是</span>
+<div class="node hint" style="top:2884px;height:92px"><b>后端返回提示</b><span>注册次数达到上限，请联系客服查看处理</span></div>
+<div class="line vertical arrow-down" style="left:400px;top:3000px;height:80px" aria-hidden="true"></div>
+<span class="tag" style="left:410px;top:3022px">否</span>
+<div class="node decision backend-check" style="top:3080px"><div><b>所在区域是否限制注册？</b><small>后端校验 · 06</small></div></div>
+<div class="line horizontal arrow-right failure" style="left:520px;top:3150px;width:140px" aria-hidden="true"></div>
+<span class="tag no" style="left:574px;top:3138px">是</span>
+<div class="node hint" style="top:3112px;height:76px"><b>后端返回提示</b><span>您所在的区域已被限制！</span></div>
+<div class="line vertical arrow-down" style="left:400px;top:3220px;height:80px" aria-hidden="true"></div>
+<span class="tag" style="left:410px;top:3242px">否</span>
+<div class="node terminal" style="top:3300px;left:300px;width:200px;height:52px;border-color:#9bc9b5;background:#eef9f3;color:#357359">后台校验通过</div>
+<div class="line vertical arrow-down" style="left:400px;top:3352px;height:48px" aria-hidden="true"></div>
+<div class="node process" style="top:3400px;border-color:#9bc9b5;background:#eef9f3;color:#357359">注册成功</div>
+<div class="line vertical arrow-down" style="left:400px;top:3464px;height:56px" aria-hidden="true"></div>
+<div class="node terminal" style="top:3520px;left:300px;width:200px;height:52px">返回登录页</div></div></div></section><p class="footnote">前端：用户名与密码格式、确认密码一致性、验证码是否填写。后端：用户名和密码、验证码正确性与有效期、用户名是否已存在、IP 注册上限及区域限制。后端任一项未通过时返回对应提示；全部通过后注册成功，返回登录页。</p>
+</main>
+</body>
+</html>
