@@ -34,6 +34,8 @@ body{background:#f5f5f5}.prototype-bar{height:54px;background:#fff;border-bottom
 .navigation-highlight{position:relative}.navigation-highlight::after{content:"";position:absolute;inset:2px -8px -5px;border:2px solid #ff3030;pointer-events:none;z-index:4}.sidebar .menu-highlight{position:relative}.sidebar .menu-highlight::after{content:"";position:absolute;inset:-4px -7px;border:2px solid #ff3030;pointer-events:none;z-index:4}
 
 .preview-controls{font-size:11px;color:#748497;margin:0 0 12px;line-height:1.7}.preview-controls label{display:flex;align-items:center;gap:5px;cursor:pointer}.preview-controls input{accent-color:#3188ff;margin:0}.preview-controls p{font-size:10px;margin:5px 0 0;padding:7px 9px;background:#eef6ff;border-radius:4px;color:#6c85a3}
+
+.offer{padding-top:12px}
 </style>
 </head>
 <body>
@@ -56,7 +58,7 @@ body{background:#f5f5f5}.prototype-bar{height:54px;background:#fff;border-bottom
 <div class="input-row"><span>¥</span><input id="amount" type="text" inputmode="decimal" autocomplete="off" placeholder="请输入金额(20~100000)" aria-describedby="amount-error"></div><p class="error" id="amount-error">请输入 20～100000 元之间的有效金额，最多两位小数</p>
 <fieldset class="activity red-ring" data-mark="③ 新增参与选项" id="activity-choice" aria-label="选择是否参与活动"><div class="options">
 <label class="option"><input type="radio" name="activity" value="no" checked><span>不参与活动</span></label>
-<div class="option offer"><span class="offer-badge">1/1活动</span><label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="radio" name="activity" value="yes"><span class="offer-copy"><strong>CGpay充值赠送，本彩3倍</strong><span>最高可得：188</span></span></label><button class="detail detail-ring" title="④ 详情跳转：使用后台配置的活动详情地址" type="button" id="details">详情 › <span class="feature-badge">新功能</span></button></div>
+<div class="option offer"><label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="radio" name="activity" value="yes"><span class="offer-copy"><strong>CGpay充值赠送，本彩3倍</strong><span>最高可得：188</span></span></label><button class="detail detail-ring" title="④ 详情跳转：使用后台配置的活动详情地址" type="button" id="details">详情 › <span class="feature-badge">新功能</span></button></div>
 </div></fieldset>
 <button class="submit" id="submit" type="submit" disabled>确认存款</button>
 </form>
