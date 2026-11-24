@@ -358,7 +358,7 @@
   .requirements dl { margin: 13px 0; }
   .requirements dt { margin-top: 9px; font-weight: 650; }
   .requirements dd { margin: 2px 0 0; color: #4b5565; }
-  .demo-controls {
+  .demo-controls:not([hidden]) {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -477,7 +477,7 @@
     <dt>停留在底部</dt>
     <dd>列表自动跟随新消息，无需显示提示。</dd>
   </dl>
-  <div class="demo-controls" role="group" aria-label="原型演示控制">
+  <div class="demo-controls" role="group" aria-label="原型演示控制" hidden>
     <label><input id="auto-receive" type="checkbox" checked> 每 5 秒模拟来信</label>
     <button id="receive" type="button">模拟收消息</button>
   </div>
