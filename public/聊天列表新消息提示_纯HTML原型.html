@@ -9,7 +9,7 @@
     color-scheme: light;
     font-family: Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
     color: #212121;
-    background: #252931;
+    background: #fff;
   }
   *, *::before, *::after { box-sizing: border-box; }
   body { margin: 0; }
@@ -342,6 +342,7 @@
   .composer input::placeholder { color: #9e9e9e; }
   .requirements {
     padding: 6px 14px 16px;
+    border: 1px solid #000;
     background: #fff;
     color: #263044;
     font-size: 13px;
@@ -468,6 +469,10 @@
     <button id="locate-feature" type="button" aria-controls="room">定位新增功能</button>
   </header>
   <dl>
+    <dt>问题描述</dt>
+    <dd>测试 28 游戏房间时，向上滑动查看历史消息，列表会自动跳回最新消息，导致无法持续查看历史记录。对比测试中，APP 未出现此问题。</dd>
+    <dt>适用范围</dt>
+    <dd>28 游戏房间三端统一消息列表的滚动和新消息提示行为。</dd>
     <dt>新增位置</dt>
     <dd>消息列表右下角，输入栏上方、悬浮按钮左侧。</dd>
     <dt>出现条件</dt>
